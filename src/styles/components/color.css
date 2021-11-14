@@ -1,0 +1,22 @@
+/* Màu của button add */
+.primary-color{
+    background-color: #2ca01c;
+}
+.primary-color:hover{
+    background-color: #2a7920;
+}
+
+.default-color{
+    background-color: rgb(255, 255, 255);
+}
+.default-color:hover{
+    background-color: rgb(231, 231, 231);
+}
+
+/* Màu của button xóa */
+.delete-color{
+    background-color: rgb(212, 74, 74);
+}
+.delete-color:hover{
+    background-color: rgb(161, 48, 48);
+}

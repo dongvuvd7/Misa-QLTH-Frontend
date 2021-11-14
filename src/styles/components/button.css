@@ -1,0 +1,160 @@
+
+/** 
+    Button thêm
+*/
+.btn-add {
+    height: 85%;
+    width: 80px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    color: #fff;
+    margin-left: 10px;
+}
+
+/**
+    Button input file
+*/
+input[type="file"] {
+    display: none;
+  }
+.btn-add-excel {
+    height: 48%;
+    display: inline-block;
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    color: #fff;
+    margin-left: 10px;
+}
+.btn-export-excel {
+    height: 85%;
+    display: inline-block;
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid rgb(88, 88, 88);
+    color: rgb(75, 74, 74);
+    margin-left: 10px;
+}
+
+
+/**
+    Button hủy ở dialog
+    Button hủy, không ở dataChange Popup
+*/
+.btn-small{
+    height: 36px;
+    padding: 8px 20px;
+    border: 1px solid #8d9096;
+    color: #111;
+    background-color: transparent;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/**
+    Button cất và thêm
+*/
+.btn-post-and-put{
+    position: absolute;
+    right: 0px;
+    height: 36px;
+    padding: 8px 20px;
+    border: 1px solid transparent;
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/**
+    Button confirm ở popup, dialog
+*/
+.btn-confirm{
+    position: absolute;
+    right: 0px;
+    top: 24px;
+    height: 36px;
+    padding: 8px 20px;
+    border: 1px solid transparent;
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+
+/**
+    Button warning ở popup, dialog
+*/
+.btn-warning{
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    margin-right: 12px;
+}
+
+/**
+    Button refresh và button export excel
+*/
+#btn-refresh {
+    height: 32px;
+    width: 32px;
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat;
+    background-position: -423px -197px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+#btn-export {
+    width: 32px;
+    height: 32px;
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat;
+    background-position: -700px -197px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+#btn-edit {
+    height: 32px;
+    width: 32px;
+    background: url('../../assets/Icons/ic_Edit.png') no-repeat;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+#btn-delete {
+    height: 32px;
+    width: 32px;
+    background: url('../../assets/Icons/ic_Remove.png') no-repeat;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+#btn-duplicate {
+    height: 32px;
+    width: 32px;
+    background: url('../../assets/Icons/ic_send.png') no-repeat;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+/**
+    Button delete
+*/
+.btn-delete-all {
+    height: 85%;
+    width: 120px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    color: #fff;
+}
+/* Ẩn button (sử dụng ở button xóa hàng loạt) */
+.btn-hide{
+    display: none;
+}

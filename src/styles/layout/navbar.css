@@ -1,0 +1,114 @@
+#navBar{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    
+    height: 100%;
+    width: 178px;
+    background-color: #24344b;
+    
+}
+#Navbar_logo_box{
+    /* width: 100%; */
+    height: 48px;
+    display: flex;
+    align-items: center;
+    /* background-color: #38393d; */
+    padding-left: 10px;
+    margin-bottom: 16px;
+    color: #fff;
+    font-size: 16px;
+}
+#sidebar{
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    margin-left: 20px;
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -424px -86px;
+}
+#logo{
+    width: 44px;
+    height: 45px;
+    margin-top: 5px;
+    margin-right: 6px;
+    background: url('../../assets/Icons/ic_IconThietBi.svg') no-repeat ;
+}
+.navbar-item{
+    width: 97%;
+    height: 41px;
+    display: flex;
+    align-items: center;
+    padding-left: 0px;
+    color: #fff;
+    border-left: 6px solid transparent;
+    line-height: 42px;
+    font-size: 13px;
+    
+}
+.navbar-item:hover{
+    cursor: pointer;
+    background-color: #4c5c74;
+}
+
+.router-link-active{
+    background: #404f64;
+    border-left: 6px solid #0DD469;
+    color: #0DD469;
+}
+
+.navbar-icon{
+    width: 24px;
+    height: 100%;
+    padding-right: 8px;
+    margin-right: 8px;
+}
+.icon-1{
+    background: url('../../assets/Icons/ic_TongQuan.svg') no-repeat;
+    background-position: 0px;           
+}
+.icon-2{
+    background-position: -73px -1620px;           
+}
+.icon-3{
+    background-position: -117px -1620px;           
+}
+.icon-4{
+    background-position: -161px -1620px;           
+}
+.icon-5{
+    background: url('../../assets/Icons/ic_ThietBi.svg') no-repeat;
+    background-position: 0px;           
+}
+.icon-6{
+    background: url('../../assets/Icons/ic_MuonTra.svg') no-repeat;
+    background-position: 0px;           
+}
+.icon-7{
+    background: url('../../assets/Icons/ic_BaoCao.svg') no-repeat;
+    background-position: 0px;           
+}
+.icon-8{
+    background: url('../../assets/Icons/ic_HeThong.svg') no-repeat;
+    background-position: 0px;           
+}
+.icon-9{
+    background-position: -378px -1620px;           
+}
+.icon-10{
+    background-position: -423px -1620px;           
+}
+.icon-11{
+    background-position: -467px -1620px;          
+}
+.icon-12{
+    background-position: -510px -1620px;          
+}
+.icon-13{
+    background-position: -378px -1650px;           
+}
+.icon-14{
+    background-position: -547px -1620px;        
+}
+.icon-15{
+    background-position: -204px -1654px;         
+}
