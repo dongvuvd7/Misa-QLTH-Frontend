@@ -1,167 +1,161 @@
-<!-- Bản Backup trước khi sử dụng filters và bổ sung resources (27/10/2021 8:36am) -->
+<!--Bản backup trước khi sử dụng vuetify để làm combobox (14/11/2021 15:18pm) -->
 
 <template>
     <div class="dialog">
         <div class="model" @click="hideDialogDataCondition()"></div>
         <div class="dialog-content">
-            <div class="header">
-                <div id="title">Thông tin nhân viên</div>
-                <button class="btn-check"></button>
-                <div class="div">Là khách hàng</div>
-                <button class="btn-check"></button>
-                <div class="div">Là nhà cung cấp</div>
-                <button class="btn-help">
-                    <span class="tooltiptext">Để biết thêm thông tin, tham khảo google.com hì</span>
-                </button>
-                <button class="btn-X" @click="hideDialogDataCondition()"></button>
+            <div class="left-dialog-content">
+
+            </div>
+            <div class="right-dialog-content">
+                
+
+                <div class="middle">
+                    <div class="middle-1">
+                        <div class="column clm1">
+                            <div class="img-avt">
+
+                            </div>
+                            <div class="btn-add-avt">
+                                Chọn ảnh
+                            </div>
+                            <div class="clm1-name">
+                                {{employee.fullName}}
+                            </div>
+                            <div class="clm1-code">
+                                {{employee.employeeCode}}
+                            </div>
+                        </div>
+                        <div class="column clm2">
+                            
+                            <div class="header">
+                                <div id="title">Thêm hồ sơ Cán bộ, Giáo viên</div>
+                                <!-- <button class="btn-help">
+                                    <span class="tooltiptext">Để biết thêm thông tin, tham khảo google.com hì</span>
+                                </button> -->
+                                <button class="btn-X" @click="hideDialogDataCondition()"></button>
+                            </div>
+
+                            <div style="display: flex; align-items: center;">
+                                <div class="input_bar" style="width: 50%; margin-right: 2px;">
+                                    <div class="title-blank-box" style="position: relative"><b>Số hiệu cán bộ</b> <span style="color: red;">*</span>
+                                        <div class="error-message" v-show="isValid.employeeCodeMessage == false">Số hiệu cán bộ chưa hợp lệ</div>
+                                    </div>
+                                    <input type="text" class="code-blank-box"
+                                        :class="{'blank-box-invalid': isValid.employeeCode == false}"
+                                        ref="employeeCode"
+                                        v-model="employee.employeeCode"
+                                        @mouseenter="mouseEnterError('employeeCode')"
+                                        @mouseleave="mouseLeaveError()"
+                                    />
+                                </div>
+                                <div class="input_bar" style="width: 50%; margin-left: 2px;">
+                                    <div class="title-blank-box" style="position: relative"><b>Họ và tên</b> <span style="color: red;">*</span>
+                                        <div class="error-message" v-show="isValid.fullNameMessage == false">Họ và tên không được để trống</div>
+                                    </div>
+                                    <input type="text" class="fullname-blank-box" style="text-transform: capitalize; "
+                                        :class="{'blank-box-invalid': isValid.fullName == false }" 
+                                        v-model="employee.fullName"
+                                        @mouseenter="mouseEnterError('fullName')"
+                                        @mouseleave="mouseLeaveError()"
+                                        ref="nameRef"
+                                    />                    
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <div class="input_bar" style="width: 50%; margin-right: 2px;">
+                                    <div class="title-blank-box" style="position: relative"><b>Số điện thoại</b>
+                                    </div>
+                                    <input type="text" class="code-blank-box"
+                                        v-model="employee.phone"
+                                    />
+                                </div>
+                                <div class="input_bar" style="width: 50%; margin-left: 2px;">
+                                    <div class="title-blank-box" style="position: relative"><b>Email</b>
+                                    </div>
+                                    <input type="email" class="fullname-blank-box"
+                                        :class="{'blank-box-invalid': isValid.email == false }" 
+                                        v-model="employee.email"
+                                    />                    
+                                </div>
+                            </div>
+
+                            <div style="display: flex; align-items: center;">
+                                <div class="input_bar" style="width: 50%; margin-right: 2px;">
+                                    <div style="position: relative; width: 35%; line-height: 48px;"><b>Tổ bộ môn</b><span style="color: red;">*</span>
+                                        <div class="error-message" v-show="isValid.departmentNameMessage == false">Tổ bộ môn chưa hợp lệ</div>
+                                    </div>
+                                    <!-- combobox -->
+                                    <div class="dropdown-text-and-icon" :class="{'blank-box-invalid': isValid.departmentName == false}">
+                                        <input type="text" class="input-blank-box" 
+                                            @focus="showDropDownContent('department')" 
+                                            @blur="hideDropDownContent('department')" 
+                                            id="departmentName"
+                                            v-model="employee.departmentName"
+                                            @mouseenter="mouseEnterError('departmentName')"
+                                            @mouseleave="mouseLeaveError()"
+                                            @keyup="searchOption('department')"
+                                            autocomplete="off"
+                                        />
+                                        <button id="dropdown-icon" @click="showDropDownContent('department')" @blur="hideDropDownContent('department')"></button>
+                                    </div>
+                                    <div id="dropdown">     
+                                        <div class="dropdown-content" :class="{'dialog_hide': !isShowOption.department}" >
+                                            <div class="dropdown-content-a" 
+                                                :class="{'drop-down-content-selected' : option.id == employee.departmentId}"
+                                                v-for="option in listOptions.department" 
+                                                :key="option.id" 
+                                                @click="chooseOption(option, 'department')" 
+                                                @mouseenter="enterClick()" 
+                                                @mouseleave="leaveClick()"
+                                            >{{option.name}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input_bar" style="width: 50%; margin-right: 2px;">
+                                    <div class="title-blank-box" style="position: relative; margin-right: 3px;"><b>QL theo môn</b>
+                                    </div>
+                                    <input type="text" class="fullname-blank-box"
+                                        v-model="employee.phone"
+                                    />
+                                </div>    
+                            </div>
+
+                            <div style="display: flex; align-items: center">
+                                <div style="position: relative; width: 108px; height: 32px; line-height: 22px;"><b>QL kho, phòng</b> </div>
+                                <input type="text" class="medium-blank-box" v-model="employee.jobTitle"/>
+                            </div>
+
+                            <div style="display: flex; align-items: center">
+                                
+                                <input type="checkbox" class="btn-check" style="line-height: 56px;"
+                                    />
+                                <div class="title-checkbox" style="margin-top: 3px; line-height: 56px;">Trình độ nghiệp vụ QLTB</div>
+
+                                <input type="checkbox" class="btn-check" style="line-height: 56px;"
+                                    />
+                                <div class="title-checkbox" style="margin-top: 3px; line-height: 56px; margin-right: 52px;">Đang làm việc</div>
+
+                                <div class="date-stop-working" style="display: flex; height: 56px;">
+                                    <div style="margin-right: 8px; line-height: 56px;">Ngày nghỉ việc</div>
+                                    <date-pick
+                                        style="width: 150px; line-height: 56px;"
+                                        v-model="employee.dateOfBirth"
+                                        :displayFormat="'DD/MM/YYYY'"
+                                    ></date-pick>  
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>    
             </div>
 
-            <div class="middle">
-                <div class="middle-1">
-                    <div class="column clm1">
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 35%; margin-right: 2px">
-                                <div style="position: relative"><b>Mã</b> <span style="color: red;">*</span>
-                                    <div class="error-message" v-show="isValid.employeeCodeMessage == false">Mã nhân viên chưa hợp lệ</div>
-                                </div>
-                                <input type="text" class="code-blank-box"
-                                    :class="{'blank-box-invalid': isValid.employeeCode == false}"
-                                    ref="employeeCode"
-                                    v-model="employee.employeeCode"
-                                    @mouseenter="mouseEnterError('employeeCode')"
-                                    @mouseleave="mouseLeaveError()"
-                                />
-                            </div>
-                            <div style="width: 65%; margin-left: 2px;">
-                                <div style="position: relative"><b>Tên</b> <span style="color: red;">*</span>
-                                    <div class="error-message" v-show="isValid.fullNameMessage == false">Tên nhân viên không được để trống</div>
-                                </div>
-                                <input type="text" class="fullname-blank-box" style="text-transform: capitalize; "
-                                    :class="{'blank-box-invalid': isValid.fullName == false }" 
-                                    v-model="employee.fullName"
-                                    @mouseenter="mouseEnterError('fullName')"
-                                    @mouseleave="mouseLeaveError()"
-                                />                    
-                            </div>
-                        </div>
-                        <div style="position: relative"><b>Đơn vị</b><span style="color: red;">*</span>
-                            <div class="error-message" v-show="isValid.departmentNameMessage == false">Tên đơn vị chưa hợp lệ</div>
-                        </div>
-                        <!-- combobox -->
-                        <div class="dropdown-text-and-icon" :class="{'blank-box-invalid': isValid.departmentName == false}">
-                            <input type="text" class="department-blank-box" 
-                                @focus="showDropDownContent()" 
-                                @blur="hideDropDownContent()" 
-                                id="departmentName"
-                                v-model="employee.departmentName"
-                                @mouseenter="mouseEnterError('departmentName')"
-                                @mouseleave="mouseLeaveError()"
-                                @keyup="searchOption()"
-                            />
-                            <button id="dropdown-icon" @click="showDropDownContent(options)" @blur="hideDropDownContent()"></button>
-                        </div>
-                        <div id="dropdown">     
-                            <div class="dropdown-content" :class="{'dialog_hide': !isShowOption}" >
-                                <div class="dropdown-content-a" 
-                                    :class="{'drop-down-content-selected' : option.id == employee.departmentId}"
-                                    v-for="option in options" 
-                                    :key="option.id" 
-                                    @click="chooseOption(option)" 
-                                    @mouseenter="enterClick()" 
-                                    @mouseleave="leaveClick()"
-                                >{{option.name}}</div>
-                            </div>
-                        </div>
-                        <div><b>Chức danh</b></div>
-                        <input type="text" class="medium-blank-box" v-model="employee.jobTitle"/>
-                    </div>
-                    <div class="column clm2">
-                        <div style="display: flex; align-items: center">
-                            <div style="width: 35%; margin-right: 2px;">
-                                <div><b>Ngày sinh</b></div>
-                                <!-- <datepicker v-model="employee.dateOfBirth" format="dd/MM/yyyy" id="date-input" placeholder="dd/mm/yyyy"/>     -->
-                                <date-pick
-                                    v-model="employee.dateOfBirth"
-                                    :displayFormat="'DD/MM/YYYY'"
-                                ></date-pick>  
-
-                            </div>
-                            <div style="width: 65%; margin-left: 2px; padding-left: 6px;">
-                                <div><b>Giới tính</b></div>
-                                <div class="radio-box" >
-                                    <input type="radio" 
-                                        class="btn-radio" 
-                                        name="gender" 
-                                        v-model="employee.gender"
-                                        :value="1"
-                                    />
-                                    <div class="gender" >Nam</div>
-                                    <input type="radio" 
-                                        class="btn-radio"
-                                        name="gender" 
-                                        v-model="employee.gender" 
-                                        :value="0"
-                                    />
-                                    <div class="gender">Nữ</div>
-                                    <input type="radio" 
-                                        class="btn-radio" 
-                                        name="gender" 
-                                        v-model="employee.gender" 
-                                        :value="2"
-                                    />
-                                    <div class="gender">Khác</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center">
-                            <div style="width: 65%; margin-right: 2px;">
-                                <div><b>Số CMND</b></div>
-                                <input type="text" class="fullname-blank-box" v-model="employee.identityNumber"/>
-                            </div>
-                            <div style="width: 35%; margin-left: 2px;">
-                                <div><b>Ngày cấp</b></div>
-                                <!-- <datepicker v-model="employee.identityDate" format="dd/MM/yyyy" id="date-input" placeholder="dd/mm/yyyy"/> -->
-                                <date-pick
-                                    v-model="employee.identityDate"
-                                    :displayFormat="'DD.MM.YYYY'"
-                                ></date-pick>
-
-                            </div>
-                        </div>
-                        <div><b>Nơi cấp</b></div>
-                        <input type="text" class="medium-blank-box" v-model="employee.identityPlace"/>
-                    </div>
-                </div>
-                <div class="middle-2">
-                    <div><b>Địa chỉ</b></div>
-                    <input type="text" class="large-blank-box" v-model="employee.address"/>
-                    <div style="display: flex">
-                        <div class="column-1">
-                            <div><b>ĐT di động</b></div>
-                            <input type="text" class="small-blank-box" v-model="employee.phone" :class="{'blank-box-invalid': isValid.phone == false}" />
-                            <div><b>Tài khoản ngân hàng</b></div>
-                            <input type="text" class="small-blank-box" v-model="employee.bankAccount" />
-                        </div>
-                        <div class="column-1">
-                            <div style="position: relative"><b>ĐT cố định</b></div>
-                            <input type="text" class="small-blank-box" :class="{'blank-box-invalid': isValid.telephone == false}" v-model="employee.telephone" />
-                            <div><b>Tên ngân hàng</b></div>
-                            <input type="text" class="small-blank-box" v-model="employee.bankName"/>
-                        </div>
-                        <div class="column-1">
-                            <div style="position: relative"><b>Email</b></div>
-                            <input type="email" class="small-blank-box" :class="{'blank-box-invalid': isValid.email == false}" v-model="employee.email" />
-                            <div><b>Chi nhánh</b></div>
-                            <input type="text" class="small-blank-box" v-model="employee.bankBranch"/>
-                        </div>
-                    </div>
-                </div>
-            </div>    
-
             <div class="footer">
-                <button class="btn-small cancel" @click="hideDialogDataCondition()">Hủy</button>
-                <button class="btn-small post" @click="btnSave()">Cất</button>
-                <button class="btn-post-and-put primary-color" @click="btnSaveAndAdd()">Cất và thêm</button>
+                <button class="btn-small cancel" @click="hideDialogDataCondition()">Đóng</button>
+                <button class="btn-small post primary-color" @click="btnSave()">Lưu</button>
+                <button class="btn-post-and-put primary-color" @click="btnSaveAndAdd()">Lưu và thêm</button>
             </div>
         </div>  
 
@@ -200,40 +194,10 @@
     import ErrorDialog from '../../common/pop-up/errorDialog.vue';
     import ErrorPopUp from '../../common/pop-up/errorPopUp.vue';
 
-    const getAll = "https://localhost:44342/api/v1/Employees"
-    const form = {
-        add: "add",
-        edit: "edit"
-    }
-    const errorMessage = {
-        invalidDepartment: "Tên đơn vị không tồn tại trong hệ thống, vui lòng kiểm tra lại.",
-        nullFullName: "Tên không được để trống.",
-        nullEmployeeCode: "Mã nhân viên không được để trống.",
-        nullDepartment: "Tên đơn vị không được để trống.",
-        dataChange: "Dữ liệu đã bị thay đổi. Bạn có muốn cất không?",
-        dateIdentityAndDobError: "Ngày cấp số CMND không được phép trước ngày sinh.",
-    }
-    const property = {
-        fullName: "fullName",
-        employeeCode: "employeeCode",
-        departmentName: "departmentName",
+    import Enums from "../../common/base/enum.js";
+    import Resources from "../../common/base/resource.js";
 
-    }
-    const Gender = {
-        MaleId: 1,
-        Male: "Nam",
-        FemaleId: 0,
-        Female: "Nữ",
-        RestId: 2,
-        Rest: "Khác"
-    }
 
-    // const MsgFromServer = {
-    //     EmployeeCode: "Mã nhân viên",
-    //     Phone: "ĐT di động",
-    //     TelePhone: "ĐT cố định",
-    //     Email: "Email",
-    // }
 
 export default {
     components: {
@@ -246,56 +210,78 @@ export default {
 
     created() {
 
+        /**
+         * Gọi các ngân hàng theo id nhân viên ra rồi bind lên table ở tab ngân hàng
+         * (Dùng ở form sửa)
+         */
+        if(this.formmode == Enums.FormMode.Edit){
+            axios
+                .get(Resources.API.GetBankEmpByUserId + this.employee.employeeId)
+                .then((res) => {
+                    this.banksOfEmp = res.data;
+                    console.log(this.banksOfEmp);
+                    console.log(res.status);
+                    if(res.status == Enums.ServerStatus.NoContent){
+                        this.checkIfListBankEmptyEdit = true;
+                    }
+
+                })
+                .catch((res) => {
+                    console.log(res);
+                })
+        }
+
     },
 
     data() {
         return {
 
-            //Biến kiểm tra xem dữ liệu combobox có show ra hay không
-            isShowOption: false,
-            //Option được chọn trong dropbox
-            // selectedOption: {
-            //     id: null,
-            //     name: null
-            // },
-            //Danh sách các lựa chọn
-            options: [
-                {
-                    id: "142cb08f-7c31-21fa-8e90-67245e8b283e",
-                    name: "Phòng Đào tạo"
+            isShowOption: {
+                department: false,
+
+            },
+            listOptions: {
+                department: [
+                    {
+                    id: Enums.Department.DTId,
+                    name: Enums.Department.DT
+                    },
+                    {
+                        id: Enums.Department.KTId,
+                        name: Enums.Department.KT
+                    },
+                    {
+                        id: Enums.Department.MKId,
+                        name: Enums.Department.MK
+                    },
+                    {
+                        id: Enums.Department.NSId,
+                        name: Enums.Department.NS
+                    },
+                ],
+
+            },
+            initialListOptions: {
+                department: [
+                    {
+                    id: Enums.Department.DTId,
+                    name: Enums.Department.DT
                 },
                 {
-                    id: "17120d02-6ab5-3e43-18cb-66948daf6128",
-                    name: "Phòng Kế toán"
+                    id: Enums.Department.KTId,
+                    name: Enums.Department.KT
                 },
                 {
-                    id: "469b3ece-744a-45d5-957d-e8c757976496",
-                    name: "Phòng Marketing"
+                    id: Enums.Department.MKId,
+                    name: Enums.Department.MK
                 },
                 {
-                    id: "4e272fc4-7875-78d6-7d32-6a1673ffca7c",
-                    name: "Phòng Nhân sự"
+                    id: Enums.Department.NSId,
+                    name: Enums.Department.NS
                 },
-            ],
-            //Danh sách các lựa chọn ban đầu (không thay đổi)
-            initialOptions: [
-                {
-                    id: "142cb08f-7c31-21fa-8e90-67245e8b283e",
-                    name: "Phòng Đào tạo"
-                },
-                {
-                    id: "17120d02-6ab5-3e43-18cb-66948daf6128",
-                    name: "Phòng Kế toán"
-                },
-                {
-                    id: "469b3ece-744a-45d5-957d-e8c757976496",
-                    name: "Phòng Marketing"
-                },
-                {
-                    id: "4e272fc4-7875-78d6-7d32-6a1673ffca7c",
-                    name: "Phòng Nhân sự"
-                },
-            ],
+                ]
+            },
+            
             //Biến kiểm tra xem chuột có di chuyển vào các option hay không, để phân biệt click với blur
             overClick: false,
 
@@ -327,6 +313,8 @@ export default {
 
             //Biến để xác nhận thông tin nhân viên đã hợp lệ để put/post lên database
             isAppropriate: null,
+
+
         }
     },
 
@@ -362,23 +350,15 @@ export default {
          */
         //format giới tính để đưa dữ liệu lên database
         genderFormat(gender){
-            if(gender == Gender.FemaleId) {
-                this.employee.genderName = Gender.Female;
+            if(gender == Enums.Gender.FemaleId) {
+                this.employee.genderName = Enums.Gender.Female;
             }
-            else if(gender == Gender.MaleId) {
-                this.employee.genderName = Gender.Male;
+            else if(gender == Enums.Gender.MaleId) {
+                this.employee.genderName = Enums.Gender.Male
             }
-            else if(gender == Gender.RestId){
-                this.employee.genderName = Gender.Rest;
+            else if(gender == Enums.Gender.RestId){
+                this.employee.genderName = Enums.Gender.Rest;
             }
-        },
-        //Format tên phòng ban để binding vào form
-        departmentFormat(departmentId){
-            this.options.forEach(option => {
-                    if(departmentId == option.id) {
-                        this.employee.departmentName = option.name;
-                    }
-                });
         },
 
         /**
@@ -414,7 +394,7 @@ export default {
         hideDialogDataCondition(){
            if(this.compareDataObject(this.initialEmployee, this.employee)){
                this.isDataChange = true;
-               this.errorMsg = errorMessage.dataChange;
+               this.errorMsg = Resources.ErrorMessage.DataChange;
            }
            else this.hideDialog();
         },
@@ -423,41 +403,52 @@ export default {
         * Hiện combobox
         * CreatedBy: VDDong (17/06/2021)
         */
-        showDropDownContent(){
-            this.options = this.initialOptions;
-            this.isShowOption = !this.isShowOption;      
+        showDropDownContent(type){
+            this.listOptions[type] = this.initialListOptions[type];
+            this.isShowOption[type] = !this.isShowOption[type];      
             
         },
-
        /**
         * Ẩn combobox
         * CreatedBy: VDDong (17/06/2021)
         */
-        hideDropDownContent(){
-            if(this.overClick == false) this.isShowOption = false;
+        hideDropDownContent(type){
+            if(this.overClick == false) this.isShowOption[type] = false;
         },
-
         /**
         * Gán dữ liệu đã chọn từ combobox cho chủ thể employee và format cho đúng định dạng
         * CreatedBy: VDDong (17/06/2021)
         */
-        chooseOption(option){
-            //Gán giá trị được chọn cho id và tên phòng ban của employee
-            this.employee.departmentId = option.id;
-            // this.employee.departmentName = option.name;
-            this.departmentFormat(this.employee.departmentId);
-            this.overClick = false;
-            this.hideDropDownContent();
-        },
+        chooseOption(option, type){
+            var propertyId = type + "Id";
 
+            //Gán giá trị được chọn cho id và tên phòng ban của employee
+            this.employee[propertyId] = option.id;
+            // this.employee.departmentName = option.name;
+            this.optionFormat(this.employee[propertyId], type);
+            this.overClick = false;
+            this.hideDropDownContent(type);
+        },
+        //Format tên phòng ban để binding vào form
+        optionFormat(Id, type){
+            var propertyName  = type + 'Name'; 
+
+            this.listOptions[type].forEach(option => {
+                    if(Id == option.id) {
+                        this.employee[propertyName] = option.name;
+                    }
+                });
+        },
         /**
          * Tìm kiếm ô input đơn vị so với các option data có sẵn từ combobox
          * CreatedBy: VDDong (17/06/2021)
          */
-        searchOption(){
-            this.options = this.initialOptions.filter(option => {
+        searchOption(type){
+            var propertyName = type + 'Name';
+
+            this.listOptions[type] = this.initialListOptions[type].filter(option => {
                 return (
-                    option.name.toLowerCase().includes(this.employee.departmentName.toLowerCase())
+                    option.name.toLowerCase().includes(this.employee[propertyName].toLowerCase())
                 )
             })
         },
@@ -491,22 +482,24 @@ export default {
         nullValidation(propertyValue, propertyName){
             propertyValue = propertyValue || '';
             if (propertyValue.trim() == "") {
-                if(propertyName == property.employeeCode) {
+                if(propertyName == Resources.Property.EmployeeCode) {
                     this.isValid.employeeCode = false;
                     this.isErrorPopUpShow = true;
-                    this.errorMsg = errorMessage.nullEmployeeCode;
+                    this.errorMsg = Resources.ErrorMessage.NullEmployeeCode;
+                    
                 }
-                else if(propertyName == property.fullName) {
+                else if(propertyName == Resources.Property.FullName) {
                     this.isValid.fullName = false;
                     this.isErrorPopUpShow = true;
-                    this.errorMsg = errorMessage.nullFullName;
+                    this.errorMsg = Resources.ErrorMessage.NullFullName;
+                    this.$refs.nameRef.focus();
                 }
             } 
             else{
-                if(propertyName == property.employeeCode) {
+                if(propertyName == Resources.Property.EmployeeCode) {
                     this.isValid.employeeCode = true;
                 }
-                else if(propertyName == property.fullName) {
+                else if(propertyName == Resources.Property.FullName) {
                     this.isValid.fullName = true;
                 }
             }    
@@ -522,13 +515,13 @@ export default {
             if (value.trim() == "") {
                 this.isValid.departmentName = false;
                 this.isErrorPopUpShow = true;
-                this.errorMsg = errorMessage.nullDepartment;
+                this.errorMsg = Resources.ErrorMessage.NullDepartment;
             }
             else {
                 this.isValid.departmentName = false;
                 //Validate tên đơn vị giống với tên đơn vị trong option
                 //Kiểm tra xem thông tin nhập vào có đúng với các option tên đơn vị không
-                this.options.forEach(option => {
+                this.listOptions.department.forEach(option => {
                     if(option.name == value) {
                         this.isValid.departmentName = true;
                         this.employee.departmentId = option.id;
@@ -538,7 +531,7 @@ export default {
                 {
                     this.isErrorPopUpShow = false;
                     this.isErrorDialogShow = true;
-                    this.errorMsg = errorMessage.invalidDepartment;
+                    this.errorMsg = Resources.ErrorMessage.InvalidDepartment;
                 }
             }
         },
@@ -553,7 +546,7 @@ export default {
             if(identityDate < dobDate){
                 this.isValid.dateIdentityAndDob = false;
                 this.isErrorDialogShow = true;
-                this.errorMsg = errorMessage.dateIdentityAndDobError;
+                this.errorMsg = Resources.ErrorMessage.DateIdentityAndDobError;
             }
             else this.isValid.dateIdentityAndDob = true;
         },
@@ -565,14 +558,13 @@ export default {
          */
         formValidation(){
             //Validate tên nhân viên không được trống hoặc là khoảng trắng
-            this.nullValidation(this.employee.fullName, property.fullName);
+            this.nullValidation(this.employee.fullName, Resources.Property.FullName);
             //Validate mã nhân viên không được trống hoặc là khoảng trắng
-            this.nullValidation(this.employee.employeeCode, property.employeeCode);
+            this.nullValidation(this.employee.employeeCode, Resources.Property.EmployeeCode);
             //Validate tên đơn vị
             this.departmentNameValidation(this.employee.departmentName);
             //Validate ngày cấp số CMND không trước ngày sinh
             this.dateIdentityAndDobValidation(this.employee.identityDate, this.employee.dateOfBirth);
-
             //Nếu thỏa mã hết các validate thì chấp thuận
             if(this.isValid.fullName == true
                 && this.isValid.employeeCode == true
@@ -604,13 +596,13 @@ export default {
          */
         //Di chuyển chuột vào trong hiện lỗi
         mouseEnterError(propertyName){
-            if( this.isValid.employeeCode == false && propertyName == property.employeeCode){
+            if( this.isValid.employeeCode == false && propertyName == Resources.Property.EmployeeCode){
                 this.isValid.employeeCodeMessage = false;
             }
-            else if( this.isValid.fullName == false && propertyName == property.fullName){
+            else if( this.isValid.fullName == false && propertyName == Resources.Property.FullName){
                 this.isValid.fullNameMessage = false;
             }
-            if( this.isValid.departmentName == false && propertyName == property.departmentName) 
+            if( this.isValid.departmentName == false && propertyName == Resources.Property.DepartmentName) 
                 this.isValid.departmentNameMessage = false;
             
         },
@@ -620,7 +612,7 @@ export default {
             this.isValid.fullNameMessage = true;
             this.isValid.departmentNameMessage = true;
 
-            this.isValid.questionMessage = true;
+            // this.isValid.questionMessage = true;
         },
 
         /**
@@ -643,28 +635,63 @@ export default {
             console.log(this.employee);
             console.log(this.employee.identityDate);
 
-            if(this.formmode == form.add) {
+            if(this.formmode == Enums.FormMode.Add) {
+                var employeeIdToAddBanks = ""; //employeeId cũng là khóa ngoại UserId của BankEmployee
+
                 return axios
-                    .post(getAll, this.employee)
-                    .then((res) => {
-                        console.log(res);
-                        return Promise.resolve();
+                    .post(Resources.API.GetAll, this.employee) //post data employee
+                    .then(() => {
+                        if(this.banksOfEmp.length == 0) { //nếu không có bank nào liên kết với nhân viên, báo thành công
+                            console.log("Không có banks liên kết, thêm nhân viên thành công");
+
+                        }
+                        else { //nếu có banks liên kết
+                            //đầu tiên phải lấy employeeId của nhân viên mới đó về làm khóa ngoại của các banks liên kết
+                            //sau đó post các banks lên
+                            axios
+                                .get(Resources.API.GetEmployeeIdByEmployeeCode + this.employee.employeeCode) //lấy về data của nhân viên vừa post lên (theo employeeCode)
+                                .then((res) => {
+                                    employeeIdToAddBanks = res.data.employeeId; //lấy ra employeeId
+                                    for(var i=0; i<this.banksOfEmp.length; i++){
+                                        this.banksOfEmp[i].userId = employeeIdToAddBanks;
+                                        this.banksOfEmp[i].bankId = employeeIdToAddBanks; //tạm thời vì nếu để null thì bị 400 bad request nên cứ để thế này vào database nó tự set lại
+                                        var parsedobj = JSON.parse(JSON.stringify(this.banksOfEmp[i])); //nó là __ob__ nên phải convert sang array mới post được
+                                        console.log(parsedobj);
+
+                                        axios
+                                            .post(Resources.API.GetAllBankEmp, parsedobj) //post các empBanks lên
+                                            .then((res) => {
+                                                console.log(res);
+                                                return Promise.resolve();
+                                            })
+                                            .catch((res) => {
+                                                console.log(res.response);
+                                                return Promise.reject();
+                                            })
+                                    }
+                                })
+                                .catch((res) => {
+                                    console.log(res);
+                                })
+
+                        }
                     })
                     .catch((res) => {
-
                         var errorContent = res.response.data.devMsg;
 
-                        if(errorContent.includes("Mã nhân viên")) this.isValid.employeeCode = false;
-                        if(errorContent.includes("ĐT di động")) this.isValid.phone = false;
-                        if(errorContent.includes("ĐT cố định")) this.isValid.telephone = false;
-                        if(errorContent.includes("Email")) this.isValid.email = false;
+                        if(errorContent.includes(Resources.MsgFromServer.EmployeeCode)) this.isValid.employeeCode = false;
+                        if(errorContent.includes(Resources.MsgFromServer.Phone)) this.isValid.phone = false;
+                        if(errorContent.includes(Resources.MsgFromServer.TelePhone)) this.isValid.telephone = false;
+                        if(errorContent.includes(Resources.MsgFromServer.Email)) this.isValid.email = false;
 
                         this.errorMsg = errorContent;
                         this.isErrorDialogShow = true;
                         return Promise.reject();
                     })
+
+
             }
-            else if(this.formmode == form.edit){
+            else if(this.formmode == Enums.FormMode.Edit){
                 //Do chênh lệch về múi giờ giữa frontend và backend nên ở trạng thái sửa
                 //ngày giờ bên font end đang là ngày x 00:00:00 GTM+7 giờ Đông Dương, sang bên backend lại thành ngày x-1 5h:00 PM
                 //nên khi ở trạng thái sửa, đành phải +1 thêm vào ngày để khi sang backend lưu vào DB nó vẫn đúng ngày mình chọn
@@ -675,25 +702,51 @@ export default {
                 //     this.employee.dateOfBirth.setDate(this.employee.dateOfBirth.getDate() + 1);
                 //(Vấn đề đã được khắc phục sau khi chuyển sang packet pickdate mới là Vue date pick)
                 //Packet này hình như không lưu giờ nên không bị dính vấn đề liên quan múi giờ
+                
                 console.log(this.employee);
+
+                //Logic xử lý:
+                // - đầu tiên put thông tin nhân viên
+                // - tiếp theo là xóa toàn bộ banks hiện tại của employee đó đi
+                // - sau đó post lại từ list banksOfEmp
                 return axios
-                    .put(getAll + "/" + this.employee.employeeId, this.employee)
-                    .then((res) => {
-                        console.log(res);
-                        return Promise.resolve();
+                    .put(Resources.API.GetAll + "/" + this.employee.employeeId, this.employee) //put thông tin nhân viên
+                    .then(() => {
+                        axios
+                            .delete(Resources.API.GetAllBankEmp + this.employee.employeeId) //xóa
+                            .then(() => {
+                                for(var i=0; i<this.banksOfEmp.length; i++){
+                                    this.banksOfEmp[i].userId = this.employee.employeeId;
+                                    this.banksOfEmp[i].bankId = this.employee.employeeId; //tạm thời vì nếu để null thì bị 400 bad request nên cứ để thế này vào database nó tự set lại
+                                    var parsedobj = JSON.parse(JSON.stringify(this.banksOfEmp[i])); //nó là __ob__ nên phải convert sang array mới post được
+                                    console.log(parsedobj);
+
+                                    axios
+                                        .post(Resources.API.GetAllBankEmp, parsedobj) //post các empBanks lên
+                                        .then((res) => {
+                                            console.log(res);
+                                            return Promise.resolve();
+                                        })
+                                        .catch((res) => {
+                                            console.log(res);
+                                            return Promise.reject();
+                                        })
+                                }
+                            })
                     })
                     .catch((res) => {
                         var errorContent = res.response.data.devMsg;
 
-                        if(errorContent.includes("Mã nhân viên")) this.isValid.employeeCode = false;
-                        if(errorContent.includes("ĐT di động")) this.isValid.phone = false;
-                        if(errorContent.includes("ĐT cố định")) this.isValid.telephone = false;
-                        if(errorContent.includes("Email")) this.isValid.email = false;
+                        if(errorContent.includes(Resources.MsgFromServer.EmployeeCode)) this.isValid.employeeCode = false;
+                        if(errorContent.includes(Resources.MsgFromServer.Phone)) this.isValid.phone = false;
+                        if(errorContent.includes(Resources.MsgFromServer.TelePhone)) this.isValid.telephone = false;
+                        if(errorContent.includes(Resources.MsgFromServer.Email)) this.isValid.email = false;
 
                         this.errorMsg = errorContent;
                         this.isErrorDialogShow = true;
                         return Promise.reject();
                     })
+
             }
         },
 
@@ -721,7 +774,9 @@ export default {
 }
 </script>
 
+
 <style scoped>
+
     b{
     font-size: 13px;
     }
@@ -742,21 +797,23 @@ export default {
     .dialog-content{
         position: fixed;
         width: 900px;
-        height: 625px;
-        top: calc(50% - 312px);
+        height: 425px;
+        top: calc(50% - 250px);
         left: calc(50% - 450px);
         background-color: white;
         border-radius: 4px;
         box-sizing: border-box;
         z-index: 3;
     }
+
+    /* Phần header của dilog */
     .header{
         display: flex;
         align-items: center;
         width: 100%;
-        height: 60px;
-        width: 100%;
-        padding: 20px 32px;
+        height: 45px;
+        padding-top: 5px;
+        padding-bottom: 20px;
         padding-right: 12px;
         position: relative;
         overflow: hidden;
@@ -764,26 +821,16 @@ export default {
         box-sizing: border-box;
     }
     #title{
-        font-size: 24px;
+        font-size: 22px;
         color: #111;
-        font-weight: 700;
-    }
-    .btn-check{
-        width: 18px;
-        height: 18px;
-        cursor: pointer;
-        margin-left: 24px;
-        margin-right: 8px;
-    }
-    .div{
-        margin-right: 24px;
+        font-weight: 500;
     }
     .btn-help{
         height: 48px;
         width: 48px;
         position: absolute;
         right: 45px;
-        top: 0px;
+        top: -10px;
         min-width: 24px;
         min-height: 24px;
         background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat;
@@ -794,38 +841,86 @@ export default {
         border-radius: 0px 4px 0px 4px;
     }
     .btn-X{
-        height: 48px;
-        width: 48px;
+        height: 20px;
+        width: 20px;
         position: absolute;
         right: 0px;
         top: 0px;
-        min-width: 24px;
-        min-height: 24px;
-        background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat;
+        background: url("../../../assets/Icons/ic_X_2.png") no-repeat;
         cursor: pointer;
-        background-position: -134px -132px;
         border: none;
         outline: none;
         border-radius: 0px 4px 0px 4px;
     }
+
+    /* Phần middle của dialog */
     .middle{
         padding: 24px;
+        padding-top: 10px;
     }
     .middle-1{
         display: flex;
     }
-    .column{
-        width: 420px;
-        height: 220px;
-    }
     .clm1{
+        width: 25%;
         margin-right: 12px;
     }
+        .img-avt{
+            width: 160px;
+            height: 160px;
+            margin-top: 20px;
+            margin-left: 15px;
+            border: 1px solid #ccc;
+            background-image: url('../../../assets/img/default-avt.jpg');
+            background-position: center;
+            background-size: contain;
+        }
+        .btn-add-avt{
+            width: 162px;
+            height: 30px;
+            margin-left: 15px;
+            text-align: center;
+            line-height: 30px;
+            color: #fff;
+            background-color: #2ca01c;
+            cursor: pointer;
+        }
+        .clm1-name{
+            width: 160px;
+            height: 30px;
+            margin-top: 15px;
+            margin-left: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 30px;
+            overflow: hidden;
+        }
+        .clm1-code{
+            width: 160px;
+            height: 30px;
+            margin-left: 15px;
+            font-size: 15px;
+            text-align: center;
+            line-height: 30px;
+        }
+
     .clm2{
+        width: 75%;
         margin-left: 12px;
     }
+    .input_bar{
+        display: flex;
+    }
+    .title-blank-box{
+        width: 35%;
+        height: 32px;
+        margin-top: 6px;
+        margin-bottom: 16px;
+        line-height: 32px;
+    }
     .code-blank-box{
-        width: 100%;
+        width: 55%;
         padding: 6px 10px;
         font-size: 13px;
         height: 32px;
@@ -839,45 +934,9 @@ export default {
     .code-blank-box:focus{
         border-color: #2ca01c;
     }
-    /* #date-input{
-        width: 100%;
-        padding: 6px 10px;
-        font-size: 13px;
-        height: 32px;
-        border: 1px solid #babec5;
-        box-sizing: border-box;
-        margin-top: 8px;
-        margin-bottom: 16px;
-        border-radius: 3px;
-        outline: none;
-    }
-    .date-blank-box:focus{
-        border-color: #2ca01c;
-    } */
-
-    .radio-box{
-        width: 100%;
-        font-size: 13px;
-        height: 32px;
-        box-sizing: border-box;
-        margin-top: 8px;
-        margin-bottom: 16px;
-        border-radius: 3px;
-        display: flex;
-        align-items: center;
-    }
-    .radio-box .gender{
-        margin-right: 16px;
-    }
-    .btn-radio{
-        
-        /* margin-left: 16px; */
-        margin-right: 10px;
-        cursor: pointer;
-    }
 
     .fullname-blank-box{
-        width: 100%;
+        width: 65%;
         padding: 6px 10px;
         font-size: 13px;
         height: 32px;
@@ -892,7 +951,7 @@ export default {
         border-color: #2ca01c;
     }
     .medium-blank-box{
-        width: 100%;
+        width: calc(100% - 108px);
         padding: 6px 10px;
         font-size: 13px;
         height: 32px;
@@ -908,82 +967,17 @@ export default {
     .medium-blank-box:focus{
         border-color: #2ca01c;
     }
-    .dropdown-text-and-icon{
-        width: 100%;
-        padding: 6px 10px;
-        font-size: 13px;
-        height: 32px;
-        border: 1px solid #babec5;
-        box-sizing: border-box;
-        margin-top: 8px;
-        margin-bottom: -2px;
-        border-radius: 3px;
-        /* box-sizing: border-box; */
-        display: flex;
-        align-items: center;
+    .btn-check{
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        margin-right: 8px;
     }
-    .dropdown-text-and-icon:focus-within{
-        border-color: #2ca01c;
-    }
-    .department-blank-box{
-        height: 30px;
-        width: calc(100% - 32px);
-        /* padding: 6px 0 6px 12px; */
-        box-sizing: border-box;
-        border: none;
-        outline: none;
-        border-collapse: collapse;
-        border-radius: 4px;
-    }
-    #dropdown-icon{
-        width: 30px;
-        height: 30px;
-        border: none;
-        outline: none;
-        border-collapse: collapse;
-        border-radius: 4px;
-        background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat;
-        background-position: -545px -352px;
-        transform: rotate(0deg);
-        transition: transform .15s linear;
-        /* background-color: aqua; */
+    .title-checkbox{
+        margin-right: 24px;
     }
 
-    .large-blank-box{
-        width: 100%;
-        padding: 6px 10px;
-        font-size: 13px;
-        height: 32px;
-        border: 1px solid #babec5;
-        box-sizing: border-box;
-        margin-top: 8px;
-        margin-bottom: 16px;
-        border-radius: 3px;
-        outline: none;
-    }
-    .large-blank-box:focus{
-        border-color: #2ca01c;
-    }
-    .column-1{
-        width: 220px;
-        height: 100px;
-    }
-    .small-blank-box{
-        width: 214px;
-        padding: 6px 10px;
-        font-size: 13px;
-        height: 32px;
-        border: 1px solid #babec5;
-        box-sizing: border-box;
-        margin-top: 8px;
-        margin-bottom: 16px;
-        outline: none;
-        border-radius: 3px;
-    }
-    .small-blank-box:focus{
-        border-color: #2ca01c;
-
-    }
+    /* Phần Footer của dialog */
     .footer{
         position: absolute;
         bottom: 0px;
@@ -995,78 +989,42 @@ export default {
         margin-left: 24px;
         margin-right: 24px;
         box-sizing: border-box;
-        border-top: 1px solid #ccc;
-    }
-    
-    
-    .post{
-        position: absolute;
-        right: 124px;
-    }
-
-    #dropdown{
-            position: relative;
-            display: inline-block;
-            width: 100%;
-            /* background-color: #2ca01c; */
-        }
-        .dropdown-content{
-            /* height: 120px; */
-            width: 410px;
-            
-            top: -6px;
+    }    
+        .cancel{
             position: absolute;
-            /* right: 0px; */
-            border: 1px solid;
-            background-color: #fff;
-            border-radius: 3px;
-            border: 1px solid #babec5;
+            right: 250px;
         }
-        .dropdown-content-a{
-            /* position: absolute; */
-            height: 24px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            padding-left: 12px;
-            box-sizing: border-box;
-            border: none;
-            outline: none;
-            font-size: 13px;
-            margin-bottom: 2px;
-        }
-        .dropdown-content-a:hover{
-            color: #2ca01c;
-            background-color: rgb(219, 219, 219);
-        }
-        .drop-down-content-selected{
-            background-color: #2ca01c;
-            color: #fff;
-        }
-        .drop-down-content-selected:hover{
-            background-color: #2ca01c;
-            color: #fff;
+        .post{
+            color: white;
+            position: absolute;
+            right: 124px;
         }
 
+    /* Báo đỏ thanh input khi có lỗi */
     .blank-box-invalid {
-        border-color: #F65454;
+        border-color: #F65454 !important;
         outline: none;
     }
+    /* Trỏ chuột và thanh input lỗi hiện thông báo lỗi */
     .error-message{
         position: absolute;
-        top: 50px;
-        left: calc(50% - 80px);
-        background-color: black;
-        color: #babec5;
+        top: 40px;
+        left: 110px;
+        background-color: #F65454;
+        color: #fff;
         font-size: 11px;
         padding-left: 8px;
         padding-top: 2px;
         padding-bottom: 2px;
         padding-right: 8px;
-        width: 160px;
+        /* width: 300px; */
+        min-width: 180px;
+        height: 30px;
+        line-height: 30px;
         border-radius: 4px;
     }
 
+    /* Thông báo khi trỏ chuột vào icon dấu hỏi (đã tạm ẩn đi) */
     .tooltiptext {
         visibility: hidden;
         background-color: black;
@@ -1084,8 +1042,101 @@ export default {
         }
 
     .btn-help:hover .tooltiptext {
-    visibility: visible;
+        visibility: visible;
     }
+
+
+/**
+  Dropdown
+*/
+.dialog_hide{
+  display: none;
+}
+.dropdown-text-and-icon{
+    width: 55%;
+    padding: 6px 6px;
+    font-size: 13px;
+    height: 35px;
+    border: 1px solid #babec5;
+    box-sizing: border-box;
+    margin-top: 8px;
+    margin-bottom: 13px;
+    border-radius: 3px;
+    /* box-sizing: border-box; */
+    display: flex;
+    align-items: center;
+}
+.dropdown-text-and-icon:focus-within{
+    border-color: #2ca01c;
+}
+.input-blank-box{
+    height: 30px;
+    width: calc(100% - 32px);
+    /* padding: 6px 0 6px 12px; */
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    border-collapse: collapse;
+    border-radius: 4px;
+}
+#dropdown-icon{
+    width: 30px;
+    height: 30px;
+    border: none;
+    outline: none;
+    border-collapse: collapse;
+    border-radius: 4px;
+    background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat;
+    background-position: -545px -352px;
+    transform: rotate(0deg);
+    transition: transform .15s linear;
+    /* background-color: aqua; */
+}
+#dropdown{
+    position: absolute;
+    display: inline-block;
+    width: 100%;
+    /* background-color: #2ca01c; */
+}
+.dropdown-content{
+    /* height: 120px; */
+    width: 168px;
+    left: 108px;
+    top: 45px;
+    position: absolute;
+    z-index: 2;
+    /* right: 0px; */
+    border: 1px solid;
+    background-color: #fff;
+    border-radius: 3px;
+    border: 1px solid #babec5;
+    cursor: pointer;
+}
+.dropdown-content-a{
+    /* position: absolute; */
+    height: 30px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+.dropdown-content-a:hover{
+    color: #2ca01c;
+    background-color: rgb(219, 219, 219);
+}
+.drop-down-content-selected{
+    background-color: #2ca01c;
+    color: #fff;
+}
+.drop-down-content-selected:hover{
+    background-color: #2ca01c;
+    color: #fff;
+}
 
 
 </style>

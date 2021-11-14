@@ -4,6 +4,7 @@ import '../src/assets/font/fontawesome-5.15.1/css/all.min.css'
 import Vuelidate from 'vuelidate'
 import VueRouter from 'vue-router'
 
+// import vuetify from './plugins/vuetify' // path to vuetify export
 
 
 Vue.config.productionTip = false
@@ -13,7 +14,6 @@ import './styles/components/radio_button.css'
 import './styles/components/table.css'
 import './styles/components/button.css'
 import './styles/components/color.css'
-
 
 
 Vue.use(Vuelidate)
@@ -33,6 +33,7 @@ const router = new VueRouter({
 
 
 new Vue({
+  // vuetify,
   router,
   render: h => h(App),
 }).$mount('#app')

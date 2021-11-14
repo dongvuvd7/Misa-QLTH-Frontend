@@ -37,7 +37,7 @@
                             <div style="display: flex; align-items: center;">
                                 <div class="input_bar" style="width: 50%; margin-right: 2px;">
                                     <div class="title-blank-box" style="position: relative"><b>Số hiệu cán bộ</b> <span style="color: red;">*</span>
-                                        <div class="error-message" v-show="isValid.employeeCodeMessage == false">Mã nhân viên chưa hợp lệ</div>
+                                        <div class="error-message" v-show="isValid.employeeCodeMessage == false">Số hiệu cán bộ chưa hợp lệ</div>
                                     </div>
                                     <input type="text" class="code-blank-box"
                                         :class="{'blank-box-invalid': isValid.employeeCode == false}"
@@ -49,7 +49,7 @@
                                 </div>
                                 <div class="input_bar" style="width: 50%; margin-left: 2px;">
                                     <div class="title-blank-box" style="position: relative"><b>Họ và tên</b> <span style="color: red;">*</span>
-                                        <div class="error-message" v-show="isValid.fullNameMessage == false">Tên nhân viên không được để trống</div>
+                                        <div class="error-message" v-show="isValid.fullNameMessage == false">Họ và tên không được để trống</div>
                                     </div>
                                     <input type="text" class="fullname-blank-box" style="text-transform: capitalize; "
                                         :class="{'blank-box-invalid': isValid.fullName == false }" 
@@ -81,7 +81,7 @@
                             <div style="display: flex; align-items: center;">
                                 <div class="input_bar" style="width: 50%; margin-right: 2px;">
                                     <div style="position: relative; width: 35%; line-height: 48px;"><b>Tổ bộ môn</b><span style="color: red;">*</span>
-                                        <div class="error-message" v-show="isValid.departmentNameMessage == false">Tên đơn vị chưa hợp lệ</div>
+                                        <div class="error-message" v-show="isValid.departmentNameMessage == false">Tổ bộ môn chưa hợp lệ</div>
                                     </div>
                                     <!-- combobox -->
                                     <div class="dropdown-text-and-icon" :class="{'blank-box-invalid': isValid.departmentName == false}">
@@ -116,6 +116,20 @@
                                     <input type="text" class="fullname-blank-box"
                                         v-model="employee.phone"
                                     />
+
+
+                                                <!-- <v-combobox
+                                                    v-model="select"
+                                                    :items="items"
+                                                    clearable
+                                                    dense
+                                                    multiple
+                                                    outlined
+                                                    small-chips
+                                                    solo
+                                                ></v-combobox> -->
+
+
                                 </div>    
                             </div>
 
@@ -187,6 +201,8 @@
 
     import DatePick from 'vue-date-pick';
     import 'vue-date-pick/dist/vueDatePick.css';
+
+
 
     import DataChange from '../../common/pop-up/dataChange.vue';
     import ErrorDialog from '../../common/pop-up/errorDialog.vue';
@@ -312,18 +328,7 @@ export default {
             //Biến để xác nhận thông tin nhân viên đã hợp lệ để put/post lên database
             isAppropriate: null,
 
-            //Chọn tab 1 đầu tiên khi bật dialog detail lên
-            showTab: 1,
 
-            //Mảng lưu trữ các bản ghi ngân hàng (tab3)
-            banksOfEmp: [],
-            bank: {
-                bankCode: "",
-                bankName: "",
-                bankBranch: "",
-                bankPlace: "",
-            },
-            checkIfListBankEmptyEdit: false, //biến để fix lỗi khi mà edit ncc không lk bank nào thì bấm thêm dòng bị lỗi
         }
     },
 
@@ -777,36 +782,6 @@ export default {
             }
         },
 
-        /**
-         * Cụm hàm xử lý ở tab Bank
-         * CreatedBy: 
-         */
-        addBank(){
-            console.log(this.banksOfEmp);
-            var bank = {
-                bankId: null,
-                userId: null,
-                bankCode: "",
-                bankName: "",
-                bankBranch: "",
-                bankPlace: "",
-            };
-            if(this.checkIfListBankEmptyEdit){ //đang bị bug khi mà ở trường hợp sửa employee không liên kết với bank nào
-                                               //thì bấm thêm dòng lại bị lỗi, nên phải dùng hàm này fix
-                this.banksOfEmp = [];
-                this.checkIfListBankEmptyEdit = false;
-
-            }
-
-            this.banksOfEmp.push(bank);
-        },
-        deleteBank(index){
-            this.banksOfEmp.splice(index, 1);
-        },
-        deleteAllBanks(){
-            this.banksOfEmp = [];
-        },
-
     },
 
 
@@ -844,12 +819,8 @@ export default {
         box-sizing: border-box;
         z-index: 3;
     }
-    .left-dialog-content{
 
-    }
-    .right-dialog-content{
-
-    }
+    /* Phần header của dilog */
     .header{
         display: flex;
         align-items: center;
@@ -867,15 +838,6 @@ export default {
         font-size: 22px;
         color: #111;
         font-weight: 500;
-    }
-    .btn-check{
-        width: 18px;
-        height: 18px;
-        cursor: pointer;
-        margin-right: 8px;
-    }
-    .title-checkbox{
-        margin-right: 24px;
     }
     .btn-help{
         height: 48px;
@@ -904,16 +866,14 @@ export default {
         outline: none;
         border-radius: 0px 4px 0px 4px;
     }
+
+    /* Phần middle của dialog */
     .middle{
         padding: 24px;
         padding-top: 10px;
     }
     .middle-1{
         display: flex;
-    }
-    .column{
-        /* width: 420px;
-        height: 220px; */
     }
     .clm1{
         width: 25%;
@@ -988,42 +948,6 @@ export default {
     .code-blank-box:focus{
         border-color: #2ca01c;
     }
-    /* #date-input{
-        width: 100%;
-        padding: 6px 10px;
-        font-size: 13px;
-        height: 32px;
-        border: 1px solid #babec5;
-        box-sizing: border-box;
-        margin-top: 8px;
-        margin-bottom: 16px;
-        border-radius: 3px;
-        outline: none;
-    }
-    .date-blank-box:focus{
-        border-color: #2ca01c;
-    } */
-
-    .radio-box{
-        width: 100%;
-        font-size: 13px;
-        height: 32px;
-        box-sizing: border-box;
-        margin-top: 8px;
-        margin-bottom: 16px;
-        border-radius: 3px;
-        display: flex;
-        align-items: center;
-    }
-    .radio-box .gender{
-        margin-right: 16px;
-    }
-    .btn-radio{
-        
-        /* margin-left: 16px; */
-        margin-right: 10px;
-        cursor: pointer;
-    }
 
     .fullname-blank-box{
         width: 65%;
@@ -1057,54 +981,17 @@ export default {
     .medium-blank-box:focus{
         border-color: #2ca01c;
     }
-
-    .department-blank-box{
-        height: 30px;
-        width: calc(100% - 32px);
-        /* padding: 6px 0 6px 12px; */
-        box-sizing: border-box;
-        border: none;
-        outline: none;
-        border-collapse: collapse;
-        border-radius: 4px;
+    .btn-check{
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        margin-right: 8px;
+    }
+    .title-checkbox{
+        margin-right: 24px;
     }
 
-
-    .large-blank-box{
-        width: 100%;
-        padding: 6px 10px;
-        font-size: 13px;
-        height: 32px;
-        border: 1px solid #babec5;
-        box-sizing: border-box;
-        margin-top: 8px;
-        margin-bottom: 16px;
-        border-radius: 3px;
-        outline: none;
-    }
-    .large-blank-box:focus{
-        border-color: #2ca01c;
-    }
-    .column-1{
-        width: 220px;
-        height: 100px;
-    }
-    .small-blank-box{
-        width: 214px;
-        padding: 6px 10px;
-        font-size: 13px;
-        height: 32px;
-        border: 1px solid #babec5;
-        box-sizing: border-box;
-        margin-top: 8px;
-        margin-bottom: 16px;
-        outline: none;
-        border-radius: 3px;
-    }
-    .small-blank-box:focus{
-        border-color: #2ca01c;
-
-    }
+    /* Phần Footer của dialog */
     .footer{
         position: absolute;
         bottom: 0px;
@@ -1116,39 +1003,42 @@ export default {
         margin-left: 24px;
         margin-right: 24px;
         box-sizing: border-box;
-    }
-    
-    .cancel{
-        position: absolute;
-        right: 250px;
-    }
-    .post{
-        color: white;
-        position: absolute;
-        right: 124px;
-    }
+    }    
+        .cancel{
+            position: absolute;
+            right: 250px;
+        }
+        .post{
+            color: white;
+            position: absolute;
+            right: 124px;
+        }
 
-
-
+    /* Báo đỏ thanh input khi có lỗi */
     .blank-box-invalid {
         border-color: #F65454 !important;
         outline: none;
     }
+    /* Trỏ chuột và thanh input lỗi hiện thông báo lỗi */
     .error-message{
         position: absolute;
-        top: 50px;
-        left: calc(50% - 80px);
-        background-color: black;
-        color: #babec5;
+        top: 40px;
+        left: 110px;
+        background-color: #F65454;
+        color: #fff;
         font-size: 11px;
         padding-left: 8px;
         padding-top: 2px;
         padding-bottom: 2px;
         padding-right: 8px;
-        width: 160px;
+        /* width: 300px; */
+        min-width: 180px;
+        height: 30px;
+        line-height: 30px;
         border-radius: 4px;
     }
 
+    /* Thông báo khi trỏ chuột vào icon dấu hỏi (đã tạm ẩn đi) */
     .tooltiptext {
         visibility: hidden;
         background-color: black;
@@ -1168,6 +1058,7 @@ export default {
     .btn-help:hover .tooltiptext {
         visibility: visible;
     }
+
 
 /**
   Dropdown
