@@ -151,9 +151,9 @@
             </div>
 
             <div class="footer">
-                <button class="btn-small cancel" @click="hideDialogDataCondition()">Hủy</button>
-                <button class="btn-small post" @click="btnSave()">Cất</button>
-                <button class="btn-post-and-put primary-color" @click="btnSaveAndAdd()">Cất và thêm</button>
+                <button class="btn-small cancel" @click="hideDialogDataCondition()">Đóng</button>
+                <button class="btn-small post primary-color" @click="btnSave()">Lưu</button>
+                <button class="btn-post-and-put primary-color" @click="btnSaveAndAdd()">Lưu và thêm</button>
             </div>
         </div>  
 
@@ -1116,11 +1116,14 @@ export default {
         margin-left: 24px;
         margin-right: 24px;
         box-sizing: border-box;
-        border-top: 1px solid #ccc;
     }
     
-    
+    .cancel{
+        position: absolute;
+        right: 250px;
+    }
     .post{
+        color: white;
         position: absolute;
         right: 124px;
     }
@@ -1128,7 +1131,7 @@ export default {
 
 
     .blank-box-invalid {
-        border-color: #F65454;
+        border-color: #F65454 !important;
         outline: none;
     }
     .error-message{
