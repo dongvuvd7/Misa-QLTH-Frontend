@@ -1,16 +1,13 @@
 const Resource = {
 
     API: {
-        GetAll: "https://localhost:44342/api/v1/Employees",
-        GetMaxCode: "https://localhost:44342/api/v1/Employees/MaxCode",
-        GetExport: "https://localhost:44342/api/v1/Employees/Export",
-        GetDepartments: "https://localhost:44342/api/v1/Employees/Department",
-        GetFilter: "https://localhost:44342/api/v1/Employees/Filter?",
-        SortByCode: "https://localhost:44342/api/v1/Employees/SortByCode?",
-        SortByName: "https://localhost:44342/api/v1/Employees/SortByName?",
-        GetAllBankEmp: "https://localhost:44342/api/v1/BankEmp/",
-        GetBankEmpByUserId: "https://localhost:44342/api/v1/Employees/GetAllBankEmpByUserId/",
-        GetEmployeeIdByEmployeeCode: "https://localhost:44342/api/v1/Employees/GetEmployeeByEmployeeCode/",
+        GetAll: "https://localhost:44342/api/v1/Teachers",
+        GetMaxCode: "https://localhost:44342/api/v1/Teachers/MaxCode",
+        GetExport: "https://localhost:44342/api/v1/Teachers/Export",
+        GetGroups: "https://localhost:44342/api/v1/Teachers/Group",
+        GetFilter: "https://localhost:44342/api/v1/Teachers/Filter?",
+        SortByCode: "https://localhost:44342/api/v1/Teachers/SortByCode?",
+        SortByName: "https://localhost:44342/api/v1/Teachers/SortByName?",
 
     },
 
@@ -22,23 +19,23 @@ const Resource = {
     },
 
     ErrorMessage: {
-        InvalidDepartment: "Tên đơn vị không tồn tại trong hệ thống, vui lòng kiểm tra lại.",
+        InvalidGroup: "Tên tổ chuyên môn không tồn tại trong hệ thống, vui lòng kiểm tra lại.",
         NullFullName: "Tên không được để trống.",
-        NullEmployeeCode: "Mã nhân viên không được để trống.",
-        NullDepartment: "Tên đơn vị không được để trống.",
+        NullTeacherCode: "Mã giáo viên không được để trống.",
+        NullGroup: "Tên tổ chuyên môn không được để trống.",
         DataChange: "Dữ liệu đã bị thay đổi. Bạn có muốn cất không?",
         DateIdentityAndDobError: "Ngày cấp số CMND không được phép trước ngày sinh.",
     },
 
     Property: {
-        FullName: "fullName",
-        EmployeeCode: "employeeCode",
-        DepartmentName: "departmentName",
+        FullName: "teacherName",
+        TeacherCode: "teacherCode",
+        GroupName: "teacherGroupName",
 
     },
 
     MsgFromServer: {
-        EmployeeCode: "Mã nhân viên",
+        TeacherCode: "Mã nhân viên",
         Phone: "ĐT di động",
         TelePhone: "ĐT cố định",
         Email: "Email",

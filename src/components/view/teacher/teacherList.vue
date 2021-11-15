@@ -20,7 +20,7 @@
                   >
                     Xóa hàng loạt
                   </button>
-                  <button class="btn-add primary-color" id="btn-add" @click="showEmployeeDialog()">
+                  <button class="btn-add primary-color" id="btn-add" @click="showTeacherDialog()">
                       Thêm
                   </button>
                   <button class="btn-export-excel default-color" id="" @click="exportData()">
@@ -67,24 +67,24 @@
                             <!-- combobox -->
                             <div class="dropdown-text-and-icon">
                                 <input type="text" class="input-blank-box" 
-                                    @focus="showDropDownContent('Depart')" 
-                                    @blur="hideDropDownContent('Depart')" 
-                                    @keyup="searchOption('Depart')"
-                                    v-model="thisChoose.Depart.text"
+                                    @focus="showDropDownContent('Group')" 
+                                    @blur="hideDropDownContent('Group')" 
+                                    @keyup="searchOption('Group')"
+                                    v-model="thisChoose.Group.text"
                                     placeholder="Nhóm tổ chuyên môn"
                                 />
-                                <button id="dropdown-icon" @click="showDropDownContent('Depart')" @blur="hideDropDownContent('Depart')"></button>
+                                <button id="dropdown-icon" @click="showDropDownContent('Group')" @blur="hideDropDownContent('Group')"></button>
                             </div>
                             <div id="dropdown">     
-                                <div class="dropdown-content" :class="{'dialog_hide': !isShowOptions.Depart}" >
+                                <div class="dropdown-content" :class="{'dialog_hide': !isShowOptions.Group}" >
                                     <div class="dropdown-content-a" 
-                                        :class="{'drop-down-content-selected' : optionDepart.id == thisChoose.Depart.id}"
-                                        v-for="optionDepart in listOptions.Depart" 
-                                        :key="optionDepart.id" 
-                                        @click="chooseOption(optionDepart, 'Depart')" 
+                                        :class="{'drop-down-content-selected' : optionGroup.id == thisChoose.Group.id}"
+                                        v-for="optionGroup in listOptions.Group" 
+                                        :key="optionGroup.id" 
+                                        @click="chooseOption(optionGroup, 'Group')" 
                                         @mouseenter="enterClick()" 
                                         @mouseleave="leaveClick()"
-                                    >{{optionDepart.text}}</div>
+                                    >{{optionGroup.text}}</div>
                                 </div>
                             </div>
                           </div>
@@ -109,35 +109,33 @@
                                             <input type="checkbox" v-model="checkAll" />
                                         </th>
                                         <th style="min-width: 100px">Số hiệu cán bộ</th>
-                                        <th style="min-width: 200px; text-align: center;">Họ và tên</th>
+                                        <th style="min-width: 160px; text-align: center;">Họ và tên</th>
                                         <th style="min-width: 50px">Số điện thoại</th>
                                         <th style="min-width: 110px;">Tổ chuyên môn</th>
                                         <th style="min-width: 100px">QL theo môn</th>
-                                        <th style="min-width: 100px">CHỨC DANH</th>
                                         <th style="min-width: 150px">QL kho, phòng</th>
-                                        <th style="min-width: 100px">Đào tạo QLTB</th>
+                                        <th style="min-width: 80px">Đào tạo QLTB</th>
                                         <th style="min-width: 100px">Đang làm việc</th>
                                         <!-- <th style="min-width: 83.33%">CHỨC NĂNG</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="employee in employees" :key="employee.employeeId">
+                                    <tr v-for="teacher in teachers" :key="teacher.teacherId">
                                         <td>
                                             <input
                                                 type="checkbox"
                                                 v-model="checked"
-                                                :value="employee.employeeId"
+                                                :value="teacher.teacherId"
                                             />
                                         </td>
-                                        <td>{{ employee.employeeCode }}</td>
-                                        <td style="text-transform: capitalize; color: #00a093">{{ employee.fullName }}</td>
-                                        <td>{{ employee.gender | genderFormatToTable }}</td>
-                                        <td style="text-align: center;">{{ employee.dateOfBirth | dateFormat }}</td>
-                                        <td>{{ employee.identityNumber }}</td>
-                                        <td>{{ employee.jobTitle }}</td>
-                                        <td>{{ employee.departmentName }}</td>
-                                        <td>{{ employee.bankAccount }}</td>
-                                        <td>{{ employee.bankName }}</td>
+                                        <td>{{ teacher.teacherCode }}</td>
+                                        <td style="text-transform: capitalize; color: #00a093">{{ teacher.teacherName }}</td>
+                                        <td>{{ teacher.teacherPhone }}</td>
+                                        <td>{{ teacher.teacherGroup | groupFormatToTable }}</td>
+                                        <td>{{ teacher.teacherSubject }}</td>
+                                        <td>{{ teacher.teacherRoom }}</td>
+                                        <td :class="{'tickbox': teacher.teacherQltb == 1}"></td>
+                                        <td></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -148,13 +146,12 @@
                                     </tr>
                                 </thead>
                                 <tbody style="background-color: #fff">
-                                    <tr v-for="employee in employees" :key="employee.employeeId" style="background: white border: 1px solid #ccc;">
+                                    <tr v-for="teacher in teachers" :key="teacher.teacherId" style="background: white border: 1px solid #ccc;">
                                         <td>
                                             <Option 
-                                                @showDeleteDialog="showDeleteDialog(employee.employeeId)"
-                                                @showEmployeeDetail="showEmployeeDetail(employee.employeeId)"
-                                                @showEmployeeDuplicate="showEmployeeDuplicate(employee.employeeId)"
-                                                @showStopUsingDialog="showStopUsingDialog"
+                                                @showDeleteDialog="showDeleteDialog(teacher.teacherId)"
+                                                @showTeacherDetail="showTeacherDetail(teacher.teacherId)"
+                                                @showTeacherDuplicate="showTeacherDuplicate(teacher.teacherId)"
                                             />
                                         </td>
                                     </tr>
@@ -173,7 +170,7 @@
                                 @onChangePage="onPageChange"
                             />
                           </div>
-                          (<b>{{this.employeeNumber}}</b> giáo viên)
+                          (<b>{{this.teacherNumber}}</b> giáo viên)
                         </div>
                         <div id="footer-right">                          
                             <div id="footer-2">
@@ -184,21 +181,17 @@
                 </div>
             </div>
         </div>
-        <EmployeeDetail 
-            v-if="isShowDialogEmployee"
+        <TeacherDetail 
+            v-if="isShowDialogTeacher"
             @hideDialog="hideDialog"
-            :employee="selectedEmployee"
+            :teacher="selectedTeacher"
             :formmode="formmode"
-            @showEmployeeDialog="showEmployeeDialog"
+            @showTeacherDialog="showTeacherDialog"
         />
-        <EmployeeDelete
+        <TeacherDelete
           :isShow="isShowDialogDelete"
           @hideDialog="hideDialog"
-          :employee="selectedEmployee"
-        />
-        <EmployeeStopUsing 
-          :isShow="isShowDialogStopUsing"
-          @hideDialog="hideDialog"
+          :teacher="selectedTeacher"
         />
         <ErrorPopUp 
           :isShow="isErrorPopUpShow"
@@ -235,12 +228,11 @@ import axios from  "axios";
 import Option from "../../common/option.vue";
 import ComboBox from "../../common/comboBox.vue";
 import Paging from "../../common/paging.vue";
-import EmployeeDetail from "../employee/employeeDetail.vue";
-import EmployeeDelete from "../employee/employeeDelete.vue";
-import EmployeeStopUsing from '../employee/employeeStopUsing.vue';
+import TeacherDetail from "../teacher/teacherDetail.vue";
+import TeacherDelete from "../teacher/teacherDelete.vue";
 import ErrorPopUp from '../../common/pop-up/errorPopUp.vue';
-import AddFromExcelPopUp from './employeeAddFromExcel.vue';
-import ConfirmDeleteMultiplePopUp from './employeeConfirmMultipleDelete.vue';
+import AddFromExcelPopUp from './teacherAddFromExcel.vue';
+import ConfirmDeleteMultiplePopUp from './teacherConfirmMultipleDelete.vue';
 import xlsx from 'xlsx';
 
 import Enums from "../../common/base/enum.js";
@@ -252,9 +244,8 @@ export default {
       Option,
       ComboBox,
       Paging,
-      EmployeeDetail,
-      EmployeeDelete,
-      EmployeeStopUsing,
+      TeacherDetail,
+      TeacherDelete,
       ErrorPopUp,
       AddFromExcelPopUp,
       ConfirmDeleteMultiplePopUp,
@@ -262,15 +253,15 @@ export default {
 
   data() {
       return {
-            initialEmployees: [], //Data đầu vào cho api get all
-            employees: [], //data lấy vào khi get để gán dữ liệu lên table
-            employeeNumber: 0,  //tổng số bản ghi
-            departments: [], //data đơn vị (phòng ban)
-            isShowDialogEmployee: false, //biến đóng/mở dialog thêm sửa
+            initialTeachers: [], //Data đầu vào cho api get all
+            teachers: [], //data lấy vào khi get để gán dữ liệu lên table
+            teacherNumber: 0,  //tổng số bản ghi
+            groups: [], //data đơn vị (phòng ban)
+            isShowDialogTeacher: false, //biến đóng/mở dialog thêm sửa
             isShowDialogDelete: false, // biến đóng/mở dialog xóa
             isShowDialogStopUsing: false, //biến đóng/mở dialog ngưng sử dụng
             message: null, //tiêu chí tìm kiếm
-            selectedEmployee: {}, //nhân viên được chọn
+            selectedTeacher: {}, //nhân viên được chọn
             checked: [], //danh sách được tích vào checkbox
             currentPage: 0, //trang hiện tại
             perPage: 0, //số bản ghi trên 1 trang
@@ -282,16 +273,16 @@ export default {
 
             isShowOptions: {
               Sort: false,
-              Depart: false,
+              Group: false,
             },
             thisChoose: {
               Sort: {
                 id: null,
                 text: null,
               },
-              Depart: {
+              Group: {
                 id: null,
-              text: null,
+                text: null,
               }
             },
             listOptions: {
@@ -299,11 +290,13 @@ export default {
                 {id: Enums.TypeSort.CodeId, text: Enums.TypeSort.Code},
                 {id: Enums.TypeSort.NameId, text: Enums.TypeSort.Name},
               ],
-              Depart: [
-                {id: Enums.Department.DTId, text: Enums.Department.DT},
-                {id: Enums.Department.KTId, text: Enums.Department.KT},
-                {id: Enums.Department.MKId, text: Enums.Department.MK},
-                {id: Enums.Department.NSId, text: Enums.Department.NS},
+              Group: [
+                {id: Enums.Group.VPId, text: Enums.Group.VP},
+                {id: Enums.Group.LHId, text: Enums.Group.LH},
+                {id: Enums.Group.TTId, text: Enums.Group.TT},
+                {id: Enums.Group.SSDId, text: Enums.Group.SSD},
+                {id: Enums.Group.NVId, text: Enums.Group.NV},
+                {id: Enums.Group.AVId, text: Enums.Group.AV},
               ],
             },
             initialListOptions: {
@@ -311,11 +304,13 @@ export default {
                 {id: Enums.TypeSort.CodeId, text: Enums.TypeSort.Code},
                 {id: Enums.TypeSort.NameId, text: Enums.TypeSort.Name},
               ],
-              Depart: [
-                {id: Enums.Department.DTId, text: Enums.Department.DT},
-                {id: Enums.Department.KTId, text: Enums.Department.KT},
-                {id: Enums.Department.MKId, text: Enums.Department.MK},
-                {id: Enums.Department.NSId, text: Enums.Department.NS},
+              Group: [
+                {id: Enums.Group.VPId, text: Enums.Group.VP},
+                {id: Enums.Group.LHId, text: Enums.Group.LH},
+                {id: Enums.Group.TTId, text: Enums.Group.TT},
+                {id: Enums.Group.SSDId, text: Enums.Group.SSD},
+                {id: Enums.Group.NVId, text: Enums.Group.NV},
+                {id: Enums.Group.AVId, text: Enums.Group.AV},
               ],
             },
 
@@ -348,15 +343,14 @@ export default {
         )
         .then((res) => {
             console.log(res);
-            this.employees = res.data.data;
-            this.genderFormat(this.employees);
-            this.departmentsFormat(this.employees);
-            this.employeeNumber = res.data.totalRecord;
-            if(this.employeeNumber % this.perPage == 0){
-                this.totalPage = this.employeeNumber/this.perPage;
+            this.teachers = res.data.data;
+            this.groupsFormat(this.teachers);
+            this.teacherNumber = res.data.totalRecord;
+            if(this.teacherNumber % this.perPage == 0){
+                this.totalPage = this.teacherNumber/this.perPage;
             }
             else {
-                this.totalPage = Math.floor(this.employeeNumber / this.perPage) + 1;
+                this.totalPage = Math.floor(this.teacherNumber / this.perPage) + 1;
             }
             //loading data succesful
             this.isBusy = false;
@@ -367,7 +361,7 @@ export default {
         
         axios.get(Resources.API.GetAll)
         .then((res) => {
-            this.initialEmployees = res.data;
+            this.initialTeachers = res.data;
         })
         .catch((res) => {
             console.log(res);
@@ -385,7 +379,7 @@ export default {
           axios
           .get(Resources.API.GetAll)
           .then((res) => {
-              this.initialEmployees = res.data;
+              this.initialTeachers = res.data;
           })
           .catch((res) => {
               console.log(res);
@@ -404,15 +398,14 @@ export default {
         )
         .then((res) => {
             console.log(res);
-            this.employees = res.data.data;
-            this.genderFormat(this.employees);
-            this.departmentsFormat(this.employees);
-            this.employeeNumber = res.data.totalRecord;
-            if(this.employeeNumber % this.perPage == 0){
-                this.totalPage = this.employeeNumber/this.perPage;
+            this.teachers = res.data.data;
+            this.groupsFormat(this.teachers);
+            this.teacherNumber = res.data.totalRecord;
+            if(this.teacherNumber % this.perPage == 0){
+                this.totalPage = this.teacherNumber/this.perPage;
             }
             else {
-                this.totalPage = Math.floor(this.employeeNumber / this.perPage) + 1;
+                this.totalPage = Math.floor(this.teacherNumber / this.perPage) + 1;
             }
             //loading data succesful
             this.isBusy = false;
@@ -423,7 +416,7 @@ export default {
         
         axios.get(Resources.API.GetAll)
         .then((res) => {
-            this.initialEmployees = res.data;
+            this.initialTeachers = res.data;
         })
         .catch((res) => {
             console.log(res);
@@ -458,7 +451,7 @@ export default {
           id: null,
           text: null
         },
-        Depart: {
+        Group: {
           id: null,
           text: null,
         },
@@ -469,32 +462,32 @@ export default {
      * Cụm hàm đóng / mở dialog
      */
     //hiện dialog thêm
-    showEmployeeDialog(){
+    showTeacherDialog(){
         axios
             .get(Resources.API.GetMaxCode)
             .then((res) => {
-                this.isShowDialogEmployee = true;
+                this.isShowDialogTeacher = true;
                 this.formmode = Enums.FormMode.Add;
-                this.selectedEmployee = {};
-                this.selectedEmployee.employeeCode = res.data;
+                this.selectedTeacher = {};
+                this.selectedTeacher.teacherCode = res.data;
             })
             .catch((res) => {
                 console.log(res);
             })
     },
     //hiện dialog sửa
-    showEmployeeDetail(employeeId){
-        //get data employee to edit
+    showTeacherDetail(teacherId){
+        //get data teacher to edit
         return axios
-                .get(Resources.API.GetAll + "/" + employeeId)
+                .get(Resources.API.GetAll + "/" + teacherId)
                 .then((res) => {
-                    this.isShowDialogEmployee = true;
+                    this.isShowDialogTeacher = true;
                     this.formmode = Enums.FormMode.Edit;
-                    this.selectedEmployee = res.data;
+                    this.selectedTeacher = res.data;
                     
-                    this.departments.forEach((department) => {
-                        if(this.selectedEmployee.departmentId == department.departmentId)
-                            this.selectedEmployee.departmentName = department.departmentName;
+                    this.groups.forEach((group) => {
+                        if(this.selectedTeacher.teacherGroup == group.groupId)
+                            this.selectedTeacher.teacherGroupName = group.groupName;
                     });
 
                     return Promise.resolve(); //resolve là hàm sẽ được gọi khi promise hoàn thành
@@ -506,13 +499,12 @@ export default {
 
     },
     //hiện dialog nhân bản
-      showEmployeeDuplicate(employeeId){
-        this.showEmployeeDetail(employeeId).then(() => 
+      showTeacherDuplicate(teacherId){
+        this.showTeacherDetail(teacherId).then(() => 
           axios
             .get(Resources.API.GetMaxCode)
             .then((res) => {
-              this.selectedEmployee.employeeCode = res.data;
-              this.selectedEmployee.identityNumber = "";
+              this.selectedTeacher.teacherCode = res.data;
               this.formmode = Enums.FormMode.Add;
             })
             .catch((res) => {
@@ -521,10 +513,10 @@ export default {
         )
       },
       //hiện dialog xác nhận xóa
-      showDeleteDialog(employeeId){
+      showDeleteDialog(teacherId){
         this.isShowDialogDelete = true; //Bật dialog xác nhận xóa
         //Fix bug tích checkbox 1 bản ghi rồi xóa bản ghi đó, sau đó lại tiếp tục tích 2 checkbox để xóa hàng loạt thì dialog báo xóa 3 bản ghi
-        const index = this.checked.indexOf(employeeId); //tìm vị trí của 1 bản ghi xóa lúc đầu
+        const index = this.checked.indexOf(teacherId); //tìm vị trí của 1 bản ghi xóa lúc đầu
         console.log(index);
         if (index > -1) {
           this.checked.splice(index, 1); //xóa bản ghi đó trong mảng checked đi là mảng checked sẽ không lưu nó nữa, tránh bug trên
@@ -532,9 +524,9 @@ export default {
         console.log(this.checked);
         //Lấy data của nhân viên muốn xóa
         axios
-          .get(Resources.API.GetAll +"/" + employeeId)
+          .get(Resources.API.GetAll +"/" + teacherId)
           .then((res) => {
-            this.selectedEmployee = res.data;
+            this.selectedTeacher = res.data;
           })
           .catch((res) => {
             console.log(res);
@@ -546,7 +538,7 @@ export default {
       },
       //ẩn dialog thêm và xóa
       hideDialog(){
-        this.isShowDialogEmployee = false;
+        this.isShowDialogTeacher = false;
         this.isShowDialogDelete = false;
         this.isShowDialogStopUsing = false;
         this.loadData();
@@ -567,17 +559,16 @@ export default {
           )
           .then((res) => {
             console.log(res);
-            this.employees = res.data.data;
+            this.teachers = res.data.data;
 
-            //format gender and department
-            this.genderFormat(this.employees);
-            this.departmentsFormat(this.employees);
+            //format group
+            this.groupsFormat(this.teachers);
             //Số lượng bản ghi hợp lệ
-            this.employeeNumber = res.data.totalRecord;
-            if (this.employeeNumber % this.perPage == 0) {
-              this.totalPage = this.employeeNumber / this.perPage;
+            this.teacherNumber = res.data.totalRecord;
+            if (this.teacherNumber % this.perPage == 0) {
+              this.totalPage = this.teacherNumber / this.perPage;
             } else {
-              this.totalPage = Math.floor(this.employeeNumber / this.perPage) + 1;
+              this.totalPage = Math.floor(this.teacherNumber / this.perPage) + 1;
             }
           })
           .catch((res) => {
@@ -585,30 +576,18 @@ export default {
           })
       },
 
-      /**
-       * Cụm hàm format từ id sang name để hiện thị
-       * CreatedBy: VDDong(14/06/2021)
-       */
-      //format giới tính
-      genderFormat(array) {
-        array.forEach((element) => {
-          if (element.gender == Enums.Gender.FemaleId) element.genderName = Enums.Gender.Female;
-          else if (element.gender == Enums.Gender.MaleId) element.genderName = Enums.Gender.Male;
-          else element.genderName = Enums.Gender.Rest;
-        });
-      },
-      //format tên phòng ban
-      departmentsFormat(array) {
+      //format tên tổ chuyên môn
+      groupsFormat(array) {
         //Lấy tất cả dữ liệu phòng ban từ database
         axios
-          .get(Resources.API.GetDepartments)
+          .get(Resources.API.GetGroups)
           .then((res) => {
-            this.departments = res.data;
-            //Gán giá trị departmentName của từng nhân viên với id tương ứng trong dữ liệu phòng ban trả về từ api
+            this.groups = res.data;
+            //Gán giá trị groupName của từng nhân viên với id tương ứng trong dữ liệu phòng ban trả về từ api
             array.forEach((element) => {
-              this.departments.forEach((department) => {
-                if (element.departmentId == department.departmentId)
-                  element.departmentName = department.departmentName;
+              this.groups.forEach((group) => {
+                if (element.teacherGroup == group.groupId)
+                  element.teacherGroupName = group.groupName;
               });
             });
           })
@@ -629,10 +608,10 @@ export default {
        * Thay đổi số trang, thay đổi currentPage
        */
       onPageChange(page){
-        if (this.employeeNumber % this.perPage == 0) {
-        this.totalPage = this.employeeNumber / this.perPage;
+        if (this.teacherNumber % this.perPage == 0) {
+        this.totalPage = this.teacherNumber / this.perPage;
         } else {
-        this.totalPage = Math.floor(this.employeeNumber / this.perPage) + 1;
+        this.totalPage = Math.floor(this.teacherNumber / this.perPage) + 1;
         }
         if(page > 0 && page <= this.totalPage){
           this.currentPage = page;
@@ -656,13 +635,12 @@ export default {
               )
               .then((res) => {
               console.log(res);
-              this.employees = res.data.data;
+              this.teachers = res.data.data;
 
-              //format gender and department
-              this.genderFormat(this.employees);
-              this.departmentsFormat(this.employees);
+              //format group
+              this.groupsFormat(this.teachers);
               //Số lượng bản ghi hợp lệ 
-              this.employeeNumber = res.data.totalRecord;
+              this.teacherNumber = res.data.totalRecord;
               })
               .catch((res) => {
                   console.log(res);
@@ -744,29 +722,29 @@ export default {
        * */
       sortsBy(){
         console.log("sort all: " + this.thisChoose.Sort.id);
-        console.log("sort depart: " + this.thisChoose.Depart.id);
+        console.log("sort group: " + this.thisChoose.Group.id);
 
         this.formPagingSort = true; //chuyển sang trạng thái paging theo sắp xếp và nhóm
-        if(this.thisChoose.Depart.id == null) this.thisChoose.Depart.id = ""; //nếu không chọn sắp xếp hay phòng ban thì đưa về "" cho phù hợp API
+        if(this.thisChoose.Group.id == null) this.thisChoose.Group.id = ""; //nếu không chọn sắp xếp hay phòng ban thì đưa về "" cho phù hợp API
         var urlAPI = ""; //api để request trả về danh sách dữ liệu sắp xếp
         if(this.thisChoose.Sort.id == null || this.thisChoose.Sort.id == 1){ //mặc định hoặc sắp xếp thứ tự thêm mới (là sortByCode)
-          urlAPI = (Resources.API.SortByCode + "pageSize=" + this.perPage + "&pageIndex=" + this.currentPage + "&departmentString=" + this.thisChoose.Depart.id);
+          urlAPI = (Resources.API.SortByCode + "pageSize=" + this.perPage + "&pageIndex=" + this.currentPage + "&groupString=" + this.thisChoose.Group.id);
         }
         else if(this.thisChoose.Sort.id == 2){ //sắp xếp theo tên nhân viên
-          urlAPI = (Resources.API.SortByName + "pageSize=" + this.perPage + "&pageIndex=" + this.currentPage + "&departmentString=" + this.thisChoose.Depart.id);
+          urlAPI = (Resources.API.SortByName + "pageSize=" + this.perPage + "&pageIndex=" + this.currentPage + "&groupString=" + this.thisChoose.Group.id);
         }
         //call api
         axios
           .get(urlAPI)
           .then((res) => {
             console.log(res);
-            this.employeeNumber = res.data.totalRecord;
-            this.employees = res.data.data;
-            if(this.employeeNumber % this.perPage == 0){
-              this.totalPage = this.employeeNumber / this.perPage;
+            this.teacherNumber = res.data.totalRecord;
+            this.teachers = res.data.data;
+            if(this.teacherNumber % this.perPage == 0){
+              this.totalPage = this.teacherNumber / this.perPage;
             }
             else {
-              this.totalPage = Math.floor(this.employeeNumber / this.perPage) + 1;
+              this.totalPage = Math.floor(this.teacherNumber / this.perPage) + 1;
             }
           })
           .catch((res) => {
@@ -923,21 +901,21 @@ export default {
       var countAddSuccess = 0; //biến đếm xem đã thêm thành công bao nhiêu bản ghi
       var listRecordsAddFail = []; //mảng lưu trữ những mã nhân viên add không thành công
       for(let i=0; i<this.listRecordsExcel.length; i++){
-        //Tạo employee mới để thêm lần lượt
-        //File excel phải định dạng tiêu đề từng cột không dấu không cách như đặt tên biến thì mới chuyển thành thuộc tính employee được
-        var newEmployee = {};
-        newEmployee.employeeCode = this.listRecordsExcel[i].Ma_NV;
-        newEmployee.fullName = this.listRecordsExcel[i].Ten_NV;
-        newEmployee.gender = this.formatGenderFromExcelToDB(this.listRecordsExcel[i].Gioi_tinh);
-        newEmployee.dateOfBirth = this.formatDobFromExcelToDB(this.listRecordsExcel[i].Ngay_sinh);
-        newEmployee.jobTitle = this.listRecordsExcel[i].Chuc_danh;
-        newEmployee.departmentId = this.formatDepartmentFromExcelToDB(this.listRecordsExcel[i].Don_vi);
-        newEmployee.bankAccount = this.listRecordsExcel[i].STK;
-        newEmployee.bankName = this.listRecordsExcel[i].Ten_ngan_hang;
-        console.log(newEmployee);
-        //Gọi API thêm từng newEmployee vào database
+        //Tạo teacher mới để thêm lần lượt
+        //File excel phải định dạng tiêu đề từng cột không dấu không cách như đặt tên biến thì mới chuyển thành thuộc tính teacher được
+        var newTeacher = {};
+        newTeacher.teacherCode = this.listRecordsExcel[i].Ma_NV;
+        newTeacher.teacherName = this.listRecordsExcel[i].Ten_NV;
+        newTeacher.gender = this.formatGenderFromExcelToDB(this.listRecordsExcel[i].Gioi_tinh);
+        newTeacher.dateOfBirth = this.formatDobFromExcelToDB(this.listRecordsExcel[i].Ngay_sinh);
+        newTeacher.jobTitle = this.listRecordsExcel[i].Chuc_danh;
+        newTeacher.groupId = this.formatGroupFromExcelToDB(this.listRecordsExcel[i].Don_vi);
+        newTeacher.bankAccount = this.listRecordsExcel[i].STK;
+        newTeacher.bankName = this.listRecordsExcel[i].Ten_ngan_hang;
+        console.log(newTeacher);
+        //Gọi API thêm từng newTeacher vào database
       await  axios
-          .post(Resources.API.GetAll + "/", newEmployee)
+          .post(Resources.API.GetAll + "/", newTeacher)
           .then((res) => {
             console.log(res);
             countAddSuccess++;
@@ -970,12 +948,14 @@ export default {
       // var dob = new Date(excelDob).toISOString();
       // return dob;
     },
-    //Hàm format tên đơn vị từ file excel sang departmentId để thêm vào DB
-    formatDepartmentFromExcelToDB(departmentName){
-      if(departmentName == Enums.Department.DT) return Enums.Department.DTId;
-      else if(departmentName == Enums.Department.KT) return Enums.Department.KTId;
-      else if(departmentName == Enums.Department.MK) return Enums.Department.MKId;
-      else if(departmentName == Enums.Department.NS) return Enums.Department.NSId;
+    //Hàm format tên đơn vị từ file excel sang groupId để thêm vào DB
+    formatGroupFromExcelToDB(groupName){
+      if(groupName == Enums.Group.VP) return Enums.Group.VPId;
+      else if(groupName == Enums.Group.LH) return Enums.Group.LHId
+      else if(groupName == Enums.Group.TT) return Enums.Group.TTId
+      else if(groupName == Enums.Group.SSD) return Enums.Group.SSDId
+      else if(groupName == Enums.Group.NV) return Enums.Group.NVId
+      else if(groupName == Enums.Group.AV) return Enums.Group.AVId
     },
     //Hàm format gender name từ file excel sang dạng int để thêm vào DB
     formatGenderFromExcelToDB(genderName){
@@ -1001,11 +981,15 @@ export default {
       var stringYear = newDate.getFullYear();
       return stringDate + "/" + stringMonth + "/" + stringYear;
     },
-    //format gender
-    genderFormatToTable(genderId){
-      if(genderId == Enums.Gender.MaleId) return Enums.Gender.Male;
-      else if(genderId == Enums.Gender.FemaleId) return Enums.Gender.Female;
-      else if(genderId == Enums.Gender.RestId) return Enums.Gender.Rest;
+
+    //format tổ chuyên môn
+    groupFormatToTable(groupId){
+      if(groupId == Enums.Group.VPId) return Enums.Group.VP;
+      else if(groupId == Enums.Group.LHId) return Enums.Group.LH;
+      else if(groupId == Enums.Group.TTId) return Enums.Group.TT;
+      else if(groupId == Enums.Group.SSDId) return Enums.Group.SSD;
+      else if(groupId == Enums.Group.NVId) return Enums.Group.NV;
+      else if(groupId == Enums.Group.AVId) return Enums.Group.AV;
     }
 
   }, //End Filters
@@ -1017,13 +1001,13 @@ export default {
        */
       checkAll: {
         get: function() {
-          return this.initialEmployees ? this.checked.length == this.employeeNumber : false;
+          return this.initialTeachers ? this.checked.length == this.teacherNumber : false;
         },
         set: function(value) {
           var checked = []; //mảng checked tạm thời, lưu trữ những bản ghi được tích checkbox
           if(value) {
-            this.initialEmployees.forEach(function (employee) {
-              checked.push(employee.employeeId); //đưa các bản ghi tích checkbox vào mảng checked tạm
+            this.initialTeachers.forEach(function (teacher) {
+              checked.push(teacher.teacherId); //đưa các bản ghi tích checkbox vào mảng checked tạm
             });
           }
           this.checked = checked; //mảng checked chính  = mảng checked tạm
@@ -1055,6 +1039,7 @@ export default {
 </script>
 
 <style scoped>
+
 #router-content {
   position: absolute;
   top: 48px;
@@ -1337,5 +1322,22 @@ tbody tr:hover {
     background-color: #2ca01c;
     color: #fff;
 }
+
+/* Dấu tích ở table */
+.tickbox::before
+  {
+    display: block;
+    content: "";
+    width: 16px;
+    height: 16px;
+    background: url('../../../assets/img/Sprites.64af8f61.svg');
+    background-position: -1224px -360px;
+    margin-left: 30px;
+
+  }
+  /* .tickbox::before
+  {
+      display: block;
+  } */
 
 </style>

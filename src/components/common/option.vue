@@ -1,9 +1,9 @@
 <template>
     <div style="display: flex; justify-content: center; align-items:center; cursor: pointer;" >
 
-        <button id="btn-edit" @click="showEmployeeDetail()"></button>   
+        <button id="btn-edit" @click="showTeacherDetail()"></button>   
         <button id="btn-delete" @click="showDeleteDialog()"></button>   
-        <button id="btn-duplicate" @click="showEmployeeDuplicate()"></button>   
+        <button id="btn-duplicate" @click="showTeacherDuplicate()"></button>   
 
         <ErrorPopUp
             :isShow="isErrorPopUpShow"
@@ -58,9 +58,9 @@ export default {
         Hiện dialog sửa có bind thông tin nhân viên lên
         CreatedBy: VDDong (15/06/2021)
          */
-        showEmployeeDetail(){
+        showTeacherDetail(){
             console.log("sửa");
-            this.$emit('showEmployeeDetail');
+            this.$emit('showTeacherDetail');
             this.isShowOption = false;
 
         },
@@ -68,9 +68,9 @@ export default {
         Hiện dialog nhân bản
         CreatedBy: VDDong (15/06/2021)
          */
-        showEmployeeDuplicate(){
+        showTeacherDuplicate(){
             console.log("nhân bản");
-            this.$emit('showEmployeeDuplicate');
+            this.$emit('showTeacherDuplicate');
             this.isShowOption = false;
         },
 

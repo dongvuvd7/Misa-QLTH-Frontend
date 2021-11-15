@@ -19,11 +19,11 @@ import './styles/components/color.css'
 Vue.use(Vuelidate)
 Vue.use(VueRouter)
 
-import EmployeeList from './components/view/employee/employeeList.vue'
+import TeacherList from './components/view/teacher/teacherList.vue'
 import GeneralTest from './components/view/general/generalTest.vue'
 
 const routes =[
-  {path:  '/employee', component: EmployeeList},
+  {path:  '/teacher', component: TeacherList},
   {path: '/generaltest', component: GeneralTest},
 ]
 

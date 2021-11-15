@@ -126,6 +126,7 @@ export default {
         background-color: #f1f1f1;
         cursor: pointer;
         border: 1px solid #babec5;
+        z-index: 3;
     }
     .dropdown-content-a{
         height: 24px;

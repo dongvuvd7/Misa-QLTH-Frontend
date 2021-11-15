@@ -4,7 +4,7 @@
         <div class="dialog-content">
                 <div class="header">
                     <button class="btn-warning"></button>
-                    <div style="">Bạn có thực sự muốn xóa Nhân viên <b>&#60;<span>{{employee.employeeCode}}</span>&#62;</b> không?</div>
+                    <div style="">Bạn có thực sự muốn xóa Nhân viên <b>&#60;<span>{{teacher.teacherCode}}</span>&#62;</b> không?</div>
                 </div>
                 <div class="footer">
                     <button class="btn-small" @click="hideDialog()">Không</button>
@@ -17,8 +17,7 @@
 <script>
 
 import axios from 'axios';
-const getAll = "https://localhost:44342/api/v1/Employees/";
-const getAllBankEmp = "https://localhost:44342/api/v1/BankEmp/";
+const getAll = "https://localhost:44342/api/v1/Teachers/";
 
 export default {
     created() {
@@ -38,7 +37,7 @@ export default {
             default: false,
         },
         //nhân viên đã chọn để xóa
-        employee: {
+        teacher: {
             type: Object,
             default: null,
         }
@@ -50,24 +49,14 @@ export default {
             this.$emit('hideDialog');
         },
 
-        //Đồng ý xóa
-        //Logic xử lý:
-        // - Đầu tiên xóa ngân hàng liên kết với employee đó trước
-        // - Sau đó xóa employee đó
+
         btnDelete() {
 
             axios
-                .delete(getAllBankEmp + this.employee.employeeId) //xóa ngân hàng liên kết
-                .then(() => {
-                    axios
-                        .delete(getAll + this.employee.employeeId) //xóa nhân viên
-                        .then((res) => {
-                            console.log(res);
-                            this.hideDialog();
-                        })
-                        .catch((res) => {
-                            console.log(res);
-                        })
+                .delete(getAll + this.teacher.teacherId) //xóa nhân viên
+                .then((res) => {
+                    console.log(res);
+                    this.hideDialog();
                 })
                 .catch((res) => {
                     console.log(res);

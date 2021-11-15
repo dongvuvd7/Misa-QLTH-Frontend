@@ -37,6 +37,21 @@ const Enum = {
 
     },
 
+    Group: {
+        VPId: "17ae2be6-2c6a-5cab-3bcb-6f55ff55ddab",
+        VP: "Tổ Văn phòng",
+        LHId: "1863f692-73f4-472d-09d9-225ba613d98b",
+        LH: "Tổ Lý Hóa",
+        TTId: "1ca66a3b-3636-2bb6-5416-ee06e4ed76c5",
+        TT: "Tổ Toán Tin",
+        SSDId: "3a17a56d-2730-5bb4-c06b-08392da13816",
+        SSD: "Tổ Sinh Sử Địa",
+        NVId: "69914f9c-1cbd-642a-a133-398871806735",
+        NV: "Tổ Ngữ văn",
+        AVId: "7b0e03a5-3ce2-5830-f08d-a4a9c17b3f72",
+        AV: "Tổ Anh văn",
+    },
+
 
 
 

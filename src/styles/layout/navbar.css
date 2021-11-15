@@ -24,7 +24,7 @@
     height: 24px;
     margin-right: 10px;
     margin-left: 20px;
-    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -424px -86px;
+    background: url('../../assets/img/icons8-menu.svg') no-repeat ;
 }
 #logo{
     width: 44px;
@@ -52,8 +52,13 @@
 
 .router-link-active{
     background: #404f64;
-    border-left: 6px solid #0DD469;
+    border-left: 4px solid #0DD469;
     color: #0DD469;
+    font-weight: bold;
+}
+
+.navbar-text{
+    font-size: 13px;
 }
 
 .navbar-icon{

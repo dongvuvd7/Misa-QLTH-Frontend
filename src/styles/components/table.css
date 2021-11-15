@@ -56,7 +56,7 @@
       
     
     .table tbody tr {
-        height: 48px; 
+        height: 40px; 
     }
     .table tbody tr td:first-child {
           position: sticky;
@@ -108,7 +108,7 @@
    
 
       .table1 tbody tr {
-      height: 48px;
+      height: 40px;
       
     }
  

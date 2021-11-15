@@ -18,10 +18,10 @@
                                 Chọn ảnh
                             </div>
                             <div class="clm1-name">
-                                {{employee.fullName}}
+                                {{teacher.teacherName}}
                             </div>
                             <div class="clm1-code">
-                                {{employee.employeeCode}}
+                                {{teacher.teacherCode}}
                             </div>
                         </div>
                         <div class="column clm2">
@@ -37,24 +37,24 @@
                             <div style="display: flex; align-items: center;">
                                 <div class="input_bar" style="width: 50%; margin-right: 2px;">
                                     <div class="title-blank-box" style="position: relative"><b>Số hiệu cán bộ</b> <span style="color: red;">*</span>
-                                        <div class="error-message" v-show="isValid.employeeCodeMessage == false">Số hiệu cán bộ chưa hợp lệ</div>
+                                        <div class="error-message" v-show="isValid.teacherCodeMessage == false">Số hiệu cán bộ chưa hợp lệ</div>
                                     </div>
                                     <input type="text" class="code-blank-box"
-                                        :class="{'blank-box-invalid': isValid.employeeCode == false}"
-                                        ref="employeeCode"
-                                        v-model="employee.employeeCode"
-                                        @mouseenter="mouseEnterError('employeeCode')"
+                                        :class="{'blank-box-invalid': isValid.teacherCode == false}"
+                                        ref="teacherCode"
+                                        v-model="teacher.teacherCode"
+                                        @mouseenter="mouseEnterError('teacherCode')"
                                         @mouseleave="mouseLeaveError()"
                                     />
                                 </div>
                                 <div class="input_bar" style="width: 50%; margin-left: 2px;">
                                     <div class="title-blank-box" style="position: relative"><b>Họ và tên</b> <span style="color: red;">*</span>
-                                        <div class="error-message" v-show="isValid.fullNameMessage == false">Họ và tên không được để trống</div>
+                                        <div class="error-message" v-show="isValid.teacherNameMessage == false">Họ và tên không được để trống</div>
                                     </div>
                                     <input type="text" class="fullname-blank-box" style="text-transform: capitalize; "
-                                        :class="{'blank-box-invalid': isValid.fullName == false }" 
-                                        v-model="employee.fullName"
-                                        @mouseenter="mouseEnterError('fullName')"
+                                        :class="{'blank-box-invalid': isValid.teacherName == false }" 
+                                        v-model="teacher.teacherName"
+                                        @mouseenter="mouseEnterError('teacherName')"
                                         @mouseleave="mouseLeaveError()"
                                         ref="nameRef"
                                     />                    
@@ -65,7 +65,7 @@
                                     <div class="title-blank-box" style="position: relative"><b>Số điện thoại</b>
                                     </div>
                                     <input type="text" class="code-blank-box"
-                                        v-model="employee.phone"
+                                        v-model="teacher.teacherPhone"
                                     />
                                 </div>
                                 <div class="input_bar" style="width: 50%; margin-left: 2px;">
@@ -73,7 +73,7 @@
                                     </div>
                                     <input type="email" class="fullname-blank-box"
                                         :class="{'blank-box-invalid': isValid.email == false }" 
-                                        v-model="employee.email"
+                                        v-model="teacher.teacherEmail"
                                     />                    
                                 </div>
                             </div>
@@ -81,29 +81,29 @@
                             <div style="display: flex; align-items: center;">
                                 <div class="input_bar" style="width: 50%; margin-right: 2px;">
                                     <div style="position: relative; width: 35%; line-height: 48px;"><b>Tổ bộ môn</b><span style="color: red;">*</span>
-                                        <div class="error-message" v-show="isValid.departmentNameMessage == false">Tổ bộ môn chưa hợp lệ</div>
+                                        <div class="error-message" v-show="isValid.groupNameMessage == false">Tổ bộ môn chưa hợp lệ</div>
                                     </div>
                                     <!-- combobox -->
-                                    <div class="dropdown-text-and-icon" :class="{'blank-box-invalid': isValid.departmentName == false}">
+                                    <div class="dropdown-text-and-icon" :class="{'blank-box-invalid': isValid.groupName == false}">
                                         <input type="text" class="input-blank-box" 
-                                            @focus="showDropDownContent('department')" 
-                                            @blur="hideDropDownContent('department')" 
-                                            id="departmentName"
-                                            v-model="employee.departmentName"
-                                            @mouseenter="mouseEnterError('departmentName')"
+                                            @focus="showDropDownContent('teacherGroup')" 
+                                            @blur="hideDropDownContent('teacherGroup')" 
+                                            id="groupName"
+                                            v-model="teacher.teacherGroupName"
+                                            @mouseenter="mouseEnterError('teacherGroupName')"
                                             @mouseleave="mouseLeaveError()"
-                                            @keyup="searchOption('department')"
+                                            @keyup="searchOption('teacherGroup')"
                                             autocomplete="off"
                                         />
-                                        <button id="dropdown-icon" @click="showDropDownContent('department')" @blur="hideDropDownContent('department')"></button>
+                                        <button id="dropdown-icon" @click="showDropDownContent('teacherGroup')" @blur="hideDropDownContent('teacherGroup')"></button>
                                     </div>
                                     <div id="dropdown">     
-                                        <div class="dropdown-content" :class="{'dialog_hide': !isShowOption.department}" >
+                                        <div class="dropdown-content" :class="{'dialog_hide': !isShowOption.teacherGroup}" >
                                             <div class="dropdown-content-a" 
-                                                :class="{'drop-down-content-selected' : option.id == employee.departmentId}"
-                                                v-for="option in listOptions.department" 
+                                                :class="{'drop-down-content-selected' : option.id == teacher.teacherGroup}"
+                                                v-for="option in listOptions.teacherGroup" 
                                                 :key="option.id" 
-                                                @click="chooseOption(option, 'department')" 
+                                                @click="chooseOption(option, 'teacherGroup')" 
                                                 @mouseenter="enterClick()" 
                                                 @mouseleave="leaveClick()"
                                             >{{option.name}}</div>
@@ -114,7 +114,7 @@
                                     <div class="title-blank-box" style="position: relative; margin-right: 3px;"><b>QL theo môn</b>
                                     </div>
                                     <input type="text" class="fullname-blank-box"
-                                        v-model="employee.phone"
+                                        v-model="teacher.teacherSubject"
                                     />
 
 
@@ -135,7 +135,7 @@
 
                             <div style="display: flex; align-items: center">
                                 <div style="position: relative; width: 108px; height: 32px; line-height: 22px;"><b>QL kho, phòng</b> </div>
-                                <input type="text" class="medium-blank-box" v-model="employee.jobTitle"/>
+                                <input type="text" class="medium-blank-box" v-model="teacher.teacherRoom"/>
                             </div>
 
                             <div style="display: flex; align-items: center">
@@ -152,7 +152,7 @@
                                     <div style="margin-right: 8px; line-height: 56px;">Ngày nghỉ việc</div>
                                     <date-pick
                                         style="width: 150px; line-height: 56px;"
-                                        v-model="employee.dateOfBirth"
+                                        v-model="teacher.teacherStopday"
                                         :displayFormat="'DD/MM/YYYY'"
                                     ></date-pick>  
                                 </div>
@@ -224,75 +224,34 @@ export default {
 
     created() {
 
-        /**
-         * Gọi các ngân hàng theo id nhân viên ra rồi bind lên table ở tab ngân hàng
-         * (Dùng ở form sửa)
-         */
-        if(this.formmode == Enums.FormMode.Edit){
-            axios
-                .get(Resources.API.GetBankEmpByUserId + this.employee.employeeId)
-                .then((res) => {
-                    this.banksOfEmp = res.data;
-                    console.log(this.banksOfEmp);
-                    console.log(res.status);
-                    if(res.status == Enums.ServerStatus.NoContent){
-                        this.checkIfListBankEmptyEdit = true;
-                    }
-
-                })
-                .catch((res) => {
-                    console.log(res);
-                })
-        }
-
     },
 
     data() {
         return {
 
             isShowOption: {
-                department: false,
+                teacherGroup: false,
 
             },
             listOptions: {
-                department: [
-                    {
-                    id: Enums.Department.DTId,
-                    name: Enums.Department.DT
-                    },
-                    {
-                        id: Enums.Department.KTId,
-                        name: Enums.Department.KT
-                    },
-                    {
-                        id: Enums.Department.MKId,
-                        name: Enums.Department.MK
-                    },
-                    {
-                        id: Enums.Department.NSId,
-                        name: Enums.Department.NS
-                    },
+                teacherGroup: [
+                    {id: Enums.Group.VPId, name: Enums.Group.VP},
+                    {id: Enums.Group.LHId, name: Enums.Group.LH},
+                    {id: Enums.Group.TTId, name: Enums.Group.TT},
+                    {id: Enums.Group.SSDId, name: Enums.Group.SSD},
+                    {id: Enums.Group.NVId, name: Enums.Group.NV},
+                    {id: Enums.Group.AVId, name: Enums.Group.AV},
                 ],
 
             },
             initialListOptions: {
-                department: [
-                    {
-                    id: Enums.Department.DTId,
-                    name: Enums.Department.DT
-                },
-                {
-                    id: Enums.Department.KTId,
-                    name: Enums.Department.KT
-                },
-                {
-                    id: Enums.Department.MKId,
-                    name: Enums.Department.MK
-                },
-                {
-                    id: Enums.Department.NSId,
-                    name: Enums.Department.NS
-                },
+                teacherGroup: [
+                    {id: Enums.Group.VPId, name: Enums.Group.VP},
+                    {id: Enums.Group.LHId, name: Enums.Group.LH},
+                    {id: Enums.Group.TTId, name: Enums.Group.TT},
+                    {id: Enums.Group.SSDId, name: Enums.Group.SSD},
+                    {id: Enums.Group.NVId, name: Enums.Group.NV},
+                    {id: Enums.Group.AVId, name: Enums.Group.AV},
                 ]
             },
             
@@ -300,12 +259,12 @@ export default {
             overClick: false,
 
             isValid: {
-                employeeCode: true,
-                fullName: true,
-                departmentName: true,
-                employeeCodeMessage: true,
-                fullNameMessage: true,
-                departmentNameMessage: true,
+                teacherCode: true,
+                teacherName: true,
+                groupName: true,
+                teacherCodeMessage: true,
+                teacherNameMessage: true,
+                groupNameMessage: true,
                 dateIdentityAndDob: true,
 
                 phone: true,
@@ -318,8 +277,8 @@ export default {
             isErrorDialogShow: false,
             //Biến để hiện pop-up thông báo trống mã hoặc tên
             isErrorPopUpShow: false,
-            //Biến để nhận giá trị của employee truyền vào ban đầu, để so sánh sau khi thay đổi
-            initialEmployee: {},
+            //Biến để nhận giá trị của teacher truyền vào ban đầu, để so sánh sau khi thay đổi
+            initialTeacher: {},
             //Biến để hiện thông báo đã có thay đổi dữ liệu
             isDataChange: false,
             //Biến để nhận thông báo lỗi trả về từ API
@@ -333,7 +292,7 @@ export default {
     },
 
     props: {
-        employee: {
+        teacher: {
             type: Object,
             default: null,
         },
@@ -344,17 +303,15 @@ export default {
     },
 
     updated(){
-        //Format giới tính sau khi dialog được hiện ra, để binding dữ liệu
-        this.genderFormat(this.employee.gender);
+
     },
 
     mounted() {
-        //auto focus vào ô input employeeCode
+        //auto focus vào ô input teacherCode
         this.focusInput();
 
-        this.genderFormat(this.employee.gender);
-        //copy employee sang 1 object khac de so xem co su thay doi khong?
-        this.initialEmployee = {...this.employee};
+        //copy teacher sang 1 object khac de so xem co su thay doi khong?
+        this.initialTeacher = {...this.teacher};
     },
 
     methods: {
@@ -362,18 +319,6 @@ export default {
          * Cụm hàm format
          * CreatedBy: VDDong (17/06/2021)
          */
-        //format giới tính để đưa dữ liệu lên database
-        genderFormat(gender){
-            if(gender == Enums.Gender.FemaleId) {
-                this.employee.genderName = Enums.Gender.Female;
-            }
-            else if(gender == Enums.Gender.MaleId) {
-                this.employee.genderName = Enums.Gender.Male
-            }
-            else if(gender == Enums.Gender.RestId){
-                this.employee.genderName = Enums.Gender.Rest;
-            }
-        },
 
         /**
          * So sánh 2 Object để kiểm tra xem dữ liệu đã thay đổi chưa
@@ -388,25 +333,25 @@ export default {
         },
 
         /**
-         * Ẩn dialog EmployeeDetail
+         * Ẩn dialog TeacherDetail
          * CreatedBy: VDDong (17/06/2021)
          */
         hideDialog(){
             //Reset lại các biến validate form
-            this.isValid.fullName = true;
-            this.isValid.employeeCode = true;
-            this.isValid.departmentName = true;
-            //Gọi phương thức ẩn của thằng cha là employeeList
+            this.isValid.teacherName = true;
+            this.isValid.teacherCode = true;
+            this.isValid.groupName = true;
+            //Gọi phương thức ẩn của thằng cha là teacherList
             this.$emit('hideDialog');
         },
 
         /**
         * Ẩn dialog
-        * Nếu dữ liệu đã bị thay  đổi thì hiện pop up DataChange, nếu không thì ẩn dialog EmployeeDetail
+        * Nếu dữ liệu đã bị thay  đổi thì hiện pop up DataChange, nếu không thì ẩn dialog TeacherDetail
         * CreatedBy: VDDong (17/06/2021)
         */
         hideDialogDataCondition(){
-           if(this.compareDataObject(this.initialEmployee, this.employee)){
+           if(this.compareDataObject(this.initialTeacher, this.teacher)){
                this.isDataChange = true;
                this.errorMsg = Resources.ErrorMessage.DataChange;
            }
@@ -430,16 +375,16 @@ export default {
             if(this.overClick == false) this.isShowOption[type] = false;
         },
         /**
-        * Gán dữ liệu đã chọn từ combobox cho chủ thể employee và format cho đúng định dạng
+        * Gán dữ liệu đã chọn từ combobox cho chủ thể teacher và format cho đúng định dạng
         * CreatedBy: VDDong (17/06/2021)
         */
         chooseOption(option, type){
-            var propertyId = type + "Id";
+            var propertyId = type;
 
-            //Gán giá trị được chọn cho id và tên phòng ban của employee
-            this.employee[propertyId] = option.id;
-            // this.employee.departmentName = option.name;
-            this.optionFormat(this.employee[propertyId], type);
+            //Gán giá trị được chọn cho id và tên phòng ban của teacher
+            this.teacher[propertyId] = option.id;
+            // this.teacher.departmentName = option.name;
+            this.optionFormat(this.teacher[propertyId], type);
             this.overClick = false;
             this.hideDropDownContent(type);
         },
@@ -449,7 +394,7 @@ export default {
 
             this.listOptions[type].forEach(option => {
                     if(Id == option.id) {
-                        this.employee[propertyName] = option.name;
+                        this.teacher[propertyName] = option.name;
                     }
                 });
         },
@@ -462,7 +407,7 @@ export default {
 
             this.listOptions[type] = this.initialListOptions[type].filter(option => {
                 return (
-                    option.name.toLowerCase().includes(this.employee[propertyName].toLowerCase())
+                    option.name.toLowerCase().includes(this.teacher[propertyName].toLowerCase())
                 )
             })
         },
@@ -482,39 +427,39 @@ export default {
         },
 
         /**
-         * Auto focus vào ô employeeCode khi hiện dialog EmployeeDetail
+         * Auto focus vào ô teacherCode khi hiện dialog TeacherDetail
          * CreatedBy: VDDong (17/06/2021)
          */
         focusInput(){
-            this.$refs.employeeCode.focus();
+            this.$refs.teacherCode.focus();
         },
 
         /**
-         * Validate trường hợp ô employee code và fullname bỏ trống hoặc nhập toàn dấu cách (khoảng trắng) 
+         * Validate trường hợp ô teacher code và fullname bỏ trống hoặc nhập toàn dấu cách (khoảng trắng) 
          * CreatedBy: VDDong (17/06/2021)
          */
         nullValidation(propertyValue, propertyName){
             propertyValue = propertyValue || '';
             if (propertyValue.trim() == "") {
-                if(propertyName == Resources.Property.EmployeeCode) {
-                    this.isValid.employeeCode = false;
+                if(propertyName == Resources.Property.TeacherCode) {
+                    this.isValid.teacherCode = false;
                     this.isErrorPopUpShow = true;
-                    this.errorMsg = Resources.ErrorMessage.NullEmployeeCode;
+                    this.errorMsg = Resources.ErrorMessage.NullTeacherCode;
                     
                 }
                 else if(propertyName == Resources.Property.FullName) {
-                    this.isValid.fullName = false;
+                    this.isValid.teacherName = false;
                     this.isErrorPopUpShow = true;
                     this.errorMsg = Resources.ErrorMessage.NullFullName;
                     this.$refs.nameRef.focus();
                 }
             } 
             else{
-                if(propertyName == Resources.Property.EmployeeCode) {
-                    this.isValid.employeeCode = true;
+                if(propertyName == Resources.Property.TeacherCode) {
+                    this.isValid.teacherCode = true;
                 }
                 else if(propertyName == Resources.Property.FullName) {
-                    this.isValid.fullName = true;
+                    this.isValid.teacherName = true;
                 }
             }    
         },
@@ -523,46 +468,31 @@ export default {
          * Validate tên đơn vị (phòng ban)
          * CreatedBy: VDDong (17/06/2021)
          */
-        departmentNameValidation(value){
+        groupNameValidation(value){
             //Validate tên đơn vị không được trống
             value = value || '';
             if (value.trim() == "") {
-                this.isValid.departmentName = false;
+                this.isValid.groupName = false;
                 this.isErrorPopUpShow = true;
-                this.errorMsg = Resources.ErrorMessage.NullDepartment;
+                this.errorMsg = Resources.ErrorMessage.NullGroup;
             }
             else {
-                this.isValid.departmentName = false;
+                this.isValid.groupName = false;
                 //Validate tên đơn vị giống với tên đơn vị trong option
                 //Kiểm tra xem thông tin nhập vào có đúng với các option tên đơn vị không
-                this.listOptions.department.forEach(option => {
+                this.listOptions.teacherGroup.forEach(option => {
                     if(option.name == value) {
-                        this.isValid.departmentName = true;
-                        this.employee.departmentId = option.id;
+                        this.isValid.groupName = true;
+                        this.teacher.teacherGroup = option.id;
                     }
                 });
-                if(this.isValid.departmentName == false) 
+                if(this.isValid.groupName == false) 
                 {
                     this.isErrorPopUpShow = false;
                     this.isErrorDialogShow = true;
-                    this.errorMsg = Resources.ErrorMessage.InvalidDepartment;
+                    this.errorMsg = Resources.ErrorMessage.InvalidGroup;
                 }
             }
-        },
-
-        /**
-         * Validate ngày cấp số CMND không được trước ngày sinh
-         * CreatedBy:
-         */
-        dateIdentityAndDobValidation(identityDate, dobDate){
-            console.log("Identity date: " + identityDate);
-            console.log("Dob date:" + dobDate)
-            if(identityDate < dobDate){
-                this.isValid.dateIdentityAndDob = false;
-                this.isErrorDialogShow = true;
-                this.errorMsg = Resources.ErrorMessage.DateIdentityAndDobError;
-            }
-            else this.isValid.dateIdentityAndDob = true;
         },
 
 
@@ -571,19 +501,17 @@ export default {
          * CreatedBy: VDDong (17/06/2021)
          */
         formValidation(){
+            //Validate tên tổ chuyên môn
+            this.groupNameValidation(this.teacher.teacherGroupName);
             //Validate tên nhân viên không được trống hoặc là khoảng trắng
-            this.nullValidation(this.employee.fullName, Resources.Property.FullName);
+            this.nullValidation(this.teacher.teacherName, Resources.Property.FullName);
             //Validate mã nhân viên không được trống hoặc là khoảng trắng
-            this.nullValidation(this.employee.employeeCode, Resources.Property.EmployeeCode);
-            //Validate tên đơn vị
-            this.departmentNameValidation(this.employee.departmentName);
-            //Validate ngày cấp số CMND không trước ngày sinh
-            this.dateIdentityAndDobValidation(this.employee.identityDate, this.employee.dateOfBirth);
+            this.nullValidation(this.teacher.teacherCode, Resources.Property.TeacherCode);
+            
             //Nếu thỏa mã hết các validate thì chấp thuận
-            if(this.isValid.fullName == true
-                && this.isValid.employeeCode == true
-                && this.isValid.departmentName == true
-                && this.isValid.dateIdentityAndDob == true
+            if(this.isValid.teacherName == true
+                && this.isValid.teacherCode == true
+                && this.isValid.groupName == true
             ) this.isAppropriate = true;
             else this.isAppropriate = false;         
         },
@@ -610,21 +538,21 @@ export default {
          */
         //Di chuyển chuột vào trong hiện lỗi
         mouseEnterError(propertyName){
-            if( this.isValid.employeeCode == false && propertyName == Resources.Property.EmployeeCode){
-                this.isValid.employeeCodeMessage = false;
+            if( this.isValid.teacherCode == false && propertyName == Resources.Property.TeacherCode){
+                this.isValid.teacherCodeMessage = false;
             }
-            else if( this.isValid.fullName == false && propertyName == Resources.Property.FullName){
-                this.isValid.fullNameMessage = false;
+            else if( this.isValid.teacherName == false && propertyName == Resources.Property.FullName){
+                this.isValid.teacherNameMessage = false;
             }
-            if( this.isValid.departmentName == false && propertyName == Resources.Property.DepartmentName) 
-                this.isValid.departmentNameMessage = false;
+            if( this.isValid.groupName == false && propertyName == Resources.Property.GroupName) 
+                this.isValid.groupNameMessage = false;
             
         },
         //Di chuyển chuột ra ngoài ẩn lỗi
         mouseLeaveError(){
-            this.isValid.employeeCodeMessage = true;
-            this.isValid.fullNameMessage = true;
-            this.isValid.departmentNameMessage = true;
+            this.isValid.teacherCodeMessage = true;
+            this.isValid.teacherNameMessage = true;
+            this.isValid.groupNameMessage = true;
 
             // this.isValid.questionMessage = true;
         },
@@ -633,8 +561,8 @@ export default {
          * Reset lại các thông tin nhân viên khi bấm 'cất và thêm'
          * CreatedBy: VDDong (17/06/2021)
          */
-        resetEmployee(){
-            this.$emit('showEmployeeDialog');
+        resetTeacher(){
+            this.$emit('showTeacherDialog');
             this.focusInput();
         },
 
@@ -646,121 +574,14 @@ export default {
             
             // if(this.employee.identityDate == undefined) this.employee.identityDate = null;
             // if(this.employee.dateOfBirth == undefined) this.employee.dateOfBirth = null;
-            console.log(this.employee);
-            console.log(this.employee.identityDate);
+            console.log(this.teacher);
 
             if(this.formmode == Enums.FormMode.Add) {
-                var employeeIdToAddBanks = ""; //employeeId cũng là khóa ngoại UserId của BankEmployee
-
-                return axios
-                    .post(Resources.API.GetAll, this.employee) //post data employee
-                    .then(() => {
-                        if(this.banksOfEmp.length == 0) { //nếu không có bank nào liên kết với nhân viên, báo thành công
-                            console.log("Không có banks liên kết, thêm nhân viên thành công");
-
-                        }
-                        else { //nếu có banks liên kết
-                            //đầu tiên phải lấy employeeId của nhân viên mới đó về làm khóa ngoại của các banks liên kết
-                            //sau đó post các banks lên
-                            axios
-                                .get(Resources.API.GetEmployeeIdByEmployeeCode + this.employee.employeeCode) //lấy về data của nhân viên vừa post lên (theo employeeCode)
-                                .then((res) => {
-                                    employeeIdToAddBanks = res.data.employeeId; //lấy ra employeeId
-                                    for(var i=0; i<this.banksOfEmp.length; i++){
-                                        this.banksOfEmp[i].userId = employeeIdToAddBanks;
-                                        this.banksOfEmp[i].bankId = employeeIdToAddBanks; //tạm thời vì nếu để null thì bị 400 bad request nên cứ để thế này vào database nó tự set lại
-                                        var parsedobj = JSON.parse(JSON.stringify(this.banksOfEmp[i])); //nó là __ob__ nên phải convert sang array mới post được
-                                        console.log(parsedobj);
-
-                                        axios
-                                            .post(Resources.API.GetAllBankEmp, parsedobj) //post các empBanks lên
-                                            .then((res) => {
-                                                console.log(res);
-                                                return Promise.resolve();
-                                            })
-                                            .catch((res) => {
-                                                console.log(res.response);
-                                                return Promise.reject();
-                                            })
-                                    }
-                                })
-                                .catch((res) => {
-                                    console.log(res);
-                                })
-
-                        }
-                    })
-                    .catch((res) => {
-                        var errorContent = res.response.data.devMsg;
-
-                        if(errorContent.includes(Resources.MsgFromServer.EmployeeCode)) this.isValid.employeeCode = false;
-                        if(errorContent.includes(Resources.MsgFromServer.Phone)) this.isValid.phone = false;
-                        if(errorContent.includes(Resources.MsgFromServer.TelePhone)) this.isValid.telephone = false;
-                        if(errorContent.includes(Resources.MsgFromServer.Email)) this.isValid.email = false;
-
-                        this.errorMsg = errorContent;
-                        this.isErrorDialogShow = true;
-                        return Promise.reject();
-                    })
-
+                console.log('post teacher')
 
             }
             else if(this.formmode == Enums.FormMode.Edit){
-                //Do chênh lệch về múi giờ giữa frontend và backend nên ở trạng thái sửa
-                //ngày giờ bên font end đang là ngày x 00:00:00 GTM+7 giờ Đông Dương, sang bên backend lại thành ngày x-1 5h:00 PM
-                //nên khi ở trạng thái sửa, đành phải +1 thêm vào ngày để khi sang backend lưu vào DB nó vẫn đúng ngày mình chọn
-                //Ở trạng thái thêm thì còn tùy thuộc vào lúc thêm, nếu thêm vào tầm buổi trưa đổ đi, lúc đó đang giờ tầm 11 12h thì dù
-                //có lệch múi giờ thì sang backend nó giảm đi vài giờ vẫn thuộc ngày x, còn nếu pick datetime lúc sáng sớm thì vẫn có khả 
-                //năng sang backend bị -1 ngày do lệch múi giờ
-                // this.employee.dateOfBirth = new Date(this.employee.dateOfBirth);
-                //     this.employee.dateOfBirth.setDate(this.employee.dateOfBirth.getDate() + 1);
-                //(Vấn đề đã được khắc phục sau khi chuyển sang packet pickdate mới là Vue date pick)
-                //Packet này hình như không lưu giờ nên không bị dính vấn đề liên quan múi giờ
-                
-                console.log(this.employee);
-
-                //Logic xử lý:
-                // - đầu tiên put thông tin nhân viên
-                // - tiếp theo là xóa toàn bộ banks hiện tại của employee đó đi
-                // - sau đó post lại từ list banksOfEmp
-                return axios
-                    .put(Resources.API.GetAll + "/" + this.employee.employeeId, this.employee) //put thông tin nhân viên
-                    .then(() => {
-                        axios
-                            .delete(Resources.API.GetAllBankEmp + this.employee.employeeId) //xóa
-                            .then(() => {
-                                for(var i=0; i<this.banksOfEmp.length; i++){
-                                    this.banksOfEmp[i].userId = this.employee.employeeId;
-                                    this.banksOfEmp[i].bankId = this.employee.employeeId; //tạm thời vì nếu để null thì bị 400 bad request nên cứ để thế này vào database nó tự set lại
-                                    var parsedobj = JSON.parse(JSON.stringify(this.banksOfEmp[i])); //nó là __ob__ nên phải convert sang array mới post được
-                                    console.log(parsedobj);
-
-                                    axios
-                                        .post(Resources.API.GetAllBankEmp, parsedobj) //post các empBanks lên
-                                        .then((res) => {
-                                            console.log(res);
-                                            return Promise.resolve();
-                                        })
-                                        .catch((res) => {
-                                            console.log(res);
-                                            return Promise.reject();
-                                        })
-                                }
-                            })
-                    })
-                    .catch((res) => {
-                        var errorContent = res.response.data.devMsg;
-
-                        if(errorContent.includes(Resources.MsgFromServer.EmployeeCode)) this.isValid.employeeCode = false;
-                        if(errorContent.includes(Resources.MsgFromServer.Phone)) this.isValid.phone = false;
-                        if(errorContent.includes(Resources.MsgFromServer.TelePhone)) this.isValid.telephone = false;
-                        if(errorContent.includes(Resources.MsgFromServer.Email)) this.isValid.email = false;
-
-                        this.errorMsg = errorContent;
-                        this.isErrorDialogShow = true;
-                        return Promise.reject();
-                    })
-
+                console.log('put teacher')
             }
         },
 
@@ -778,7 +599,7 @@ export default {
         btnSaveAndAdd(){
             this.formValidation();
             if(this.isAppropriate){
-                this.formmodeValidation().then(() => this.resetEmployee());
+                this.formmodeValidation().then(() => this.resetTeacher());
             }
         },
 

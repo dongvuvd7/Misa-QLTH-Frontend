@@ -2,7 +2,7 @@
     <div id="navBar">
         
         <div id="Navbar_logo_box">     
-            <a href="http://localhost:8080/#/employee"><div id="logo"></div></a>
+            <a href="http://localhost:8080/#/teacher"><div id="logo"></div></a>
             Thiết bị
             <div id="sidebar"></div>
         </div>
@@ -23,7 +23,7 @@
                 <div class="navbar-icon icon-7"></div>
                 <div class="navbar-text">Báo cáo</div>
             </div>
-            <router-link class="navbar-item" tag="li" to="/employee" >
+            <router-link class="navbar-item" tag="li" to="/teacher" >
                 <div class="navbar-icon icon-8"></div>
                 <div class="navbar-text">Hệ thống</div>
             </router-link>

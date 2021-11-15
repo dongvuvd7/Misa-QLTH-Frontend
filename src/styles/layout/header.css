@@ -16,9 +16,9 @@
     margin-right: 5px;
 }
 #company-name-icon{
-    width: 36px;
-    height: 36px;
-    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -732px -22px;
+    width: 18px;
+    height: 18px;
+    background: url('../../assets/img/ic_Help_2_16.svg') no-repeat;
     border: none;
     outline: none;
 }

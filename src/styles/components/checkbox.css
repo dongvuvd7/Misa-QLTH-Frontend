@@ -21,7 +21,7 @@ input:checked[type="checkbox"]
     border: 1px solid #2ca01c;
     transform: rotate(90deg);
     transition: transform .2s ease;
-    /* background-color: #2ca01c; */
+    background-color: #2ca01c;
     
 }
 
@@ -29,10 +29,11 @@ input[type="checkbox"]::before
 {
     content: "";
     position: absolute;
-    width: 16px;
-    height: 16px;
-    background: url(../../assets/img/Sprites.64af8f61.svg);
-    background-position: -1224px -360px;
+    width: 14px;
+    height: 14px;
+    background: url('../../assets/Icons/ic_Checkbox_Active.png');
+    background-position: center;
+    /* background-position: -1224px -360px; */
     display: none;
 }
 
