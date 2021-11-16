@@ -206,7 +206,8 @@
                                 <div class="title-checkbox" style="margin-top: 3px; line-height: 56px; margin-right: 52px;">Đang làm việc</div>
 
                                 <div class="date-stop-working" style="display: flex; height: 56px; margin-left: 9px;"
-                                    :class="{'date-area-hide': teacher.teacherStatus == 1}"
+                                    :class="{'date-area-hide': !isShowDateArea}"
+                                    
                                 >
                                     <div style="margin-right: 8px; line-height: 56px;">Ngày nghỉ việc</div>
                                     <date-pick
@@ -282,15 +283,21 @@ export default {
     },
 
     created() {
+        console.log(this.teacher);
         //Khi ở trạng thái form thêm mới thì mặc định set teacherStatus = 1
-        // if(this.formmode == Enums.FormMode.Add){
-        //     this.teacher.teacherStatus = 1;
-        // }
+        if(this.formmode == Enums.FormMode.Add){
+            this.teacher.teacherStatus = 1;
+        }
 
-        //Tách 
+        
         if(this.formmode == Enums.FormMode.Edit){
+            //Tách subjects và room để bind lên combobox
             this.itemSubjects = this.teacher.teacherSubject.split(",");
             this.itemRooms = this.teacher.teacherRoom.split(",");
+
+            //Xác định trạng thái công việc (teacherStatus) để xác định có hiện date area (ngày nghỉ việc) hay không
+            if(this.teacher.teacherStatus == 1) this.isShowDateArea = false;
+            else if(this.teacher.teacherStatus == 0) this.isShowDateArea = true;
         }
 
 
@@ -298,6 +305,8 @@ export default {
 
     data() {
         return {
+
+            isShowDateArea: false,
 
             itemSubjects: [],
             listItemSubjects: [
@@ -418,10 +427,15 @@ export default {
         CreatedBy: 
          */
          changeTeacherCheckbox(type){
+             //đặt giá trị cho teacherQltb và teacherStatus
              var property = 'teacher' + type;
              if(!this.teacher[property] || this.teacher[property] == 0) this.teacher[property] = 1;
              else if(this.teacher[property] == 1) this.teacher[property] = 0;
              console.log(this.teacher[property], property);
+
+            //ẩn hiên date area (ngày nghỉ việc)
+            if(this.teacher.teacherStatus == 0) this.isShowDateArea = true;
+            else if(this.teacher.teacherStatus == 1) this.isShowDateArea = false;
 
          },
 
@@ -701,6 +715,9 @@ export default {
             var rooms = this.itemRooms.toString();
             console.log(subjects, 'itemSubjects');
             console.log(rooms, 'itemRooms');
+            this.teacher.teacherSubject = subjects;
+            this.teacher.teacherRoom = rooms;
+            console.log(this.teacher);
             this.formValidation();
             if(this.isAppropriate){
                 this.formmodeValidation().then(() => this.hideDialog());
@@ -763,6 +780,9 @@ export default {
         display:none;
     }
     .date-area-hide{
+        display: none !important;
+    }
+    #area-date-hide{
         display: none !important;
     }
     .model {
