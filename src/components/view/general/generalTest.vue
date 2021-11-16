@@ -1,8 +1,41 @@
 <template>
-    <div>
+    <div data-app>
         <h1 class="Title">Tổng quan test</h1>
+        <div class="ccb">
+           <v-combobox
+          v-model="select"
+          :items="items"
+          label="Combobox"
+          multiple
+          outlined
+          dense
+          clearable
+          small-chips
+          solo
+
+        ></v-combobox>
+        </div>
     </div>
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            select: ['Vuetify', 'Programming','JS'],
+            items: [
+            'Programming',
+            'Design',
+            'Vue',
+            'Vuetify',
+            'JS',
+            'HTML',
+            'CSS'
+            ],
+      }
+    },
+}
+</script>
 
 <style scoped>
     .Title{
@@ -18,5 +51,10 @@
         padding-left: 24px;
         padding-bottom: 24px;
         padding-right: 24px;
+    }
+    .ccb{
+        position: absolute;
+        top: 108px;
+        left: 278px;
     }
 </style>

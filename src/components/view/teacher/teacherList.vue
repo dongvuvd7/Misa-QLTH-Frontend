@@ -129,13 +129,13 @@
                                             />
                                         </td>
                                         <td>{{ teacher.teacherCode }}</td>
-                                        <td style="text-transform: capitalize; color: #00a093">{{ teacher.teacherName }}</td>
+                                        <td style="text-transform: capitalize; color: #03AE66">{{ teacher.teacherName }}</td>
                                         <td>{{ teacher.teacherPhone }}</td>
                                         <td>{{ teacher.teacherGroup | groupFormatToTable }}</td>
                                         <td>{{ teacher.teacherSubject }}</td>
                                         <td>{{ teacher.teacherRoom }}</td>
                                         <td :class="{'tickbox': teacher.teacherQltb == 1}"></td>
-                                        <td></td>
+                                        <td :class="{'tickbox': teacher.teacherStatus == 1}"></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1149,7 +1149,7 @@ export default {
   margin-bottom: 20px;
 }
 .search-bar-and-icon:focus-within {
-  border: 1px solid #2ca01c;
+  border: 1px solid #03AE66;
 }
 #search-bar {
   width: 299px;
@@ -1252,7 +1252,7 @@ tbody tr:hover {
     align-items: center;
 }
 .dropdown-text-and-icon:focus-within{
-    border-color: #2ca01c;
+    border-color: #03AE66;
 }
 .input-blank-box{
     height: 30px;
@@ -1311,15 +1311,15 @@ tbody tr:hover {
     margin-bottom: 2px;
 }
 .dropdown-content-a:hover{
-    color: #2ca01c;
+    color: #03AE66;
     background-color: rgb(219, 219, 219);
 }
 .drop-down-content-selected{
-    background-color: #2ca01c;
+    background-color: #03AE66;
     color: #fff;
 }
 .drop-down-content-selected:hover{
-    background-color: #2ca01c;
+    background-color: #03AE66;
     color: #fff;
 }
 

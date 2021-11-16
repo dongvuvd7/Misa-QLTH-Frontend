@@ -1,16 +1,16 @@
 /* Màu của button add */
 .primary-color{
-    background-color: #2ca01c;
+    background-color: #03AE66;
 }
 .primary-color:hover{
-    background-color: #2a7920;
+    background-color: #0bc276;
 }
 
 .default-color{
     background-color: rgb(255, 255, 255);
 }
 .default-color:hover{
-    background-color: rgb(231, 231, 231);
+    background-color: rgb(218, 218, 218);
 }
 
 /* Màu của button xóa */

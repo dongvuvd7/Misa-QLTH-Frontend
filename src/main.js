@@ -4,7 +4,7 @@ import '../src/assets/font/fontawesome-5.15.1/css/all.min.css'
 import Vuelidate from 'vuelidate'
 import VueRouter from 'vue-router'
 
-// import vuetify from './plugins/vuetify' // path to vuetify export
+import vuetify from './plugins/vuetify' // path to vuetify export
 
 
 Vue.config.productionTip = false
@@ -33,7 +33,7 @@ const router = new VueRouter({
 
 
 new Vue({
-  // vuetify,
+  vuetify,
   router,
   render: h => h(App),
 }).$mount('#app')

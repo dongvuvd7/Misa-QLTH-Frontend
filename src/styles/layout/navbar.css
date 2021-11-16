@@ -52,7 +52,7 @@
 
 .router-link-active{
     background: #404f64;
-    border-left: 4px solid #0DD469;
+    border-left: 4px solid #03AE66;
     color: #0DD469;
     font-weight: bold;
 }
@@ -65,7 +65,7 @@
     width: 28px;
     height: 100%;
     padding-right: 8px;
-    margin-right: 8px;
+    margin-right: 15px;
 }
 .icon-1{
     background: url('../../assets/Icons/ic_TongQuan.svg') no-repeat;

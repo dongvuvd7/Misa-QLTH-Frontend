@@ -1,5 +1,5 @@
 <template>
-    <div class="dialog">
+    <div class="dialog" data-app>
         <div class="model" @click="hideDialogDataCondition()"></div>
         <div class="dialog-content">
             <div class="left-dialog-content">
@@ -28,9 +28,9 @@
                             
                             <div class="header">
                                 <div id="title">Thêm hồ sơ Cán bộ, Giáo viên</div>
-                                <!-- <button class="btn-help">
+                                <button class="btn-help">
                                     <span class="tooltiptext">Để biết thêm thông tin, tham khảo google.com hì</span>
-                                </button> -->
+                                </button>
                                 <button class="btn-X" @click="hideDialogDataCondition()"></button>
                             </div>
 
@@ -111,44 +111,103 @@
                                     </div>
                                 </div>
                                 <div class="input_bar" style="width: 50%; margin-right: 2px;">
-                                    <div class="title-blank-box" style="position: relative; margin-right: 3px;"><b>QL theo môn</b>
+                                    <div class="title-blank-box" style="position: relative; margin-right: 4px;"><b>QL theo môn</b>
                                     </div>
-                                    <input type="text" class="fullname-blank-box"
+                                    <!-- <input type="text" class="fullname-blank-box"
                                         v-model="teacher.teacherSubject"
-                                    />
+                                    /> -->
 
 
-                                                <!-- <v-combobox
-                                                    v-model="select"
-                                                    :items="items"
-                                                    clearable
-                                                    dense
-                                                    multiple
-                                                    outlined
-                                                    small-chips
-                                                    solo
-                                                ></v-combobox> -->
+                                    <v-combobox
+                                        style="width: 65%;"
+                                        v-model="itemSubjects"
+                                        :items="listItemSubjects"
+                                        multiple
+                                        outlined
+                                        dense
+                                        clearable
+                                        small-chips
+
+                                    ></v-combobox>
+
+                                    <!-- combobox -->
+                                    <!-- <div class="dropdown-text-and-icon" :class="{'blank-box-invalid': isValid.groupName == false}"
+                                        style="width: 65%"
+                                    >
+                                        <input type="text" class="input-blank-box item-selected" 
+                                            @focus="showDropDownContent('teacherGroup')" 
+                                            @blur="hideDropDownContent('teacherGroup')" 
+                                            id="groupName"
+                                            v-model="teacher.teacherGroupName"
+                                            @mouseenter="mouseEnterError('teacherGroupName')"
+                                            @mouseleave="mouseLeaveError()"
+                                            @keyup="searchOption('teacherGroup')"
+                                            autocomplete="off"
+                                        />
+                                        <span class="close-item"></span>
+                                        <button id="dropdown-icon" @click="showDropDownContent('teacherGroup')" @blur="hideDropDownContent('teacherGroup')"></button>
+                                    </div>
+                                    <div id="dropdown">     
+                                        <div class="dropdown-content" :class="{'dialog_hide': !isShowOption.teacherGroup}"
+                                            style="width: 200px;"
+                                         >
+                                            <div class="dropdown-content-a" 
+                                                :class="{'drop-down-content-selected' : option.id == teacher.teacherGroup}"
+                                                v-for="option in listOptions.teacherGroup" 
+                                                :key="option.id" 
+                                                @click="chooseOption(option, 'teacherGroup')" 
+                                                @mouseenter="enterClick()" 
+                                                @mouseleave="leaveClick()"
+                                            >
+                                            
+                                                <input type="checkbox" class="btn-check" style="line-height: 56px;"
+                                                    :value="option.id"
+                                                />
+                                                    {{option.name}}
+                                            
+                                            </div>
+                                        </div>
+                                    </div> -->
 
 
                                 </div>    
                             </div>
 
                             <div style="display: flex; align-items: center">
-                                <div style="position: relative; width: 108px; height: 32px; line-height: 22px;"><b>QL kho, phòng</b> </div>
-                                <input type="text" class="medium-blank-box" v-model="teacher.teacherRoom"/>
+                                <div style="position: relative; width: 108px; height: 40px; line-height: 45px;"><b>QL kho, phòng</b> </div>
+                                <!-- <input type="text" class="medium-blank-box" v-model="teacher.teacherRoom"/> -->
+
+                                <v-combobox
+                                    style="width: 65%;"
+                                    v-model="itemRooms"
+                                    :items="listItemRooms"
+                                    multiple
+                                    outlined
+                                    dense
+                                    clearable
+                                    small-chips
+
+                                ></v-combobox>
+
                             </div>
 
                             <div style="display: flex; align-items: center">
                                 
                                 <input type="checkbox" class="btn-check" style="line-height: 56px;"
-                                    />
+                                    :checked="teacher.teacherQltb == 1"
+                                    @click="changeTeacherCheckbox('Qltb')"
+                                />
                                 <div class="title-checkbox" style="margin-top: 3px; line-height: 56px;">Trình độ nghiệp vụ QLTB</div>
 
                                 <input type="checkbox" class="btn-check" style="line-height: 56px;"
-                                    />
+                                    :checked="teacher.teacherStatus == 1"
+                                    @click="changeTeacherCheckbox('Status')"
+                                />
                                 <div class="title-checkbox" style="margin-top: 3px; line-height: 56px; margin-right: 52px;">Đang làm việc</div>
 
-                                <div class="date-stop-working" style="display: flex; height: 56px;">
+                                <div class="date-stop-working" style="display: flex; height: 56px; margin-left: 9px;"
+                                    :class="{'date-area-hide': teacher.teacherStatus == 1}"
+                                >
                                     <div style="margin-right: 8px; line-height: 56px;">Ngày nghỉ việc</div>
                                     <date-pick
                                         style="width: 150px; line-height: 56px;"
@@ -165,7 +224,7 @@
             </div>
 
             <div class="footer">
-                <button class="btn-small cancel" @click="hideDialogDataCondition()">Đóng</button>
+                <button class="btn-small cancel default-color" @click="hideDialogDataCondition()">Đóng</button>
                 <button class="btn-small post primary-color" @click="btnSave()">Lưu</button>
                 <button class="btn-post-and-put primary-color" @click="btnSaveAndAdd()">Lưu và thêm</button>
             </div>
@@ -223,11 +282,47 @@ export default {
     },
 
     created() {
+        //Khi ở trạng thái form thêm mới thì mặc định set teacherStatus = 1
+        // if(this.formmode == Enums.FormMode.Add){
+        //     this.teacher.teacherStatus = 1;
+        // }
+
+        //Tách 
+        if(this.formmode == Enums.FormMode.Edit){
+            this.itemSubjects = this.teacher.teacherSubject.split(",");
+            this.itemRooms = this.teacher.teacherRoom.split(",");
+        }
+
 
     },
 
     data() {
         return {
+
+            itemSubjects: [],
+            listItemSubjects: [
+                'Toán',
+                'Lý',
+                'Hóa',
+                'Sinh',
+                'Ngữ Văn',
+                'Lịch sử',
+                'Tin',
+                'Anh văn',
+                'Địa',
+                'Thể chất',
+                'Công dân',
+            ],
+
+            itemRooms: [],
+            listItemRooms: [
+                'Phòng Toán Lý',
+                'Phòng Hóa Sinh',
+                'Phòng Anh Văn',
+                'Phòng chung',
+            ],
+
+
 
             isShowOption: {
                 teacherGroup: false,
@@ -312,13 +407,23 @@ export default {
 
         //copy teacher sang 1 object khac de so xem co su thay doi khong?
         this.initialTeacher = {...this.teacher};
+
     },
 
     methods: {
+        
         /**
-         * Cụm hàm format
-         * CreatedBy: VDDong (17/06/2021)
+        Thay đổi teacherQltb hoặc teacherStatus khi nhấn vào tích checkbox
+        Hàm dùng chung
+        CreatedBy: 
          */
+         changeTeacherCheckbox(type){
+             var property = 'teacher' + type;
+             if(!this.teacher[property] || this.teacher[property] == 0) this.teacher[property] = 1;
+             else if(this.teacher[property] == 1) this.teacher[property] = 0;
+             console.log(this.teacher[property], property);
+
+         },
 
         /**
          * So sánh 2 Object để kiểm tra xem dữ liệu đã thay đổi chưa
@@ -590,6 +695,12 @@ export default {
          */
         //Cất
         btnSave(){
+            // console.log(this.select, 'select');
+            // console.log(this.select2, 'select2');
+            var subjects = this.itemSubjects.toString();
+            var rooms = this.itemRooms.toString();
+            console.log(subjects, 'itemSubjects');
+            console.log(rooms, 'itemRooms');
             this.formValidation();
             if(this.isAppropriate){
                 this.formmodeValidation().then(() => this.hideDialog());
@@ -612,12 +723,47 @@ export default {
 
 <style scoped>
 
+    .item-selected{
+        background: #dfdfdf;
+        color: #000;
+        float: left;
+        font-size: 12px;
+        padding: 2px 5px;
+        border-radius: 0px !important;
+        border: 1px solid #DDD;
+        margin: 1px 0px 1px 0;
+        max-width: 100px;
+        height: 24px !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: unset;
+        white-space: pre;
+    }
+    .close-item{
+        padding: 2px 5px;
+        /* border-radius: 4px; */
+        border: 1px solid #DDD;
+        width: 20px;
+        height: 24px;
+        background: #dfdfdf;
+        cursor: pointer;
+        float: right;
+        background-image: url('../../../assets/img/ic_x.png');
+        background-position: -5px -1px;
+    }
+
+
+
+
     b{
     font-size: 13px;
     }
 
     .dialog_hide {
         display:none;
+    }
+    .date-area-hide{
+        display: none !important;
     }
     .model {
         position: fixed;
@@ -661,16 +807,18 @@ export default {
         font-weight: 500;
     }
     .btn-help{
-        height: 48px;
-        width: 48px;
+        height: 20px;
+        width: 20px;
         position: absolute;
-        right: 45px;
-        top: -10px;
+        right: 25px;
+        top: 1px;
         min-width: 24px;
         min-height: 24px;
-        background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat;
+        background: url('../../../assets/img/ic-help.svg') no-repeat;
         cursor: pointer;
-        background-position: -70px -132px;
+        background-position: center;
+        background-size: 17px;
+        /* background-position: -70px -132px; */
         border: none;
         outline: none;
         border-radius: 0px 4px 0px 4px;
@@ -711,13 +859,13 @@ export default {
             background-size: contain;
         }
         .btn-add-avt{
-            width: 162px;
+            width: 160px;
             height: 30px;
             margin-left: 15px;
             text-align: center;
             line-height: 30px;
             color: #fff;
-            background-color: #2ca01c;
+            background-color: #03AE66;
             cursor: pointer;
         }
         .clm1-name{
@@ -767,7 +915,7 @@ export default {
         outline: none;
     }
     .code-blank-box:focus{
-        border-color: #2ca01c;
+        border-color: #03AE66;
     }
 
     .fullname-blank-box{
@@ -783,7 +931,7 @@ export default {
         outline: none;
     }
     .fullname-blank-box:focus{
-        border-color: #2ca01c;
+        border-color: #03AE66;
     }
     .medium-blank-box{
         width: calc(100% - 108px);
@@ -800,7 +948,7 @@ export default {
         outline: none;
     }
     .medium-blank-box:focus{
-        border-color: #2ca01c;
+        border-color: #03AE66;
     }
     .btn-check{
         width: 18px;
@@ -827,7 +975,7 @@ export default {
     }    
         .cancel{
             position: absolute;
-            right: 250px;
+            right: 210px;
         }
         .post{
             color: white;
@@ -857,6 +1005,7 @@ export default {
         height: 30px;
         line-height: 30px;
         border-radius: 4px;
+        z-index: 3;
     }
 
     /* Thông báo khi trỏ chuột vào icon dấu hỏi (đã tạm ẩn đi) */
@@ -881,6 +1030,8 @@ export default {
     }
 
 
+
+
 /**
   Dropdown
 */
@@ -902,7 +1053,7 @@ export default {
     align-items: center;
 }
 .dropdown-text-and-icon:focus-within{
-    border-color: #2ca01c;
+    border-color: #03AE66;
 }
 .input-blank-box{
     height: 30px;
@@ -961,15 +1112,15 @@ export default {
     margin-bottom: 2px;
 }
 .dropdown-content-a:hover{
-    color: #2ca01c;
+    color: #03AE66;
     background-color: rgb(219, 219, 219);
 }
 .drop-down-content-selected{
-    background-color: #2ca01c;
+    background-color: #03AE66;
     color: #fff;
 }
 .drop-down-content-selected:hover{
-    background-color: #2ca01c;
+    background-color: #03AE66;
     color: #fff;
 }
 

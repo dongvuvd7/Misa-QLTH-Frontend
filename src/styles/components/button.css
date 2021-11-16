@@ -18,7 +18,6 @@ input[type="file"] {
     display: none;
   }
 .btn-add-excel {
-    height: 48%;
     display: inline-block;
     padding: 6px;
     cursor: pointer;
@@ -45,7 +44,7 @@ input[type="file"] {
 */
 .btn-small{
     height: 36px;
-    min-width: 100px;
+    /* min-width: 100px; */
     padding: 8px 20px;
     border: 1px solid #8d9096;
     color: #111;
