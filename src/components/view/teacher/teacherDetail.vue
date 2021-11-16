@@ -65,6 +65,7 @@
                                     <div class="title-blank-box" style="position: relative"><b>Số điện thoại</b>
                                     </div>
                                     <input type="text" class="code-blank-box"
+                                        :class="{'blank-box-invalid': isValid.phone == false}" 
                                         v-model="teacher.teacherPhone"
                                     />
                                 </div>
@@ -620,6 +621,16 @@ export default {
          * CreatedBy: VDDong (17/06/2021)
          */
         formValidation(){
+            //Gán dữ liệu cho teacherSubject và teacherRoom
+            var subjects = this.itemSubjects.toString();
+            var rooms = this.itemRooms.toString();
+            console.log(subjects, 'itemSubjects');
+            console.log(rooms, 'itemRooms');
+            this.teacher.teacherSubject = subjects;
+            this.teacher.teacherRoom = rooms;
+            if(this.teacher.teacherSubject == "") this.teacher.teacherSubject = null;
+            if(this.teacher.teacherRoom == "") this.teacher.teacherRoom = null;
+
             //Validate tên tổ chuyên môn
             this.groupNameValidation(this.teacher.teacherGroupName);
             //Validate tên nhân viên không được trống hoặc là khoảng trắng
@@ -696,11 +707,45 @@ export default {
             console.log(this.teacher);
 
             if(this.formmode == Enums.FormMode.Add) {
-                console.log('post teacher')
+                return axios
+                    .post(Resources.API.GetAll, this.teacher)
+                    .then((res) => {
+                        console.log(res);
+                        return Promise.resolve();
+                    })
+                    .catch((res) => {
+                        var errorContent = res.response.data.devMsg;
+                        console.log(errorContent);
+
+                        if(errorContent.includes("Mã cán bộ")) this.isValid.teacherCode = false;
+                        if(errorContent.includes("Số điện thoại")) this.isValid.phone = false;
+                        if(errorContent.includes("Email")) this.isValid.email = false;
+
+                        this.errorMsg = errorContent;
+                        this.isErrorDialogShow = true;
+                        return Promise.reject();
+                    })
 
             }
             else if(this.formmode == Enums.FormMode.Edit){
-                console.log('put teacher')
+                return axios
+                    .put(Resources.API.GetAll + "/" + this.teacher.teacherId, this.teacher)
+                    .then((res) => {
+                        console.log(res);
+                        return Promise.resolve();
+                    })
+                    .catch((res) => {
+                        var errorContent = res.response.data.devMsg;
+                        console.log(errorContent);
+
+                        if(errorContent.includes("Mã cán bộ")) this.isValid.teacherCode = false;
+                        if(errorContent.includes("Số điện thoại")) this.isValid.phone = false;
+                        if(errorContent.includes("Email")) this.isValid.email = false;
+
+                        this.errorMsg = errorContent;
+                        this.isErrorDialogShow = true;
+                        return Promise.reject();
+                    })
             }
         },
 
@@ -709,14 +754,6 @@ export default {
          */
         //Cất
         btnSave(){
-            // console.log(this.select, 'select');
-            // console.log(this.select2, 'select2');
-            var subjects = this.itemSubjects.toString();
-            var rooms = this.itemRooms.toString();
-            console.log(subjects, 'itemSubjects');
-            console.log(rooms, 'itemRooms');
-            this.teacher.teacherSubject = subjects;
-            this.teacher.teacherRoom = rooms;
             console.log(this.teacher);
             this.formValidation();
             if(this.isAppropriate){

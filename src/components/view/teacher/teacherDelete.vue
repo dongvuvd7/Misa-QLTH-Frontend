@@ -17,6 +17,7 @@
 <script>
 
 import axios from 'axios';
+import Resources from '../../common/base/resource.js';
 const getAll = "https://localhost:44342/api/v1/Teachers/";
 
 export default {
@@ -53,7 +54,7 @@ export default {
         btnDelete() {
 
             axios
-                .delete(getAll + this.teacher.teacherId) //xóa nhân viên
+                .delete(Resources.API.GetAll + "/" + this.teacher.teacherId) //xóa nhân viên
                 .then((res) => {
                     console.log(res);
                     this.hideDialog();
