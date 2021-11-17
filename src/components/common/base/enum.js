@@ -52,6 +52,12 @@ const Enum = {
         AV: "Tổ Anh văn",
     },
 
+    Value: {
+        Yes: 'x',
+        YesInt: 1,
+        NoInt: 0,
+    }
+
     
 
 

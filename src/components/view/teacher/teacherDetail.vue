@@ -293,8 +293,12 @@ export default {
         
         if(this.formmode == Enums.FormMode.Edit){
             //Tách subjects và room để bind lên combobox
-            this.itemSubjects = this.teacher.teacherSubject.split(",");
-            this.itemRooms = this.teacher.teacherRoom.split(",");
+            if(this.teacher.teacherSubject != null) {
+                this.itemSubjects = this.teacher.teacherSubject.split(",");
+            }
+            if(this.teacher.teacherRoom != null) {
+                this.itemRooms = this.teacher.teacherRoom.split(",");
+            }
 
             //Xác định trạng thái công việc (teacherStatus) để xác định có hiện date area (ngày nghỉ việc) hay không
             if(this.teacher.teacherStatus == 1) this.isShowDateArea = false;
@@ -630,6 +634,8 @@ export default {
             this.teacher.teacherRoom = rooms;
             if(this.teacher.teacherSubject == "") this.teacher.teacherSubject = null;
             if(this.teacher.teacherRoom == "") this.teacher.teacherRoom = null;
+            //
+            if(!this.teacher.teacherStopday) this.teacher.teacherStopday = null;
 
             //Validate tên tổ chuyên môn
             this.groupNameValidation(this.teacher.teacherGroupName);
@@ -692,6 +698,12 @@ export default {
          * CreatedBy: VDDong (17/06/2021)
          */
         resetTeacher(){
+            //reset lại teacherSubjects và teacherRooms
+            this.itemSubjects = [];
+            this.itemRooms = [];
+            //Nếu đang bật date area (ngày nghỉ việc) thì ẩn nó đi
+            this.isShowDateArea = false;
+            //Gọi hàm bật dialog form thêm bên teacherList
             this.$emit('showTeacherDialog');
             this.focusInput();
         },
@@ -735,6 +747,7 @@ export default {
                         return Promise.resolve();
                     })
                     .catch((res) => {
+                        console.log(res.response);
                         var errorContent = res.response.data.devMsg;
                         console.log(errorContent);
 

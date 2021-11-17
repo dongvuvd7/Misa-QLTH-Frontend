@@ -120,7 +120,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="teacher in teachers" :key="teacher.teacherId">
+                                    <tr v-for="teacher in teachers" :key="teacher.teacherId" @dblclick="showTeacherDetail(teacher.teacherId)">
                                         <td>
                                             <input
                                                 type="checkbox"
@@ -470,6 +470,7 @@ export default {
                 this.formmode = Enums.FormMode.Add;
                 this.selectedTeacher = {};
                 this.selectedTeacher.teacherCode = res.data;
+                this.selectedTeacher.teacherStatus = 1;
             })
             .catch((res) => {
                 console.log(res);
@@ -904,14 +905,14 @@ export default {
         //Tạo teacher mới để thêm lần lượt
         //File excel phải định dạng tiêu đề từng cột không dấu không cách như đặt tên biến thì mới chuyển thành thuộc tính teacher được
         var newTeacher = {};
-        newTeacher.teacherCode = this.listRecordsExcel[i].Ma_NV;
-        newTeacher.teacherName = this.listRecordsExcel[i].Ten_NV;
-        newTeacher.gender = this.formatGenderFromExcelToDB(this.listRecordsExcel[i].Gioi_tinh);
-        newTeacher.dateOfBirth = this.formatDobFromExcelToDB(this.listRecordsExcel[i].Ngay_sinh);
-        newTeacher.jobTitle = this.listRecordsExcel[i].Chuc_danh;
-        newTeacher.groupId = this.formatGroupFromExcelToDB(this.listRecordsExcel[i].Don_vi);
-        newTeacher.bankAccount = this.listRecordsExcel[i].STK;
-        newTeacher.bankName = this.listRecordsExcel[i].Ten_ngan_hang;
+        newTeacher.teacherCode = this.listRecordsExcel[i].SHCB;
+        newTeacher.teacherName = this.listRecordsExcel[i].Ho_va_ten;
+        newTeacher.teacherPhone = this.listRecordsExcel[i].So_dien_thoai;
+        newTeacher.teacherGroup = this.formatGroupFromExcelToDB(this.listRecordsExcel[i].To_chuyen_mon);
+        newTeacher.teacherSubject = this.listRecordsExcel[i].QLTB_mon;
+        newTeacher.teacherRoom = this.listRecordsExcel[i].QL_kho_phong;
+        newTeacher.teacherQltb = this.formatStatusFromExcelToDB(this.listRecordsExcel[i].Dao_tao_QLTB);
+        newTeacher.teacherStatus = this.formatStatusFromExcelToDB(this.listRecordsExcel[i].Dang_lam_viec);
         console.log(newTeacher);
         //Gọi API thêm từng newTeacher vào database
       await  axios
@@ -920,14 +921,12 @@ export default {
             console.log(res);
             countAddSuccess++;
             this.loadData();
-            // return Promise.resolve(); //Dùng async / await rồi thì thôi Promise
           })
           .catch((res) => {
-            console.log(res);
+            console.log(res.response);
             var errorFromBackend = res.response.data.devMsg;
-            listRecordsAddFail.push(errorFromBackend.substring(13, 23));
+            listRecordsAddFail.push(errorFromBackend.substring(9, 17));
             console.log("Error from backend: " + errorFromBackend);
-            // return Promise.reject();
           })
       }
       //hiện popup báo số bản ghi đã thêm thành công, không thành công (làm 2 trong 1 luôn)
@@ -939,6 +938,7 @@ export default {
       this.listRecordsExcel = [];
       // this.hidePopUp();
     },
+
     //Hàm format ngày sinh từ file excel sang chuẩn định dạng yyyy-MM-dd để có thể add vào database
     formatDobFromExcelToDB(excelDob){
       var stringDob = excelDob + "";
@@ -948,7 +948,7 @@ export default {
       // var dob = new Date(excelDob).toISOString();
       // return dob;
     },
-    //Hàm format tên đơn vị từ file excel sang groupId để thêm vào DB
+    //Hàm format tên tổ từ file excel sang groupId để thêm vào DB
     formatGroupFromExcelToDB(groupName){
       if(groupName == Enums.Group.VP) return Enums.Group.VPId;
       else if(groupName == Enums.Group.LH) return Enums.Group.LHId
@@ -957,11 +957,10 @@ export default {
       else if(groupName == Enums.Group.NV) return Enums.Group.NVId
       else if(groupName == Enums.Group.AV) return Enums.Group.AVId
     },
-    //Hàm format gender name từ file excel sang dạng int để thêm vào DB
-    formatGenderFromExcelToDB(genderName){
-      if(genderName == Enums.Gender.Female) return Enums.Gender.FemaleId;
-      else if(genderName == Enums.Gender.Male) return Enums.Gender.MaleId;
-      else if(genderName == Enums.Gender.Rest) return Enums.Gender.RestId;
+    //Hàm format teacherQltb và teacherStatus từ file excel sang dạng int để thêm vào DB
+    formatStatusFromExcelToDB(excelValue){
+      if(excelValue == Enums.Value.Yes) return Enums.Value.YesInt;
+      else return Enums.Value.NoInt;
     },
 
 
