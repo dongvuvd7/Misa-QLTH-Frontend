@@ -3,16 +3,18 @@
     <div class="dialog" :class="{'dialog_hide': !isShow}">
         <div id="model" @click="hidePopUp()"></div>
         <div class="dialog-content">
+                <div class="title-dialog">
+                    <b style="font-size: 20px; color: #B1B1B1">Thông báo</b>
+                    <button class="btn-X" @click="hidePopUp()"></button>
+                </div>
                 <div class="header">
-                    <button class="btn-warning btn-warning-dc"></button>
+                    <!-- <button class="btn-warning btn-warning-dc"></button> -->
                     <div style="padding-top: 10px;">{{errorMsg}}</div>
                 </div>
                 <div class="footer">
-                    <button class="btn-small cancel" @click="hidePopUp()">Hủy</button>
-                    <div class="footer-2">
-                        <button class="btn-small cancel" @click="hideDialog()">Không</button>
-                        <button class="btn-confirm-dc primary-color" @click="hideDialogAndSaveData()">Có</button>
-                    </div>
+                        <button style="margin-right: 10px;" class="btn-here btn-small default-color cancel" @click="hidePopUp()">Đóng</button>
+                        <button style="margin-right: 10px;" class=" btn-here btn-small default-color cancel" @click="hideDialog()">Không</button>
+                        <button class=" btn-here btn-confirm-dc primary-color" @click="hideDialogAndSaveData()">Lưu</button>
                 </div>
         </div>
     </div>
@@ -93,10 +95,10 @@ export default {
     }
     .dialog-content{
         position: fixed;
-        width: 444px;
+        width: 400px;
         height: 180px;
         top: calc(50% - 100px);
-        left: calc(50% - 222px);
+        left: calc(50% - 200px);
         background-color: white;
         border-radius: 3px;
         box-sizing: border-box;
@@ -104,20 +106,28 @@ export default {
         padding-right: 32px;
         z-index: 5;
     }
+    .title-dialog{
+        width: 100%;
+        height: 10%;
+        margin-top: 5%;
+    }
     .header{
         width: 100%;
-        height: 50%;
+        height: 35%;
         display: flex;
         align-items: center;
-        border-bottom: 1px solid #babec5;
+        /* border-bottom: 1px solid #babec5; */
     }
     .footer{
         width: 100%;
-        height: 50%;
+        height: 30%;
         display: flex;
         position: relative;
-        justify-content: space-between;
+        justify-content: right;
         align-items: center;
+    }
+    .btn-here{
+        width: 100px;
     }
     .footer-2{
         width: 150px;
@@ -136,6 +146,18 @@ export default {
         color: #fff;
         border-radius: 3px;
         cursor: pointer;
+    }
+    .btn-X{
+        height: 20px;
+        width: 20px;
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        background: url("../../../assets/Icons/ic_X_2.png") no-repeat;
+        cursor: pointer;
+        border: none;
+        outline: none;
+        border-radius: 0px 4px 0px 4px;
     }
     
 </style>

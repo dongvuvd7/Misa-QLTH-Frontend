@@ -751,6 +751,8 @@ export default {
                     .post(Resources.API.GetAll, this.teacher)
                     .then((res) => {
                         console.log(res);
+                        var msg = "Thêm thành công"
+                        this.$emit('turnPopUpSuccess', msg);
                         return Promise.resolve();
                     })
                     .catch((res) => {
@@ -772,6 +774,8 @@ export default {
                     .put(Resources.API.GetAll + "/" + this.teacher.teacherId, this.teacher)
                     .then((res) => {
                         console.log(res);
+                        var msg = "Sửa thành công"
+                        this.$emit('turnPopUpSuccess', msg);
                         return Promise.resolve();
                     })
                     .catch((res) => {

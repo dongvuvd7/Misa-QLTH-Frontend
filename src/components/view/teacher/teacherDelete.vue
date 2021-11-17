@@ -14,6 +14,8 @@
                     <button class="btn-confirm-delete primary-color" @click="btnDelete()">Đồng ý</button>
                 </div>
         </div>
+
+
     </div>
 </template>
 
@@ -21,16 +23,22 @@
 
 import axios from 'axios';
 import Resources from '../../common/base/resource.js';
-const getAll = "https://localhost:44342/api/v1/Teachers/";
+
 
 export default {
+
+    components: {
+
+  },
+
     created() {
 
     },
 
     data() {
         return{
-            
+            //Thông báo truyền về cho popup 3s
+            warningMsg: ""
         }
     },
 
@@ -60,10 +68,15 @@ export default {
                 .delete(Resources.API.GetAll + "/" + this.teacher.teacherId) //xóa nhân viên
                 .then((res) => {
                     console.log(res);
+                    console.log('xóa báo popup')
+                    this.warningMsg = "Xóa thành công!"
+                    this.$emit('turnPopUpSuccess', this.warningMsg);
                     this.hideDialog();
                 })
                 .catch((res) => {
                     console.log(res);
+                    this.$emit('turnPopUpSuccess', this.warningMsg);
+                    this.hideDialog();
                 })
 
             
@@ -91,7 +104,7 @@ export default {
     .dialog-content{
         position: fixed;
         width: 444px;
-        height: 200px;
+        height: 150px;
         top: calc(50% - 100px);
         left: calc(50% - 222px);
         background-color: white;
@@ -103,7 +116,7 @@ export default {
     }
     .title-dialog{
         width: 100%;
-        height: 20%;
+        height: 10%;
         margin-top: 5%;        
     }
     .header{

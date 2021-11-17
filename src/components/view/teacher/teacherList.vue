@@ -187,11 +187,15 @@
             :teacher="selectedTeacher"
             :formmode="formmode"
             @showTeacherDialog="showTeacherDialog"
+            @turnPopUpSuccess="showPopupSuccess"
+            @turnPopUpWarning="showPopupWarning"
         />
         <TeacherDelete
           :isShow="isShowDialogDelete"
           @hideDialog="hideDialog"
           :teacher="selectedTeacher"
+          @turnPopUpSuccess="showPopupSuccess"
+          @turnPopUpWarning="showPopupWarning"
         />
         <ErrorPopUp 
           :isShow="isErrorPopUpShow"
@@ -209,6 +213,14 @@
           :errorMsg="errorMsg"
           @hidePopUp="hidePopUp"
           @confirmDeleteMultiple="deleteMultiple"
+        />
+        <WarningPopUp 
+          :isShow="isShowWarningPopup"
+          :warningMsg="warningMsg"
+        />
+        <SuccessPopUp
+          :isShow="isShowSuccessPopup"
+          :warningMsg="warningMsg"
         />
 
         <!--loading -->
@@ -235,6 +247,9 @@ import AddFromExcelPopUp from './teacherAddFromExcel.vue';
 import ConfirmDeleteMultiplePopUp from './teacherConfirmMultipleDelete.vue';
 import xlsx from 'xlsx';
 
+import WarningPopUp from '../../common/pop-up/warningPopup.vue';
+import SuccessPopUp from '../../common/pop-up/successPopup.vue';
+
 import Enums from "../../common/base/enum.js";
 import Resources from "../../common/base/resource.js";
 
@@ -249,6 +264,9 @@ export default {
       ErrorPopUp,
       AddFromExcelPopUp,
       ConfirmDeleteMultiplePopUp,
+
+      WarningPopUp,
+      SuccessPopUp,
   },
 
   data() {
@@ -330,6 +348,11 @@ export default {
 
             //Biến ẩn hiện pop up xóa nhiều bản ghi
             isShowPopUpConfirmMultipleDelete: false,
+
+            //Biến ẩn hiện warning popup, success popup
+            isShowWarningPopup: false,
+            isShowSuccessPopup: false,
+            warningMsg: ""
       }
   }, //End Data
 
@@ -457,6 +480,25 @@ export default {
         },
       }
     },
+
+    /**
+     * Show popup báo thành công (popup 3s)
+     */
+    showPopupSuccess(msg){
+      console.log('show puss')
+      this.warningMsg = msg;
+      this.isShowSuccessPopup = true;
+      setTimeout(() => this.isShowSuccessPopup = false, 3000);
+    },
+    /**
+     * Show popup báo thành công (popup 3s)
+     */
+    showPopupWarning(msg){
+      console.log('show warn')
+      this.warningMsg = msg;
+      this.isShowWarningPopup = true;
+      setTimeout(() => this.isShowWarningPopup = false, 3000);
+    },
     
     /**
      * Cụm hàm đóng / mở dialog
@@ -533,10 +575,7 @@ export default {
             console.log(res);
           });
       },
-      //hiện thông báo đang hoàn thiện tính năng ngưng sử dụng
-      showStopUsingDialog(){
-        this.isShowDialogStopUsing = true;
-      },
+
       //ẩn dialog thêm và xóa
       hideDialog(){
         this.isShowDialogTeacher = false;
@@ -625,14 +664,7 @@ export default {
           else {
             axios
               .get(
-                  Resources.API.GetFilter + "pageSize=" +
-                              this.perPage +
-                              "&" +
-                              "pageIndex=" +
-                              this.currentPage +
-                              "&" +
-                              "filter=" +
-                              this.message
+                  Resources.API.GetFilter + "pageSize=" + this.perPage + "&" + "pageIndex=" + this.currentPage + "&" + "filter=" + this.message
               )
               .then((res) => {
               console.log(res);
@@ -789,10 +821,10 @@ export default {
         //Chưa biết cách xử lí bất đồng bộ nên tạm thời lưu mảng checked sang mảng mới newChecked rồi lấy id để xóa từ newChecked, sau đó
         //set this.checked = [] để tắt button xóa hàng loạt đi
         this.checked = [];
-        //hiện popup báo số bản ghi đã xóa
-        this.isErrorPopUpShow = true;
-        this.errorMsg = "Bạn đã xóa " + newChecked.length + " bản ghi nhân viên";
-
+        //hiện popup 3s báo số bản ghi đã xóa
+        var msg = "Bạn đã xóa " + newChecked.length + " bản ghi cán bộ giáo viên!";
+        this.showPopupSuccess(msg);
+        this.hidePopUp();
         //reset lại combobox (trong trường hợp sắp xếp, nhóm rồi xóa)
         this.refreshCombobox();
 
@@ -855,7 +887,8 @@ export default {
       if (!files.length) {
         return ;
       } else if (!/\.(xls|xlsx)$/.test(files[0].name.toLowerCase())) { //Nếu file không đúng định dạng
-        return alert(Resources.Notice.IncorrecExcelFile);
+        // return alert(Resources.Notice.IncorrecExcelFile);
+        return this.showPopupWarning(Resources.Notice.IncorrecExcelFile);
       }
       const fileReader = new FileReader();
       fileReader.onload = ev => {
@@ -886,7 +919,8 @@ export default {
           console.log('headers', headers);
           // Get header2-2
         } catch (e) {
-          return alert(Resources.Notice.ReadExcelFileFail);
+          // return alert(Resources.Notice.ReadExcelFileFail);
+          return this.showPopupWarning(Resources.Notice.ReadExcelFileFail);
         }
       };
       fileReader.readAsBinaryString(files[0]);
@@ -930,7 +964,7 @@ export default {
           })
       }
       //hiện popup báo số bản ghi đã thêm thành công, không thành công (làm 2 trong 1 luôn)
-      this.isErrorPopUpShow = true;
+      // this.isErrorPopUpShow = true;
       this.isErrorPopUpShow = true;
       this.errorMsg = "Bạn đã thêm thành công " + countAddSuccess + " bản ghi. " 
                       + "Thêm không thành công các bản ghi: " + listRecordsAddFail.toString();

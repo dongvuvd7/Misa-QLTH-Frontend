@@ -23,7 +23,7 @@ const Resource = {
         NullFullName: "Tên không được để trống!",
         NullTeacherCode: "Mã giáo viên không được để trống!",
         NullGroup: "Tên tổ chuyên môn không được để trống!",
-        DataChange: "Dữ liệu đã bị thay đổi. Bạn có muốn cất không?",
+        DataChange: "Dữ liệu đã bị thay đổi, bạn có muốn lưu lại không?",
         DateIdentityAndDobError: "Ngày cấp số CMND không được phép trước ngày sinh!",
         StopdayAndToday: "Ngày nghỉ việc không được lớn hơn ngày hiện tại!",
     },
