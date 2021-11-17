@@ -2,13 +2,16 @@
     <div class="dialog" :class="{'dialog_hide': !isShow}">
         <div id="model" @click="hideDialog()"></div>
         <div class="dialog-content">
+                <div class="title-dialog">
+                    <b style="font-size: 20px; color: #B1B1B1">Thông báo</b>
+                    <button class="btn-X" @click="hideDialog()"></button>
+                </div>
                 <div class="header">
-                    <button class="btn-warning"></button>
-                    <div style="">Bạn có thực sự muốn xóa Nhân viên <b>&#60;<span>{{teacher.teacherCode}}</span>&#62;</b> không?</div>
+                    <div style="">Bạn có chắc chắn muốn xóa Cán bộ giáo viên <b>&#60;<span>{{teacher.teacherCode}}</span>&#62;</b> không?</div>
                 </div>
                 <div class="footer">
-                    <button class="btn-small" @click="hideDialog()">Không</button>
-                    <button class="btn-confirm-delete primary-color" @click="btnDelete()">Có</button>
+                    <button class="btn-small btn-no" @click="hideDialog()">Đóng</button>
+                    <button class="btn-confirm-delete primary-color" @click="btnDelete()">Đồng ý</button>
                 </div>
         </div>
     </div>
@@ -98,16 +101,21 @@ export default {
         padding-right: 28px;
         z-index: 3;
     }
+    .title-dialog{
+        width: 100%;
+        height: 20%;
+        margin-top: 5%;        
+    }
     .header{
         width: 100%;
-        height: 60%;
+        height: 35%;
         display: flex;
         align-items: center;
-        border-bottom: 1px solid #babec5;
+        /* border-bottom: 1px solid #babec5; */
     }
     .footer{
         width: 100%;
-        height: 40%;
+        height: 30%;
         display: flex;
         align-items: center;
     }
@@ -132,5 +140,21 @@ export default {
         color: #fff;
         border-radius: 3px;
         cursor: pointer;
+    }
+    .btn-no{
+        position: absolute;
+        right: 120px;
+    }
+    .btn-X{
+        height: 20px;
+        width: 20px;
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        background: url("../../../assets/Icons/ic_X_2.png") no-repeat;
+        cursor: pointer;
+        border: none;
+        outline: none;
+        border-radius: 0px 4px 0px 4px;
     }
 </style>

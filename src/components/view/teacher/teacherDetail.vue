@@ -374,7 +374,7 @@ export default {
                 teacherCodeMessage: true,
                 teacherNameMessage: true,
                 groupNameMessage: true,
-                dateIdentityAndDob: true,
+                stopdayAndToday: true,
 
                 phone: true,
                 telephone: true,
@@ -465,6 +465,7 @@ export default {
             this.isValid.teacherName = true;
             this.isValid.teacherCode = true;
             this.isValid.groupName = true;
+            this.isValid.stopdayAndToday = true;
             //Gọi phương thức ẩn của thằng cha là teacherList
             this.$emit('hideDialog');
         },
@@ -589,7 +590,7 @@ export default {
         },
 
         /**
-         * Validate tên đơn vị (phòng ban)
+         * Validate tên tổ chuyên môn
          * CreatedBy: VDDong (17/06/2021)
          */
         groupNameValidation(value){
@@ -619,6 +620,29 @@ export default {
             }
         },
 
+        /**
+         * Validate ngày không được lớn hơn ngày hiện tại
+         * CreatedBy: VDDong
+         */
+        dateValidation(prop){
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            today = yyyy + "-"+ mm + "-" + dd;
+
+            console.log(this.teacher.teacherStopday, 'teacherStopday');
+            console.log(today, 'today');
+            if(this.teacher[prop] > today){
+                console.log("date bigger")
+                this.isValid.stopdayAndToday = false;
+                this.isErrorPopUpShow = true;
+                this.errorMsg = Resources.ErrorMessage.StopdayAndToday;
+            } else {
+                this.isValid.stopdayAndToday = true;
+            }
+        },
+
 
         /**
          * Validate trước khi request lên database
@@ -634,9 +658,11 @@ export default {
             this.teacher.teacherRoom = rooms;
             if(this.teacher.teacherSubject == "") this.teacher.teacherSubject = null;
             if(this.teacher.teacherRoom == "") this.teacher.teacherRoom = null;
-            //
+            //Fix lối nếu bấm xóa ngày thì bị lỗi, fix nếu xóa thì chuyển thành null
             if(!this.teacher.teacherStopday) this.teacher.teacherStopday = null;
 
+            //Validate ngày nghỉ việc không được lớn hơn ngày hiện tại
+            this.dateValidation('teacherStopday');
             //Validate tên tổ chuyên môn
             this.groupNameValidation(this.teacher.teacherGroupName);
             //Validate tên nhân viên không được trống hoặc là khoảng trắng
@@ -644,10 +670,12 @@ export default {
             //Validate mã nhân viên không được trống hoặc là khoảng trắng
             this.nullValidation(this.teacher.teacherCode, Resources.Property.TeacherCode);
             
+            
             //Nếu thỏa mã hết các validate thì chấp thuận
             if(this.isValid.teacherName == true
                 && this.isValid.teacherCode == true
                 && this.isValid.groupName == true
+                && this.isValid.stopdayAndToday == true
             ) this.isAppropriate = true;
             else this.isAppropriate = false;         
         },
@@ -712,7 +740,7 @@ export default {
          * Phân biệt post vs put, rồi post / put lên database
          * CreatedBy: VDDong (17/06/2021)
          */
-        formmodeValidation(){
+        callApiRequest(){
             
             // if(this.employee.identityDate == undefined) this.employee.identityDate = null;
             // if(this.employee.dateOfBirth == undefined) this.employee.dateOfBirth = null;
@@ -770,14 +798,14 @@ export default {
             console.log(this.teacher);
             this.formValidation();
             if(this.isAppropriate){
-                this.formmodeValidation().then(() => this.hideDialog());
+                this.callApiRequest().then(() => this.hideDialog());
             }
         },
         //Cất và thêm
         btnSaveAndAdd(){
             this.formValidation();
             if(this.isAppropriate){
-                this.formmodeValidation().then(() => this.resetTeacher());
+                this.callApiRequest().then(() => this.resetTeacher());
             }
         },
 

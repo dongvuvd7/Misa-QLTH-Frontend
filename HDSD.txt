@@ -1,8 +1,0 @@
-Bản UI Misa Amis dùng để luyện tập, bản đẹp chỉ có employee 
-Bản này đã sắp xếp lại forder css, đưa css button ra làm chung, file css color, ...
-Bản cha của nó là bản ui-misaamis-train (Misa Amis Update trong github) (bản cha chưa chỉnh sửa, sắp xếp lại css)
-Dùng backend của ui-misaamis-train (trong foder MISA.AMIS.NEWEST hay MisaAmisBackendUpdate)
-
-Dự tính bản này sẽ vẽ lại ui dialog, chỉnh thành nhiều ngân hàng (sẽ phải viết lại backend và database mới)
-
-Update(21/10/2021)

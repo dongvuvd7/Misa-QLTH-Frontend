@@ -19,12 +19,13 @@ const Resource = {
     },
 
     ErrorMessage: {
-        InvalidGroup: "Tên tổ chuyên môn không tồn tại trong hệ thống, vui lòng kiểm tra lại.",
-        NullFullName: "Tên không được để trống.",
-        NullTeacherCode: "Mã giáo viên không được để trống.",
-        NullGroup: "Tên tổ chuyên môn không được để trống.",
+        InvalidGroup: "Tên tổ chuyên môn không tồn tại trong hệ thống, vui lòng kiểm tra lại!",
+        NullFullName: "Tên không được để trống!",
+        NullTeacherCode: "Mã giáo viên không được để trống!",
+        NullGroup: "Tên tổ chuyên môn không được để trống!",
         DataChange: "Dữ liệu đã bị thay đổi. Bạn có muốn cất không?",
-        DateIdentityAndDobError: "Ngày cấp số CMND không được phép trước ngày sinh.",
+        DateIdentityAndDobError: "Ngày cấp số CMND không được phép trước ngày sinh!",
+        StopdayAndToday: "Ngày nghỉ việc không được lớn hơn ngày hiện tại!",
     },
 
     Property: {

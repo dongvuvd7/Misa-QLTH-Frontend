@@ -1,3 +1,5 @@
+<!--Dialog báo trùng mã, sai định dạng điện thoại, email, sai tên tổ chuyên môn -->
+
 <template>
 
     <div class="dialog" :class="{'dialog_hide': !isShow}">

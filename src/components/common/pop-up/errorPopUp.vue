@@ -1,3 +1,4 @@
+<!-- Popup báo không được để trống trường nhập liệu, thêm từ file excel, xóa bản ghi -->
 <template>
 
     <div class="dialog" :class="{'dialog_hide': !isShow}">

@@ -10,7 +10,8 @@
                 :class="{ disable: page == 1 }"
                 @click.prevent="$emit('onChangePage', 1)"
             >
-                <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+                <!-- <i class="fa fa-angle-double-left" aria-hidden="true"></i> -->
+                <div class="icon-toleft"></div>
             </div>
             <div
                 class="page"
@@ -20,16 +21,17 @@
                 <i class="fa fa-angle-left" aria-hidden="true"></i>
             </div>
 
+
             <!-- Hiển thị trang số 1 (trang đầu tiên) -->
-            <div
+            <!-- <div
                 class="page"
                 :class="{ active: page == 1 }"
                 @click.prevent="$emit('onChangePage', 1)"
             >
                 1
-            </div>
+            </div> -->
             <!-- Nếu page hiện tại > 3 thì hiện thị ... phía trước, kiểu : 1 .... 4 .... 10 -->
-            <div v-if="page > 3" class="page disable">...</div>
+            <!-- <div v-if="page > 3" class="page disable">...</div>
 
             <div
                 v-for="p in pages"
@@ -41,17 +43,28 @@
                 {{ p }}
             </div>
 
-            <div v-if="page < totalPages - 3" class="page disable">...</div>
+            <div v-if="page < totalPages - 3" class="page disable">...</div> -->
             
             <!-- Hiển thị trang cuối cùng -->
-            <div
+            <!-- <div
                 v-if="totalPages > 1"
                 class="page"
                 :class="{ active: page == totalPages }"
                 @click.prevent="$emit('onChangePage', totalPages)"
             >
                 {{ totalPages }}
-            </div>
+            </div> -->
+
+
+
+                <input type="text" class="page active" style="width: 60px; text-align: center; border-radius: 4px;"
+                    @change="changePage()"
+                    readonly
+                    v-model="page"
+                >
+
+
+
             <!-- Button Sau -->
             <div
                 class="page"
@@ -65,8 +78,12 @@
                 :class="{ disable: page == totalPages }"
                 @click.prevent="$emit('onChangePage', totalPages)"
             >
-                <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                <div class="icon-toright"></div>
             </div>
+
+            <div class="page"> <b>{{page}}/{{totalPages}}</b> trang</div>
+
             <div style="width: 10px"></div>
       </div>
     </div>
@@ -98,7 +115,25 @@ export default {
             console.log(ps);
             return ps;
         },
-    }
+    },
+
+    data() {
+        return {
+            thisPage: "",
+        }
+    },
+
+    created() {
+        this.thisPage = {...this.page};
+    },
+
+    methods: {
+
+        changePage(){
+            var intPage = parseInt(this.thisPage);
+            this.$emit('onChangePage', this.page);
+        },
+    },
 
 }
 </script>
@@ -138,4 +173,21 @@ export default {
     color: black;
     cursor: pointer;
 }
+
+.icon-toleft{
+    width: 20px;
+    height: 20px;
+    background-image: url('../../assets/Icons/ic_MoveToFirst.png');
+    background-position: center;
+    background-size: contain;
+}
+.icon-toright{
+    width: 20px;
+    height: 20px;
+    background-image: url('../../assets/Icons/ic_MoveToLast.png');
+    background-position: center;
+    background-size: contain;
+}
+
+
 </style>

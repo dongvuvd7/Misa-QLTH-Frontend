@@ -132,8 +132,8 @@
                                         <td style="text-transform: capitalize; color: #03AE66">{{ teacher.teacherName }}</td>
                                         <td>{{ teacher.teacherPhone }}</td>
                                         <td>{{ teacher.teacherGroup | groupFormatToTable }}</td>
-                                        <td>{{ teacher.teacherSubject }}</td>
-                                        <td>{{ teacher.teacherRoom }}</td>
+                                        <td>{{ teacher.teacherSubject | formatDisplayList }}</td>
+                                        <td>{{ teacher.teacherRoom | formatDisplayList }}</td>
                                         <td :class="{'tickbox': teacher.teacherQltb == 1}"></td>
                                         <td :class="{'tickbox': teacher.teacherStatus == 1}"></td>
                                     </tr>
@@ -170,7 +170,7 @@
                                 @onChangePage="onPageChange"
                             />
                           </div>
-                          (<b>{{this.teacherNumber}}</b> giáo viên)
+                          (<b style="margin-right: 4px;">{{this.teacherNumber}}</b>giáo viên)
                         </div>
                         <div id="footer-right">                          
                             <div id="footer-2">
@@ -989,6 +989,15 @@ export default {
       else if(groupId == Enums.Group.SSDId) return Enums.Group.SSD;
       else if(groupId == Enums.Group.NVId) return Enums.Group.NV;
       else if(groupId == Enums.Group.AVId) return Enums.Group.AV;
+    },
+
+    //định dạng lại hiển thị list môn, phòng
+    formatDisplayList(listValue){
+      if(listValue != null){
+        var arr =  listValue.split(",").toString();
+        var res = arr.replace(/,/g, ", ");
+        return res;
+      }
     }
 
   }, //End Filters
@@ -1087,7 +1096,7 @@ export default {
 #tablewrapper {
   background: #fff;
   color: #111;
-  height: calc(100% - 36px);
+  height: calc(100% - 24px);
   width: 100%;
   overflow: hidden;
   /* margin-right: 24px; */
