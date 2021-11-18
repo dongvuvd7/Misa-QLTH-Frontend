@@ -746,9 +746,21 @@ export default {
          * Thông báo validate gửi về từ server
          */
         validateFromServer(notice){
-            if(notice.includes(Resources.MsgFromServer.TeacherCode)) this.isValid.teacherCode = false;
-            if(notice.includes(Resources.MsgFromServer.Phone)) this.isValid.phone = false;
-            if(notice.includes(Resources.MsgFromServer.Email)) this.isValid.email = false;
+            if(notice.includes(Resources.MsgFromServer.TeacherCode)){
+                this.isValid.teacherCode = false;
+                this.isValid.phone = true;
+                this.isValid.email = true;
+            }
+            if(notice.includes(Resources.MsgFromServer.Phone)){
+                this.isValid.teacherCode = true;
+                this.isValid.phone = false;
+                this.isValid.email = true;
+            }
+            if(notice.includes(Resources.MsgFromServer.Email)){
+                this.isValid.teacherCode = true;
+                this.isValid.phone = true;
+                this.isValid.email = false;
+            }
 
             this.errorMsg = notice;
             this.isErrorDialogShow = true;

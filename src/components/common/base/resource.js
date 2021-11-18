@@ -8,7 +8,7 @@ const Resource = {
         GetFilter: "https://localhost:44342/api/v1/Teachers/Filter?",
         SortByCode: "https://localhost:44342/api/v1/Teachers/SortByCode?",
         SortByName: "https://localhost:44342/api/v1/Teachers/SortByName?",
-
+        DeleteMultiple: "https://localhost:44342/api/v1/Teachers/MultipleDelete/",
     },
 
     Notice: {
@@ -59,7 +59,10 @@ const Resource = {
         Record: " bản ghi. ",
         AddFail: "Thêm không thành công các bản ghi: ",
         Teacher: "teacher",
-        Name: "Name"
+        Name: "Name",
+        Comma: "%27%2C%27",
+        OpenBrackets: "%28%27",
+        CloseBrackets: "%27%29",
     }
 
 

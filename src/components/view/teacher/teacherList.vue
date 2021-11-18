@@ -99,7 +99,7 @@
                                             />
                                         </td>
                                         <td>{{ teacher.teacherCode }}</td>
-                                        <td style="text-transform: capitalize; color: #03AE66">{{ teacher.teacherName }}</td>
+                                        <td style="text-transform: capitalize; color: #0997EB">{{ teacher.teacherName }}</td>
                                         <td>{{ teacher.teacherPhone }}</td>
                                         <td>{{ teacher.teacherGroup | groupFormatToTable }}</td>
                                         <td>{{ teacher.teacherSubject | formatDisplayList }}</td>
@@ -283,12 +283,6 @@ export default {
                 {id: Enums.TypeSort.NameId, text: Enums.TypeSort.Name},
               ],
               Group: [
-                {id: Enums.Group.VPId, text: Enums.Group.VP},
-                {id: Enums.Group.LHId, text: Enums.Group.LH},
-                {id: Enums.Group.TTId, text: Enums.Group.TT},
-                {id: Enums.Group.SSDId, text: Enums.Group.SSD},
-                {id: Enums.Group.NVId, text: Enums.Group.NV},
-                {id: Enums.Group.AVId, text: Enums.Group.AV},
               ],
             },
             initialListOptions: {
@@ -297,12 +291,6 @@ export default {
                 {id: Enums.TypeSort.NameId, text: Enums.TypeSort.Name},
               ],
               Group: [
-                {id: Enums.Group.VPId, text: Enums.Group.VP},
-                {id: Enums.Group.LHId, text: Enums.Group.LH},
-                {id: Enums.Group.TTId, text: Enums.Group.TT},
-                {id: Enums.Group.SSDId, text: Enums.Group.SSD},
-                {id: Enums.Group.NVId, text: Enums.Group.NV},
-                {id: Enums.Group.AVId, text: Enums.Group.AV},
               ],
             },
 
@@ -368,6 +356,23 @@ export default {
         .catch((res) => {
             console.log(res);
         })
+
+        //Truyền dữ liệu (động) vào listOptions.Group
+        axios.get('https://localhost:44342/api/v1/Teachers/Group')
+        .then((res) => {
+          this.listOptions.Group = this.listOptions.Group.concat(
+            (res.data || []).map((item) => {
+              return {
+                id: item.groupId,
+                text: item.groupName,
+              }
+            })
+          )
+        })
+        .catch((res) => {
+          console.log(res);
+        })
+
     
   }, //End Created
 
@@ -742,29 +747,28 @@ export default {
         this.errorMsg = Resources.PartNotice.Delete + this.checked.length + Resources.PartNotice.RecordChoose;
       },
 
-      //Hàm thực thi xóa
+      //Hàm thực thi xóa nhiều
       deleteMultiple(){
         console.log("multiple delete");
         var newChecked = this.checked;
-        console.log(newChecked);
-        for(let i=0; i<newChecked.length; i++){
-          console.log(newChecked[i]);
-          axios
-            .delete(Resources.API.GetAll + "/" + newChecked[i])
-            .then(() => {
-              console.log(Resources.Notice.DeleteSuccess);
-              this.hideDialog();
-            })
-            .catch((res) => {
-              console.log(res);
-            })
+        var arrIds = newChecked.toString().split(",");
+        var stringIds = "";
+        for(let i=0; i<arrIds.length - 1; i++){
+          stringIds += (arrIds[i] + Resources.PartNotice.Comma);
         }
-        //Ở đây đang xảy ra vấn đề là khi xóa xong thì mảng checked vẫn còn lưu các id bản ghi đã tích checkbox từ trước khi xóa
-        //nên là button xóa hàng loạt vẫn còn hiện (click vào thì vẫn báo xóa thành công nhưng ko có bản khi nào xóa vì đã xóa từ trước rồi)
-        //Nếu tại đây viết this.checked = [] thì sẽ xảy ra hiện tượng bất đồng bộ, nghĩa là api xóa chưa kịp chạy xong thì đã set mảng checked
-        //thành rỗng rồi khiến khi api xóa gọi đến thì không còn id để lấy ra xóa
-        //Chưa biết cách xử lí bất đồng bộ nên tạm thời lưu mảng checked sang mảng mới newChecked rồi lấy id để xóa từ newChecked, sau đó
-        //set this.checked = [] để tắt button xóa hàng loạt đi
+        stringIds += arrIds[arrIds.length - 1];
+
+        var recordIds = Resources.PartNotice.OpenBrackets + stringIds + Resources.PartNotice.CloseBrackets;
+        console.log(recordIds);
+        axios
+          .delete(Resources.API.DeleteMultiple + recordIds)
+          .then(() => {
+            this.hideDialog();
+          })
+          .catch((res) => {
+            console.log(res);
+          })
+
         this.checked = [];
         //hiện popup 3s báo số bản ghi đã xóa
         var msg = Resources.PartNotice.YourDelete + newChecked.length + Resources.PartNotice.TeacherRecord;
