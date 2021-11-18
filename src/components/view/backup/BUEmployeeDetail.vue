@@ -1,1049 +1,1278 @@
-<!--Bản backup trước khi sử dụng vuetify để làm combobox (14/11/2021 15:18pm) -->
+<!-- Bản backup trước khi làm dropdown riêng cho teacherList (18/11/2021 10:12am) -->
 
 <template>
-    <div class="dialog">
-        <div class="model" @click="hideDialogDataCondition()"></div>
-        <div class="dialog-content">
-            <div class="left-dialog-content">
+    <div id="router">
+        <div id="router-content">
+            <div id="title-bar">
 
+                <div class="search-bar-and-icon">
+                    <input
+                    id="search-bar"
+                    type="text"
+                    placeholder="Tìm theo mã, tên cán bộ"
+                    v-model="message"
+                    @keyup="searchData()"
+                    />
+                    <button id="search-icon"></button>
+                </div>
+
+                <div class="btn-wrapper">
+                  <button class="btn-delete-all delete-color" id="btn-delete-all" :class="{'btn-hide': !isDeleteMultiple}"
+                    @click="showConfirmDeleteMultiple()"
+                  >
+                    Xóa hàng loạt
+                  </button>
+                  <button class="btn-add primary-color" id="btn-add" @click="showTeacherDialog()">
+                      Thêm
+                  </button>
+                  <button class="btn-export-excel default-color" id="" @click="exportData()">
+                      Xuất excel
+                  </button>
+                  <label class="btn-add-excel primary-color" id="btn-addFromExcel">
+                    <i class="fas fa-table"></i>
+                    <input type="file" id="uploadExcel" @change="importFileExcel"/>
+                    Nhập Excel
+                  </label>
+                </div>
             </div>
-            <div class="right-dialog-content">
-                
+            <div id="tablewrapper">
+                <div id="table">
+                    <div id="search">
 
-                <div class="middle">
-                    <div class="middle-1">
-                        <div class="column clm1">
-                            <div class="img-avt">
+                        <div id="sort-and-group">
+                          <div class="sortBar">
+                            <!-- combobox -->
+                            <div class="dropdown-text-and-icon">
+                                <input type="text" class="input-blank-box" 
+                                    @focus="showDropDownContent('Sort')" 
+                                    @blur="hideDropDownContent('Sort')" 
+                                    @keyup="searchOption('Sort')"
+                                    v-model="thisChoose.Sort.text"
+                                    placeholder="Lựa chọn sắp xếp"
+                                />
+                                <button id="dropdown-icon" @click="showDropDownContent('Sort')" @blur="hideDropDownContent('Sort')"></button>
+                            </div>
+                            <div id="dropdown">     
+                                <div class="dropdown-content" :class="{'dialog_hide': !isShowOptions.Sort}" >
+                                    <div class="dropdown-content-a" 
+                                        :class="{'drop-down-content-selected' : optionSort.id == thisChoose.Sort.id}"
+                                        v-for="optionSort in listOptions.Sort" 
+                                        :key="optionSort.id" 
+                                        @click="chooseOption(optionSort, 'Sort')" 
+                                        @mouseenter="enterClick()" 
+                                        @mouseleave="leaveClick()"
+                                    >{{optionSort.text}}</div>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="groupBar">
+                            <!-- combobox -->
+                            <div class="dropdown-text-and-icon">
+                                <input type="text" class="input-blank-box" 
+                                    @focus="showDropDownContent('Group')" 
+                                    @blur="hideDropDownContent('Group')" 
+                                    @keyup="searchOption('Group')"
+                                    v-model="thisChoose.Group.text"
+                                    placeholder="Nhóm tổ chuyên môn"
+                                />
+                                <button id="dropdown-icon" @click="showDropDownContent('Group')" @blur="hideDropDownContent('Group')"></button>
+                            </div>
+                            <div id="dropdown">     
+                                <div class="dropdown-content" :class="{'dialog_hide': !isShowOptions.Group}" >
+                                    <div class="dropdown-content-a" 
+                                        :class="{'drop-down-content-selected' : optionGroup.id == thisChoose.Group.id}"
+                                        v-for="optionGroup in listOptions.Group" 
+                                        :key="optionGroup.id" 
+                                        @click="chooseOption(optionGroup, 'Group')" 
+                                        @mouseenter="enterClick()" 
+                                        @mouseleave="leaveClick()"
+                                    >{{optionGroup.text}}</div>
+                                </div>
+                            </div>
+                          </div>
 
-                            </div>
-                            <div class="btn-add-avt">
-                                Chọn ảnh
-                            </div>
-                            <div class="clm1-name">
-                                {{employee.fullName}}
-                            </div>
-                            <div class="clm1-code">
-                                {{employee.employeeCode}}
+                        </div>
+
+
+                        <div id="search-bar-wrapper">
+                            <div id="btn-refresh-wrapper">
+                                <button id="btn-refresh" @click="refreshData()"></button>        
                             </div>
                         </div>
-                        <div class="column clm2">
-                            
-                            <div class="header">
-                                <div id="title">Thêm hồ sơ Cán bộ, Giáo viên</div>
-                                <!-- <button class="btn-help">
-                                    <span class="tooltiptext">Để biết thêm thông tin, tham khảo google.com hì</span>
-                                </button> -->
-                                <button class="btn-X" @click="hideDialogDataCondition()"></button>
-                            </div>
+                    </div>
+                
 
-                            <div style="display: flex; align-items: center;">
-                                <div class="input_bar" style="width: 50%; margin-right: 2px;">
-                                    <div class="title-blank-box" style="position: relative"><b>Số hiệu cán bộ</b> <span style="color: red;">*</span>
-                                        <div class="error-message" v-show="isValid.employeeCodeMessage == false">Số hiệu cán bộ chưa hợp lệ</div>
-                                    </div>
-                                    <input type="text" class="code-blank-box"
-                                        :class="{'blank-box-invalid': isValid.employeeCode == false}"
-                                        ref="employeeCode"
-                                        v-model="employee.employeeCode"
-                                        @mouseenter="mouseEnterError('employeeCode')"
-                                        @mouseleave="mouseLeaveError()"
-                                    />
-                                </div>
-                                <div class="input_bar" style="width: 50%; margin-left: 2px;">
-                                    <div class="title-blank-box" style="position: relative"><b>Họ và tên</b> <span style="color: red;">*</span>
-                                        <div class="error-message" v-show="isValid.fullNameMessage == false">Họ và tên không được để trống</div>
-                                    </div>
-                                    <input type="text" class="fullname-blank-box" style="text-transform: capitalize; "
-                                        :class="{'blank-box-invalid': isValid.fullName == false }" 
-                                        v-model="employee.fullName"
-                                        @mouseenter="mouseEnterError('fullName')"
-                                        @mouseleave="mouseLeaveError()"
-                                        ref="nameRef"
-                                    />                    
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: center;">
-                                <div class="input_bar" style="width: 50%; margin-right: 2px;">
-                                    <div class="title-blank-box" style="position: relative"><b>Số điện thoại</b>
-                                    </div>
-                                    <input type="text" class="code-blank-box"
-                                        v-model="employee.phone"
-                                    />
-                                </div>
-                                <div class="input_bar" style="width: 50%; margin-left: 2px;">
-                                    <div class="title-blank-box" style="position: relative"><b>Email</b>
-                                    </div>
-                                    <input type="email" class="fullname-blank-box"
-                                        :class="{'blank-box-invalid': isValid.email == false }" 
-                                        v-model="employee.email"
-                                    />                    
-                                </div>
-                            </div>
-
-                            <div style="display: flex; align-items: center;">
-                                <div class="input_bar" style="width: 50%; margin-right: 2px;">
-                                    <div style="position: relative; width: 35%; line-height: 48px;"><b>Tổ bộ môn</b><span style="color: red;">*</span>
-                                        <div class="error-message" v-show="isValid.departmentNameMessage == false">Tổ bộ môn chưa hợp lệ</div>
-                                    </div>
-                                    <!-- combobox -->
-                                    <div class="dropdown-text-and-icon" :class="{'blank-box-invalid': isValid.departmentName == false}">
-                                        <input type="text" class="input-blank-box" 
-                                            @focus="showDropDownContent('department')" 
-                                            @blur="hideDropDownContent('department')" 
-                                            id="departmentName"
-                                            v-model="employee.departmentName"
-                                            @mouseenter="mouseEnterError('departmentName')"
-                                            @mouseleave="mouseLeaveError()"
-                                            @keyup="searchOption('department')"
-                                            autocomplete="off"
-                                        />
-                                        <button id="dropdown-icon" @click="showDropDownContent('department')" @blur="hideDropDownContent('department')"></button>
-                                    </div>
-                                    <div id="dropdown">     
-                                        <div class="dropdown-content" :class="{'dialog_hide': !isShowOption.department}" >
-                                            <div class="dropdown-content-a" 
-                                                :class="{'drop-down-content-selected' : option.id == employee.departmentId}"
-                                                v-for="option in listOptions.department" 
-                                                :key="option.id" 
-                                                @click="chooseOption(option, 'department')" 
-                                                @mouseenter="enterClick()" 
-                                                @mouseleave="leaveClick()"
-                                            >{{option.name}}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="input_bar" style="width: 50%; margin-right: 2px;">
-                                    <div class="title-blank-box" style="position: relative; margin-right: 3px;"><b>QL theo môn</b>
-                                    </div>
-                                    <input type="text" class="fullname-blank-box"
-                                        v-model="employee.phone"
-                                    />
-                                </div>    
-                            </div>
-
-                            <div style="display: flex; align-items: center">
-                                <div style="position: relative; width: 108px; height: 32px; line-height: 22px;"><b>QL kho, phòng</b> </div>
-                                <input type="text" class="medium-blank-box" v-model="employee.jobTitle"/>
-                            </div>
-
-                            <div style="display: flex; align-items: center">
-                                
-                                <input type="checkbox" class="btn-check" style="line-height: 56px;"
-                                    />
-                                <div class="title-checkbox" style="margin-top: 3px; line-height: 56px;">Trình độ nghiệp vụ QLTB</div>
-
-                                <input type="checkbox" class="btn-check" style="line-height: 56px;"
-                                    />
-                                <div class="title-checkbox" style="margin-top: 3px; line-height: 56px; margin-right: 52px;">Đang làm việc</div>
-
-                                <div class="date-stop-working" style="display: flex; height: 56px;">
-                                    <div style="margin-right: 8px; line-height: 56px;">Ngày nghỉ việc</div>
-                                    <date-pick
-                                        style="width: 150px; line-height: 56px;"
-                                        v-model="employee.dateOfBirth"
-                                        :displayFormat="'DD/MM/YYYY'"
-                                    ></date-pick>  
-                                </div>
-                            </div>
-
+                    <div class="data">
+                        <div class="scroll">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <input type="checkbox" v-model="checkAll" />
+                                        </th>
+                                        <th style="min-width: 100px">Số hiệu cán bộ</th>
+                                        <th style="min-width: 160px; text-align: center;">Họ và tên</th>
+                                        <th style="min-width: 50px">Số điện thoại</th>
+                                        <th style="min-width: 110px;">Tổ chuyên môn</th>
+                                        <th style="min-width: 100px">QL theo môn</th>
+                                        <th style="min-width: 150px">QL kho, phòng</th>
+                                        <th style="min-width: 80px">Đào tạo QLTB</th>
+                                        <th style="min-width: 100px">Đang làm việc</th>
+                                        <!-- <th style="min-width: 83.33%">CHỨC NĂNG</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="teacher in teachers" :key="teacher.teacherId" @dblclick="showTeacherDetail(teacher.teacherId)">
+                                        <td>
+                                            <input
+                                                type="checkbox"
+                                                v-model="checked"
+                                                :value="teacher.teacherId"
+                                            />
+                                        </td>
+                                        <td>{{ teacher.teacherCode }}</td>
+                                        <td style="text-transform: capitalize; color: #03AE66">{{ teacher.teacherName }}</td>
+                                        <td>{{ teacher.teacherPhone }}</td>
+                                        <td>{{ teacher.teacherGroup | groupFormatToTable }}</td>
+                                        <td>{{ teacher.teacherSubject | formatDisplayList }}</td>
+                                        <td>{{ teacher.teacherRoom | formatDisplayList }}</td>
+                                        <td :class="{'tickbox': teacher.teacherQltb == 1}"></td>
+                                        <td :class="{'tickbox': teacher.teacherStatus == 1}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table1" style="position: sticky; z-index: 3; right: 0; border: 0">
+                                <thead>
+                                    <tr style="border-top: 0px solid #ccc">
+                                        <th style="min-width: 100px; position: sticky; top: 0px; background-color: #e6e6e6; text-align: center;">CHỨC NĂNG</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="background-color: #fff">
+                                    <tr v-for="teacher in teachers" :key="teacher.teacherId" style="background: white border: 1px solid #ccc;">
+                                        <td>
+                                            <Option 
+                                                @showDeleteDialog="showDeleteDialog(teacher.teacherId)"
+                                                @showTeacherDetail="showTeacherDetail(teacher.teacherId)"
+                                                @showTeacherDuplicate="showTeacherDuplicate(teacher.teacherId)"
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
-                </div>    
+                    <div id="footer">
+                        <div id="total-data">
+                          <div id="footer-3">
+                            <Paging
+                                :totalPages="totalPage"
+                                :perPage="perPage"
+                                :page="currentPage"
+                                @onChangePage="onPageChange"
+                            />
+                          </div>
+                          (<b style="margin-right: 4px;">{{this.teacherNumber}}</b>giáo viên)
+                        </div>
+                        <div id="footer-right">                          
+                            <div id="footer-2">
+                                <ComboBox @setPerPage="handlePerPage" ref="comboBox" />
+                            </div>                
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="footer">
-                <button class="btn-small cancel" @click="hideDialogDataCondition()">Đóng</button>
-                <button class="btn-small post primary-color" @click="btnSave()">Lưu</button>
-                <button class="btn-post-and-put primary-color" @click="btnSaveAndAdd()">Lưu và thêm</button>
-            </div>
-        </div>  
-
-        <ErrorDialog 
-            :isShow="isErrorDialogShow"
-            :errorMsg="errorMsg"
-            @hidePopUp = "hidePopUp"
-        />
-
-        <ErrorPopUp
-            :isShow="isErrorPopUpShow"
-            :errorMsg="errorMsg"
-            @hidePopUp="hidePopUp"
-        />
-
-        <DataChange 
-            :isShow="isDataChange"
-            :errorMsg="errorMsg"
-            @hidePopUp="hidePopUp"
+        </div>
+        <TeacherDetail 
+            v-if="isShowDialogTeacher"
             @hideDialog="hideDialog"
-            @btnSave="btnSave"
+            :teacher="selectedTeacher"
+            :formmode="formmode"
+            @showTeacherDialog="showTeacherDialog"
+            @turnPopUpSuccess="showPopupSuccess"
+            @turnPopUpWarning="showPopupWarning"
+        />
+        <TeacherDelete
+          :isShow="isShowDialogDelete"
+          @hideDialog="hideDialog"
+          :teacher="selectedTeacher"
+          @turnPopUpSuccess="showPopupSuccess"
+          @turnPopUpWarning="showPopupWarning"
+        />
+        <ErrorPopUp 
+          :isShow="isErrorPopUpShow"
+          :errorMsg="errorMsg"
+          @hidePopUp="hidePopUp"
+        />
+        <AddFromExcelPopUp 
+          :isShow="isShowPopUpAddFromExcel"
+          :errorMsg="errorMsg"
+          @hidePopUp="hidePopUp"
+          @confirmAddFromExcel="AddFromExcel"
+        />
+        <ConfirmDeleteMultiplePopUp
+          :isShow="isShowPopUpConfirmMultipleDelete"
+          :errorMsg="errorMsg"
+          @hidePopUp="hidePopUp"
+          @confirmDeleteMultiple="deleteMultiple"
+        />
+        <WarningPopUp 
+          :isShow="isShowWarningPopup"
+          :warningMsg="warningMsg"
+        />
+        <SuccessPopUp
+          :isShow="isShowSuccessPopup"
+          :warningMsg="warningMsg"
         />
 
-    </div>    
+        <!--loading -->
+        <div class="fa-3x" v-if="isBusy">
+            <!--font awesome -->
+            <i class="fas fa-spinner fa-spin" style="color: green"></i>
+        </div>
+
+    </div>
 </template>
+
 
 <script>
 
-    import axios from 'axios'
-    // import datepicker from 'vuejs-datepicker'
+//import
+import axios from  "axios";
+import Option from "../../common/option.vue";
+import ComboBox from "../../common/comboBox.vue";
+import Paging from "../../common/paging.vue";
+import TeacherDetail from "../teacher/teacherDetail.vue";
+import TeacherDelete from "../teacher/teacherDelete.vue";
+import ErrorPopUp from '../../common/pop-up/errorPopUp.vue';
+import AddFromExcelPopUp from './teacherAddFromExcel.vue';
+import ConfirmDeleteMultiplePopUp from './teacherConfirmMultipleDelete.vue';
+import xlsx from 'xlsx';
 
-    import DatePick from 'vue-date-pick';
-    import 'vue-date-pick/dist/vueDatePick.css';
+import WarningPopUp from '../../common/pop-up/warningPopup.vue';
+import SuccessPopUp from '../../common/pop-up/successPopup.vue';
 
-    import DataChange from '../../common/pop-up/dataChange.vue';
-    import ErrorDialog from '../../common/pop-up/errorDialog.vue';
-    import ErrorPopUp from '../../common/pop-up/errorPopUp.vue';
-
-    import Enums from "../../common/base/enum.js";
-    import Resources from "../../common/base/resource.js";
-
+import Enums from "../../common/base/enum.js";
+import Resources from "../../common/base/resource.js";
 
 
 export default {
-    components: {
-        DataChange,
-        ErrorDialog,
-        ErrorPopUp,
-        // datepicker,
-        DatePick,
+  components: {
+      Option,
+      ComboBox,
+      Paging,
+      TeacherDetail,
+      TeacherDelete,
+      ErrorPopUp,
+      AddFromExcelPopUp,
+      ConfirmDeleteMultiplePopUp,
+
+      WarningPopUp,
+      SuccessPopUp,
+  },
+
+  data() {
+      return {
+            initialTeachers: [], //Data đầu vào cho api get all
+            teachers: [], //data lấy vào khi get để gán dữ liệu lên table
+            teacherNumber: 0,  //tổng số bản ghi
+            groups: [], //data đơn vị (phòng ban)
+            isShowDialogTeacher: false, //biến đóng/mở dialog thêm sửa
+            isShowDialogDelete: false, // biến đóng/mở dialog xóa
+            isShowDialogStopUsing: false, //biến đóng/mở dialog ngưng sử dụng
+            message: null, //tiêu chí tìm kiếm
+            selectedTeacher: {}, //nhân viên được chọn
+            checked: [], //danh sách được tích vào checkbox
+            currentPage: 0, //trang hiện tại
+            perPage: 0, //số bản ghi trên 1 trang
+            totalPage: 0, //tổng số trang
+            isBusy: true, //loading animation, kiểm tra đã load dữ liệu xong chưa
+            formmode: "", //phân biệt giữa sửa và thêm
+
+            overClick: false, //Biến kiểm tra xem chuột có di chuyển vào các options hay không, phân biệt click với blur
+
+            isShowOptions: {
+              Sort: false,
+              Group: false,
+            },
+            thisChoose: {
+              Sort: {
+                id: null,
+                text: null,
+              },
+              Group: {
+                id: null,
+                text: null,
+              }
+            },
+            listOptions: {
+              Sort: [
+                {id: Enums.TypeSort.CodeId, text: Enums.TypeSort.Code},
+                {id: Enums.TypeSort.NameId, text: Enums.TypeSort.Name},
+              ],
+              Group: [
+                {id: Enums.Group.VPId, text: Enums.Group.VP},
+                {id: Enums.Group.LHId, text: Enums.Group.LH},
+                {id: Enums.Group.TTId, text: Enums.Group.TT},
+                {id: Enums.Group.SSDId, text: Enums.Group.SSD},
+                {id: Enums.Group.NVId, text: Enums.Group.NV},
+                {id: Enums.Group.AVId, text: Enums.Group.AV},
+              ],
+            },
+            initialListOptions: {
+              Sort: [
+                {id: Enums.TypeSort.CodeId, text: Enums.TypeSort.Code},
+                {id: Enums.TypeSort.NameId, text: Enums.TypeSort.Name},
+              ],
+              Group: [
+                {id: Enums.Group.VPId, text: Enums.Group.VP},
+                {id: Enums.Group.LHId, text: Enums.Group.LH},
+                {id: Enums.Group.TTId, text: Enums.Group.TT},
+                {id: Enums.Group.SSDId, text: Enums.Group.SSD},
+                {id: Enums.Group.NVId, text: Enums.Group.NV},
+                {id: Enums.Group.AVId, text: Enums.Group.AV},
+              ],
+            },
+
+            //biến để phân biệt đang ở trạng thái paging theo filter hay paging theo (sắp xếp và nhóm) để truyền vào onPageChange, phục vụ việc bấm chuyển trang
+            formPagingSort: false,
+            //biến ẩn / hiện button xóa hàng loạt
+            isDeleteMultiple: false,
+            //Biến để hiện pop-up thông báo đã xóa hàng loạt bản ghi
+            isErrorPopUpShow: false,
+            //Biến để nhận thông báo lỗi truyền vào pop-up
+            errorMsg: "",
+
+            //Biến ẩn hiện thông báo các bản ghi thêm từ file excel thành công và bị lỗi
+            isShowPopUpAddFromExcel: false,
+            //Mảng lưu trữ các bản ghi từ file excel
+            listRecordsExcel: [],
+
+            //Biến ẩn hiện pop up xóa nhiều bản ghi
+            isShowPopUpConfirmMultipleDelete: false,
+
+            //Biến ẩn hiện warning popup, success popup
+            isShowWarningPopup: false,
+            isShowSuccessPopup: false,
+            warningMsg: ""
+      }
+  }, //End Data
+
+  created() {
+      this.currentPage = 1;
+      this.perPage = 20;
+      this.message = "";
+      axios
+        .get(
+            Resources.API.GetFilter + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.Filter + this.message
+        )
+        .then((res) => {
+            console.log(res);
+            this.teachers = res.data.data;
+            this.groupsFormat(this.teachers);
+            this.teacherNumber = res.data.totalRecord;
+            if(this.teacherNumber % this.perPage == 0){
+                this.totalPage = this.teacherNumber/this.perPage;
+            }
+            else {
+                this.totalPage = Math.floor(this.teacherNumber / this.perPage) + 1;
+            }
+            //loading data succesful
+            this.isBusy = false;
+        })
+        .catch((res) => {
+            console.log(res);
+        })
+        
+        axios.get(Resources.API.GetAll)
+        .then((res) => {
+            this.initialTeachers = res.data;
+        })
+        .catch((res) => {
+            console.log(res);
+        })
+    
+  }, //End Created
+
+  mounted: function() {},
+
+  methods: {
+      /**
+       * Lấy tất cả dữ liệu từ API
+       */
+      getAllData(){
+          axios
+          .get(Resources.API.GetAll)
+          .then((res) => {
+              this.initialTeachers = res.data;
+          })
+          .catch((res) => {
+              console.log(res);
+          })
+      },
+
+      /**
+       * Load lại data
+       */
+      loadData(){
+          this.isBusy = true;
+          this.message  = "";
+          axios
+        .get(
+            Resources.API.GetFilter + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.Filter + this.message
+        )
+        .then((res) => {
+            console.log(res);
+            this.teachers = res.data.data;
+            this.groupsFormat(this.teachers);
+            this.teacherNumber = res.data.totalRecord;
+            if(this.teacherNumber % this.perPage == 0){
+                this.totalPage = this.teacherNumber/this.perPage;
+            }
+            else {
+                this.totalPage = Math.floor(this.teacherNumber / this.perPage) + 1;
+            }
+            //loading data succesful
+            this.isBusy = false;
+        })
+        .catch((res) => {
+            console.log(res);
+        })
+        
+        axios.get(Resources.API.GetAll)
+        .then((res) => {
+            this.initialTeachers = res.data;
+        })
+        .catch((res) => {
+            console.log(res);
+        })
+
+        this.getAllData();
+      },
+
+    /**
+     * Refresh data
+     */
+    refreshData(){
+      //setup default combobox sort
+      this.refreshCombobox();
+      //setup default checkbox
+      this.checked = [];
+
+      this.currentPage = 1;
+      this.perPage = 20;
+      this.loadData();
+      //set up mặc định cho combobox là lựa 20 bản ghi trên trang
+      this.$refs.comboBox.resetPerPage(); //hàm resetPerPage là hàm viết bên file comboBox.vue
     },
 
-    created() {
+    /**
+     * Hàm refresh combobox
+     * CreatedBy: VDDong
+     */
+    refreshCombobox(){
+      this.thisChoose = {
+        Sort: {
+          id: null,
+          text: null
+        },
+        Group: {
+          id: null,
+          text: null,
+        },
+      }
+    },
 
-        /**
-         * Gọi các ngân hàng theo id nhân viên ra rồi bind lên table ở tab ngân hàng
-         * (Dùng ở form sửa)
-         */
-        if(this.formmode == Enums.FormMode.Edit){
-            axios
-                .get(Resources.API.GetBankEmpByUserId + this.employee.employeeId)
+    /**
+     * Show popup báo thành công (popup 3s)
+     */
+    showPopupSuccess(msg){
+      console.log('show puss')
+      this.warningMsg = msg;
+      this.isShowSuccessPopup = true;
+      setTimeout(() => this.isShowSuccessPopup = false, 3000);
+    },
+    /**
+     * Show popup báo thành công (popup 3s)
+     */
+    showPopupWarning(msg){
+      console.log('show warn')
+      this.warningMsg = msg;
+      this.isShowWarningPopup = true;
+      setTimeout(() => this.isShowWarningPopup = false, 3000);
+    },
+    
+    /**
+     * Cụm hàm đóng / mở dialog
+     */
+    //hiện dialog thêm
+    showTeacherDialog(){
+        axios
+            .get(Resources.API.GetMaxCode)
+            .then((res) => {
+                this.isShowDialogTeacher = true;
+                this.formmode = Enums.FormMode.Add;
+                this.selectedTeacher = {};
+                this.selectedTeacher.teacherCode = res.data;
+                this.selectedTeacher.teacherStatus = 1;
+            })
+            .catch((res) => {
+                console.log(res);
+            })
+    },
+    //hiện dialog sửa
+    showTeacherDetail(teacherId){
+        //get data teacher to edit
+        return axios
+                .get(Resources.API.GetAll + "/" + teacherId)
                 .then((res) => {
-                    this.banksOfEmp = res.data;
-                    console.log(this.banksOfEmp);
-                    console.log(res.status);
-                    if(res.status == Enums.ServerStatus.NoContent){
-                        this.checkIfListBankEmptyEdit = true;
-                    }
+                    this.isShowDialogTeacher = true;
+                    this.formmode = Enums.FormMode.Edit;
+                    this.selectedTeacher = res.data;
+                    
+                    this.groups.forEach((group) => {
+                        if(this.selectedTeacher.teacherGroup == group.groupId)
+                            this.selectedTeacher.teacherGroupName = group.groupName;
+                    });
 
+                    return Promise.resolve(); //resolve là hàm sẽ được gọi khi promise hoàn thành
                 })
                 .catch((res) => {
                     console.log(res);
+                    return Promise.reject(); //reject là hàm sẽ được gọi khi có lỗi xảy ra
                 })
-        }
 
     },
-
-    data() {
-        return {
-
-            isShowOption: {
-                department: false,
-
-            },
-            listOptions: {
-                department: [
-                    {
-                    id: Enums.Department.DTId,
-                    name: Enums.Department.DT
-                    },
-                    {
-                        id: Enums.Department.KTId,
-                        name: Enums.Department.KT
-                    },
-                    {
-                        id: Enums.Department.MKId,
-                        name: Enums.Department.MK
-                    },
-                    {
-                        id: Enums.Department.NSId,
-                        name: Enums.Department.NS
-                    },
-                ],
-
-            },
-            initialListOptions: {
-                department: [
-                    {
-                    id: Enums.Department.DTId,
-                    name: Enums.Department.DT
-                },
-                {
-                    id: Enums.Department.KTId,
-                    name: Enums.Department.KT
-                },
-                {
-                    id: Enums.Department.MKId,
-                    name: Enums.Department.MK
-                },
-                {
-                    id: Enums.Department.NSId,
-                    name: Enums.Department.NS
-                },
-                ]
-            },
-            
-            //Biến kiểm tra xem chuột có di chuyển vào các option hay không, để phân biệt click với blur
-            overClick: false,
-
-            isValid: {
-                employeeCode: true,
-                fullName: true,
-                departmentName: true,
-                employeeCodeMessage: true,
-                fullNameMessage: true,
-                departmentNameMessage: true,
-                dateIdentityAndDob: true,
-
-                phone: true,
-                telephone: true,
-                email: true,
-
-            },
-
-            //Biển để hiện dialog thông báo trùng mã nhân viên
-            isErrorDialogShow: false,
-            //Biến để hiện pop-up thông báo trống mã hoặc tên
-            isErrorPopUpShow: false,
-            //Biến để nhận giá trị của employee truyền vào ban đầu, để so sánh sau khi thay đổi
-            initialEmployee: {},
-            //Biến để hiện thông báo đã có thay đổi dữ liệu
-            isDataChange: false,
-            //Biến để nhận thông báo lỗi trả về từ API
-            errorMsg: "",
-
-            //Biến để xác nhận thông tin nhân viên đã hợp lệ để put/post lên database
-            isAppropriate: null,
-
-
-        }
-    },
-
-    props: {
-        employee: {
-            type: Object,
-            default: null,
-        },
-        formmode: {
-            type: String,
-            default: null,
-        },
-    },
-
-    updated(){
-        //Format giới tính sau khi dialog được hiện ra, để binding dữ liệu
-        this.genderFormat(this.employee.gender);
-    },
-
-    mounted() {
-        //auto focus vào ô input employeeCode
-        this.focusInput();
-
-        this.genderFormat(this.employee.gender);
-        //copy employee sang 1 object khac de so xem co su thay doi khong?
-        this.initialEmployee = {...this.employee};
-    },
-
-    methods: {
-        /**
-         * Cụm hàm format
-         * CreatedBy: VDDong (17/06/2021)
-         */
-        //format giới tính để đưa dữ liệu lên database
-        genderFormat(gender){
-            if(gender == Enums.Gender.FemaleId) {
-                this.employee.genderName = Enums.Gender.Female;
-            }
-            else if(gender == Enums.Gender.MaleId) {
-                this.employee.genderName = Enums.Gender.Male
-            }
-            else if(gender == Enums.Gender.RestId){
-                this.employee.genderName = Enums.Gender.Rest;
-            }
-        },
-
-        /**
-         * So sánh 2 Object để kiểm tra xem dữ liệu đã thay đổi chưa
-         * Return true: có thay đổi, false: chưa thay đổi
-         * CreatedBy: VDDong (17/06/2021)
-         */
-        compareDataObject(obj1, obj2){
-            for(let i in obj1){
-                if(obj1[i] !== obj2[i]) return true;
-            }
-            return false
-        },
-
-        /**
-         * Ẩn dialog EmployeeDetail
-         * CreatedBy: VDDong (17/06/2021)
-         */
-        hideDialog(){
-            //Reset lại các biến validate form
-            this.isValid.fullName = true;
-            this.isValid.employeeCode = true;
-            this.isValid.departmentName = true;
-            //Gọi phương thức ẩn của thằng cha là employeeList
-            this.$emit('hideDialog');
-        },
-
-        /**
-        * Ẩn dialog
-        * Nếu dữ liệu đã bị thay  đổi thì hiện pop up DataChange, nếu không thì ẩn dialog EmployeeDetail
-        * CreatedBy: VDDong (17/06/2021)
-        */
-        hideDialogDataCondition(){
-           if(this.compareDataObject(this.initialEmployee, this.employee)){
-               this.isDataChange = true;
-               this.errorMsg = Resources.ErrorMessage.DataChange;
-           }
-           else this.hideDialog();
-        },
-
-        /**
-        * Hiện combobox
-        * CreatedBy: VDDong (17/06/2021)
-        */
-        showDropDownContent(type){
-            this.listOptions[type] = this.initialListOptions[type];
-            this.isShowOption[type] = !this.isShowOption[type];      
-            
-        },
-       /**
-        * Ẩn combobox
-        * CreatedBy: VDDong (17/06/2021)
-        */
-        hideDropDownContent(type){
-            if(this.overClick == false) this.isShowOption[type] = false;
-        },
-        /**
-        * Gán dữ liệu đã chọn từ combobox cho chủ thể employee và format cho đúng định dạng
-        * CreatedBy: VDDong (17/06/2021)
-        */
-        chooseOption(option, type){
-            var propertyId = type + "Id";
-
-            //Gán giá trị được chọn cho id và tên phòng ban của employee
-            this.employee[propertyId] = option.id;
-            // this.employee.departmentName = option.name;
-            this.optionFormat(this.employee[propertyId], type);
-            this.overClick = false;
-            this.hideDropDownContent(type);
-        },
-        //Format tên phòng ban để binding vào form
-        optionFormat(Id, type){
-            var propertyName  = type + 'Name'; 
-
-            this.listOptions[type].forEach(option => {
-                    if(Id == option.id) {
-                        this.employee[propertyName] = option.name;
-                    }
-                });
-        },
-        /**
-         * Tìm kiếm ô input đơn vị so với các option data có sẵn từ combobox
-         * CreatedBy: VDDong (17/06/2021)
-         */
-        searchOption(type){
-            var propertyName = type + 'Name';
-
-            this.listOptions[type] = this.initialListOptions[type].filter(option => {
-                return (
-                    option.name.toLowerCase().includes(this.employee[propertyName].toLowerCase())
-                )
+    //hiện dialog nhân bản
+      showTeacherDuplicate(teacherId){
+        this.showTeacherDetail(teacherId).then(() => 
+          axios
+            .get(Resources.API.GetMaxCode)
+            .then((res) => {
+              this.selectedTeacher.teacherCode = res.data;
+              this.formmode = Enums.FormMode.Add;
             })
-        },
+            .catch((res) => {
+              console.log(res);
+            })
+        )
+      },
+      //hiện dialog xác nhận xóa
+      showDeleteDialog(teacherId){
+        this.isShowDialogDelete = true; //Bật dialog xác nhận xóa
+        //Fix bug tích checkbox 1 bản ghi rồi xóa bản ghi đó, sau đó lại tiếp tục tích 2 checkbox để xóa hàng loạt thì dialog báo xóa 3 bản ghi
+        const index = this.checked.indexOf(teacherId); //tìm vị trí của 1 bản ghi xóa lúc đầu
+        console.log(index);
+        if (index > -1) {
+          this.checked.splice(index, 1); //xóa bản ghi đó trong mảng checked đi là mảng checked sẽ không lưu nó nữa, tránh bug trên
+        }
+        console.log(this.checked);
+        //Lấy data của nhân viên muốn xóa
+        axios
+          .get(Resources.API.GetAll +"/" + teacherId)
+          .then((res) => {
+            this.selectedTeacher = res.data;
+          })
+          .catch((res) => {
+            console.log(res);
+          });
+      },
 
-        /**
-         * Di chuyển chuột vào ra các option của combobox
-         * CreatedBy: VDDong (17/06/2021)
-         */
-        //Khi di chuyển chuột vào trong các option
-        enterClick(){
-            //Gán overClick = true để tránh lỗi click và focusout overlapping (khi click thì focusout sẽ chạy trước mà không chạy click)
-            this.overClick = true;
-        },
-        //Khi di chuyển chuột ra khỏi các option
-        leaveClick(){
-            this.overClick = false;
-        },
+      //ẩn dialog thêm và xóa
+      hideDialog(){
+        this.isShowDialogTeacher = false;
+        this.isShowDialogDelete = false;
+        this.isShowDialogStopUsing = false;
+        this.loadData();
+      },
 
-        /**
-         * Auto focus vào ô employeeCode khi hiện dialog EmployeeDetail
-         * CreatedBy: VDDong (17/06/2021)
-         */
-        focusInput(){
-            this.$refs.employeeCode.focus();
-        },
+      /**
+       * Tìm kiếm theo mã hoặc tên nhân viên
+       */
+      searchData(){
+        //Vì chưa kết hợp vừa tìm kiếm vừa sắp xếp (nhóm phòng ban) nên khi tìm kiếm thì setup default 2 combobox sắp xếp vs nhóm
+        this.refreshCombobox();
 
-        /**
-         * Validate trường hợp ô employee code và fullname bỏ trống hoặc nhập toàn dấu cách (khoảng trắng) 
-         * CreatedBy: VDDong (17/06/2021)
-         */
-        nullValidation(propertyValue, propertyName){
-            propertyValue = propertyValue || '';
-            if (propertyValue.trim() == "") {
-                if(propertyName == Resources.Property.EmployeeCode) {
-                    this.isValid.employeeCode = false;
-                    this.isErrorPopUpShow = true;
-                    this.errorMsg = Resources.ErrorMessage.NullEmployeeCode;
-                    
-                }
-                else if(propertyName == Resources.Property.FullName) {
-                    this.isValid.fullName = false;
-                    this.isErrorPopUpShow = true;
-                    this.errorMsg = Resources.ErrorMessage.NullFullName;
-                    this.$refs.nameRef.focus();
-                }
-            } 
-            else{
-                if(propertyName == Resources.Property.EmployeeCode) {
-                    this.isValid.employeeCode = true;
-                }
-                else if(propertyName == Resources.Property.FullName) {
-                    this.isValid.fullName = true;
-                }
-            }    
-        },
+        //Bắt đầu tìm kiếm
+        this.currentPage = 1;
+        axios
+          .get(
+            Resources.API.GetFilter + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.Filter + this.message
+          )
+          .then((res) => {
+            console.log(res);
+            this.teachers = res.data.data;
 
-        /**
-         * Validate tên đơn vị (phòng ban)
-         * CreatedBy: VDDong (17/06/2021)
-         */
-        departmentNameValidation(value){
-            //Validate tên đơn vị không được trống
-            value = value || '';
-            if (value.trim() == "") {
-                this.isValid.departmentName = false;
-                this.isErrorPopUpShow = true;
-                this.errorMsg = Resources.ErrorMessage.NullDepartment;
+            //format group
+            this.groupsFormat(this.teachers);
+            //Số lượng bản ghi hợp lệ
+            this.teacherNumber = res.data.totalRecord;
+            if (this.teacherNumber % this.perPage == 0) {
+              this.totalPage = this.teacherNumber / this.perPage;
+            } else {
+              this.totalPage = Math.floor(this.teacherNumber / this.perPage) + 1;
+            }
+          })
+          .catch((res) => {
+            console.log(res);
+          })
+      },
+
+      //format tên tổ chuyên môn
+      groupsFormat(array) {
+        //Lấy tất cả dữ liệu phòng ban từ database
+        axios
+          .get(Resources.API.GetGroups)
+          .then((res) => {
+            this.groups = res.data;
+            //Gán giá trị groupName của từng nhân viên với id tương ứng trong dữ liệu phòng ban trả về từ api
+            array.forEach((element) => {
+              this.groups.forEach((group) => {
+                if (element.teacherGroup == group.groupId)
+                  element.teacherGroupName = group.groupName;
+              });
+            });
+          })
+          .catch((res) => {
+            console.log(res);
+          });
+      },
+
+      /**
+       * Xuất dữ liệu ra file excel
+       * CreatedBy: VDDong(14/06/2021)
+       */
+      exportData(){
+        window.open(Resources.API.GetExport);
+      },
+
+      /**
+       * Thay đổi số trang, thay đổi currentPage
+       */
+      onPageChange(page){
+        if (this.teacherNumber % this.perPage == 0) {
+        this.totalPage = this.teacherNumber / this.perPage;
+        } else {
+        this.totalPage = Math.floor(this.teacherNumber / this.perPage) + 1;
+        }
+        if(page > 0 && page <= this.totalPage){
+          this.currentPage = page;
+          //nếu đang ở trạng thái sort với nhóm
+          //thì vẫn giữ api sắp xếp vs nhóm đó, chỉ đổi pageSize vs pageIndex
+          if(this.formPagingSort){
+            this.sortsBy();
+          }
+          //nếu đang ở trạng thái bình thường (sử dụng API filter)
+          else {
+            axios
+              .get(
+                  Resources.API.GetFilter + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.Filter + this.message
+              )
+              .then((res) => {
+              console.log(res);
+              this.teachers = res.data.data;
+
+              //format group
+              this.groupsFormat(this.teachers);
+              //Số lượng bản ghi hợp lệ 
+              this.teacherNumber = res.data.totalRecord;
+              })
+              .catch((res) => {
+                  console.log(res);
+              });
+          }
+        }
+      },
+
+      /**
+       * Xử lí việc chọn số bản ghi trên 1 trang
+       * info là số lượng bản trên 1 trang truyền từ comboBox lên
+       * CreatedBy: VDDong(14/06/2021)
+       */
+      handlePerPage(info) {
+        //vì khi đổi số bản ghi trên trang thì dữ liệu reset về API filter
+        //nên set default 2 cái combobox sắp xếp với nhóm phòng ban
+        this.refreshCombobox();
+
+        //setup lại số bản ghi trên trang để hiển thị ra
+        this.currentPage = 1;
+        this.perPage = info;
+        this.loadData();
+      },
+
+      /**
+       * Cụm hàm liên quan đến combobox
+       * Hàm dùng chung
+       */
+      //Khi di chuyển chuột vào trong các option
+      enterClick(){
+          //Gán overClick = true để tránh lỗi click và focusout overlapping (khi click thì focusout sẽ chạy trước mà không chạy click)
+          this.overClick = true;
+      },
+      //Khi di chuyển chuột ra khỏi các option
+      leaveClick(){
+          this.overClick = false;
+      },
+      //Ẩn / hiện combobox
+      showDropDownContent(type){
+        this.listOptions[type] = this.initialListOptions[type];
+        this.isShowOptions[type] = !this.isShowOptions[type];
+      },
+      hideDropDownContent(type){
+        if(this.overClick == false) this.isShowOptions[type] = false;
+      },
+      //Gán dữ liệu đã chọn từ combobox để thực thi và hiện ra combobox
+      chooseOption(option, type){
+        //Vì chưa kết hợp vừa sort vừa tìm kiếm nên khi chọn sort thì reset default thanh input tìm kiếm
+        this.message = "";
+
+        //Gán giá trị được chọn cho id và text của loại sort
+        this.thisChoose[type].id = option.id;
+        this.optionFormat(this.thisChoose[type].id, type);
+        this.overClick = false;
+        this.hideDropDownContent(type);
+        this.sortsBy();
+      },
+      //Format tên loại type option để binding vào combobox
+      optionFormat(Id, type){
+        this.listOptions[type].forEach(option => {
+          if(Id == option.id){
+            this.thisChoose[type].text = option.text;
+          }
+        });
+      },
+      //Tìm kiếm ở ô input so với các option ở combobox
+      searchOption(type){
+        this.listOptions[type] = this.initialListOptions[type].filter(option => {
+            return (
+                option.text.toLowerCase().includes(this.thisChoose[type].text.toLowerCase())
+            )
+        });
+      },
+
+
+      /**
+       * Hàm gọi đến API để xử lý việc sắp xếp và nhóm phòng ban
+       * CreateBy: VDDong
+       * */
+      sortsBy(){
+        console.log("sort all: " + this.thisChoose.Sort.id);
+        console.log("sort group: " + this.thisChoose.Group.id);
+
+        this.formPagingSort = true; //chuyển sang trạng thái paging theo sắp xếp và nhóm
+        if(this.thisChoose.Group.id == null) this.thisChoose.Group.id = ""; //nếu không chọn sắp xếp hay phòng ban thì đưa về "" cho phù hợp API
+        var urlAPI = ""; //api để request trả về danh sách dữ liệu sắp xếp
+        if(this.thisChoose.Sort.id == null || this.thisChoose.Sort.id == 1){ //mặc định hoặc sắp xếp thứ tự thêm mới (là sortByCode)
+          urlAPI = (Resources.API.SortByCode + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.GroupString + this.thisChoose.Group.id);
+        }
+        else if(this.thisChoose.Sort.id == 2){ //sắp xếp theo tên nhân viên
+          urlAPI = (Resources.API.SortByName + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.GroupString + this.thisChoose.Group.id);
+        }
+        //call api
+        axios
+          .get(urlAPI)
+          .then((res) => {
+            console.log(res);
+            this.teacherNumber = res.data.totalRecord;
+            this.teachers = res.data.data;
+            if(this.teacherNumber % this.perPage == 0){
+              this.totalPage = this.teacherNumber / this.perPage;
             }
             else {
-                this.isValid.departmentName = false;
-                //Validate tên đơn vị giống với tên đơn vị trong option
-                //Kiểm tra xem thông tin nhập vào có đúng với các option tên đơn vị không
-                this.listOptions.department.forEach(option => {
-                    if(option.name == value) {
-                        this.isValid.departmentName = true;
-                        this.employee.departmentId = option.id;
-                    }
-                });
-                if(this.isValid.departmentName == false) 
-                {
-                    this.isErrorPopUpShow = false;
-                    this.isErrorDialogShow = true;
-                    this.errorMsg = Resources.ErrorMessage.InvalidDepartment;
-                }
+              this.totalPage = Math.floor(this.teacherNumber / this.perPage) + 1;
             }
-        },
+          })
+          .catch((res) => {
+            console.log(res);
+          })
 
-        /**
-         * Validate ngày cấp số CMND không được trước ngày sinh
-         * CreatedBy:
-         */
-        dateIdentityAndDobValidation(identityDate, dobDate){
-            console.log("Identity date: " + identityDate);
-            console.log("Dob date:" + dobDate)
-            if(identityDate < dobDate){
-                this.isValid.dateIdentityAndDob = false;
-                this.isErrorDialogShow = true;
-                this.errorMsg = Resources.ErrorMessage.DateIdentityAndDobError;
-            }
-            else this.isValid.dateIdentityAndDob = true;
-        },
+      },
 
+      /**
+       * Cụm hàm xóa hàng loạt nhiều bản ghi một lúc
+       * Xóa các bản ghi có tích checkbox, xóa theo id các bản ghi được lưu trong mảng checked
+       * CreatedBy:
+       */
+      //Hàm bật popup xác nhận xóa
+      showConfirmDeleteMultiple(){
+        this.isShowPopUpConfirmMultipleDelete = true;
+        this.errorMsg = Resources.PartNotice.Delete + this.checked.length + Resources.PartNotice.RecordChoose;
+      },
 
-        /**
-         * Validate trước khi request lên database
-         * CreatedBy: VDDong (17/06/2021)
-         */
-        formValidation(){
-            //Validate tên nhân viên không được trống hoặc là khoảng trắng
-            this.nullValidation(this.employee.fullName, Resources.Property.FullName);
-            //Validate mã nhân viên không được trống hoặc là khoảng trắng
-            this.nullValidation(this.employee.employeeCode, Resources.Property.EmployeeCode);
-            //Validate tên đơn vị
-            this.departmentNameValidation(this.employee.departmentName);
-            //Validate ngày cấp số CMND không trước ngày sinh
-            this.dateIdentityAndDobValidation(this.employee.identityDate, this.employee.dateOfBirth);
-            //Nếu thỏa mã hết các validate thì chấp thuận
-            if(this.isValid.fullName == true
-                && this.isValid.employeeCode == true
-                && this.isValid.departmentName == true
-                && this.isValid.dateIdentityAndDob == true
-            ) this.isAppropriate = true;
-            else this.isAppropriate = false;         
-        },
+      //Hàm thực thi xóa
+      deleteMultiple(){
+        console.log("multiple delete");
+        var newChecked = this.checked;
+        console.log(newChecked);
+        for(let i=0; i<newChecked.length; i++){
+          console.log(newChecked[i]);
+          axios
+            .delete(Resources.API.GetAll + "/" + newChecked[i])
+            .then(() => {
+              console.log(Resources.Notice.DeleteSuccess);
+              this.hideDialog();
+            })
+            .catch((res) => {
+              console.log(res);
+            })
+        }
+        //Ở đây đang xảy ra vấn đề là khi xóa xong thì mảng checked vẫn còn lưu các id bản ghi đã tích checkbox từ trước khi xóa
+        //nên là button xóa hàng loạt vẫn còn hiện (click vào thì vẫn báo xóa thành công nhưng ko có bản khi nào xóa vì đã xóa từ trước rồi)
+        //Nếu tại đây viết this.checked = [] thì sẽ xảy ra hiện tượng bất đồng bộ, nghĩa là api xóa chưa kịp chạy xong thì đã set mảng checked
+        //thành rỗng rồi khiến khi api xóa gọi đến thì không còn id để lấy ra xóa
+        //Chưa biết cách xử lí bất đồng bộ nên tạm thời lưu mảng checked sang mảng mới newChecked rồi lấy id để xóa từ newChecked, sau đó
+        //set this.checked = [] để tắt button xóa hàng loạt đi
+        this.checked = [];
+        //hiện popup 3s báo số bản ghi đã xóa
+        var msg = Resources.PartNotice.YourDelete + newChecked.length + Resources.PartNotice.TeacherRecord;
+        this.showPopupSuccess(msg);
+        this.hidePopUp();
+        //reset lại combobox (trong trường hợp sắp xếp, nhóm rồi xóa)
+        this.refreshCombobox();
 
-        /**
-         * Ẩn các error popup và error dialog, error datachange, reset lại error msg
-         * CreatedBy: VDDong (17/06/2021)
-         */
-        hidePopUp(){
-            //đóng thông báo trùng mã, tên đơn vị không trong hệ thống
-            this.isErrorDialogShow = false;
-            //Đóng thông báo mã null, tên đơn vị null, mã nhân viên null
-            this.isErrorPopUpShow = false;
-            //Đóng thông báo đã có dữ liệu bị thay đổi
-            this.isDataChange = false;
-            //reset nội dung thông báo lỗi
-            this.errorMsg = "";
-        },
+      },
 
-        /**
-         * Cụm hàm ẩn/hiện lỗi khi trỏ chuột vào ô input bị lỗi
-         * Trỏ chuột vào - hiện lỗi, trỏ chuột ra - ẩn lỗi
-         * CreatedBy: VDDong (17/06/2021)
-         */
-        //Di chuyển chuột vào trong hiện lỗi
-        mouseEnterError(propertyName){
-            if( this.isValid.employeeCode == false && propertyName == Resources.Property.EmployeeCode){
-                this.isValid.employeeCodeMessage = false;
-            }
-            else if( this.isValid.fullName == false && propertyName == Resources.Property.FullName){
-                this.isValid.fullNameMessage = false;
-            }
-            if( this.isValid.departmentName == false && propertyName == Resources.Property.DepartmentName) 
-                this.isValid.departmentNameMessage = false;
-            
-        },
-        //Di chuyển chuột ra ngoài ẩn lỗi
-        mouseLeaveError(){
-            this.isValid.employeeCodeMessage = true;
-            this.isValid.fullNameMessage = true;
-            this.isValid.departmentNameMessage = true;
+      /**
+       * Tắt thông báo xóa hàng loạt
+       * 
+       * CreatedBy:
+       */
+      hidePopUp(){
+        //Đóng thông báo
+        this.isErrorPopUpShow = false,
+        this.isShowPopUpAddFromExcel = false,
+        this.isShowPopUpConfirmMultipleDelete = false,
+        //reset lại nội dung thông báo
+        this.errorMsg = "";
 
-            // this.isValid.questionMessage = true;
-        },
+        this.loadData();
+      },
 
-        /**
-         * Reset lại các thông tin nhân viên khi bấm 'cất và thêm'
-         * CreatedBy: VDDong (17/06/2021)
-         */
-        resetEmployee(){
-            this.$emit('showEmployeeDialog');
-            this.focusInput();
-        },
+    /**
+    * Đọc file từ file excel bên ngoài
+    * CreatedBy: VDDong (27/09/2021)
+    */
+     //Lấy các tiêu đề của các cột trong file excel
+    getHeader(sheet) {
+      const XLSX = xlsx;
+      const headers = [];
+      const range = XLSX.utils.decode_range(sheet["!ref"]); // worksheet['!ref'] Is the valid range of the worksheet
+      let C;
+      /* Get cell value start in the first row */
+      const R = range.s.r; //Line / / column C
+      let i = 0;
+      for (C = range.s.c; C <= range.e.c; ++C) {
+        var cell =
+          sheet[
+            XLSX.utils.encode_cell({ c: C, r: R })
+          ]; /* Get the cell value based on the address  find the cell in the first row */
+        var hdr = "UNKNOWN" + C; // replace with your desired default
+        // XLSX.utils.format_cell Generate cell text value
+        if (cell && cell.t) hdr = XLSX.utils.format_cell(cell);
+        if(hdr.indexOf('UNKNOWN') > -1){
+          if(!i) {
+            hdr = '__EMPTY';
+          }else {
+            hdr = '__EMPTY_' + i;
+          }
+          i++;
+        }
+        headers.push(hdr);
+      }
+      return headers;
+    },
+    //Lấy ra các giá trị của từng row trong file excel (trừ row tiêu đề đầu mỗi cột)
+    importFileExcel(e) {
+      const files = e.target.files;
+      console.log(files);
+      var fileName = files[0].name; //lấy tên file
+      if (!files.length) {
+        return ;
+      } else if (!/\.(xls|xlsx)$/.test(files[0].name.toLowerCase())) { //Nếu file không đúng định dạng
+        // return alert(Resources.Notice.IncorrecExcelFile);
+        return this.showPopupWarning(Resources.Notice.IncorrecExcelFile);
+      }
+      const fileReader = new FileReader();
+      fileReader.onload = ev => {
+        try {
+          const data = ev.target.result;
+          const XLSX = xlsx;
+          const workbook = XLSX.read(data, {
+            type: "binary"
+          });
+          const wsname = workbook.SheetNames[0]; // Take the first sheet，wb.SheetNames[0] :Take the name of the first sheet in the sheets
+          const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]); // Generate JSON table content，wb.Sheets[Sheet名]    Get the data of the first sheet
+          //biến excellist là biến nhận các bản ghi từ file excel
+          const excellist = []; // Clear received data
+          // Edit data
+          for (var i = 0; i < ws.length; i++) {
+            excellist.push(ws[i]);
+          }
+          //chuyển các bản ghi từ file excel vào mảng listRecordsExcel
+          this.listRecordsExcel = excellist;
+          //hiện popup xác nhận thêm nhiều bản ghi từ file excel
+          this.isShowPopUpAddFromExcel = true;
+          this.errorMsg = Resources.PartNotice.ConfirmAdd + this.listRecordsExcel.length + Resources.PartNotice.RecordFromExcel + fileName; //muốn hiện cả số bản ghi từ file với tên file nhưng chưa làm được
+          // console.log(this.listRecordsExcel);
+          console.log("Read results", excellist); // At this point, you get an array containing objects that need to be processed
+          // Get header2-1
+          const a = workbook.Sheets[workbook.SheetNames[0]];
+          const headers = this.getHeader(a);
+          console.log('headers', headers);
+          // Get header2-2
+        } catch (e) {
+          // return alert(Resources.Notice.ReadExcelFileFail);
+          return this.showPopupWarning(Resources.Notice.ReadExcelFileFail);
+        }
+      };
+      fileReader.readAsBinaryString(files[0]);
+      //setup lại input file thành bình thường
+      var input = document.getElementById("uploadExcel");
+      input.value = "";
 
-        /**
-         * Phân biệt post vs put, rồi post / put lên database
-         * CreatedBy: VDDong (17/06/2021)
-         */
-        formmodeValidation(){
-            
-            // if(this.employee.identityDate == undefined) this.employee.identityDate = null;
-            // if(this.employee.dateOfBirth == undefined) this.employee.dateOfBirth = null;
-            console.log(this.employee);
-            console.log(this.employee.identityDate);
+    },
+    //Xử lý việc thêm các bản ghi vừa lấy từ file excel (đang lưu ở listRecordsExcel) lên database
+  async  AddFromExcel(){
+    this.hidePopUp(); //đóng popup xác nhận thêm x bản ghi từ file excel
+      console.log("Xác nhận thêm từ file excel");
+      var countAddSuccess = 0; //biến đếm xem đã thêm thành công bao nhiêu bản ghi
+      var listRecordsAddFail = []; //mảng lưu trữ những mã nhân viên add không thành công
+      for(let i=0; i<this.listRecordsExcel.length; i++){
+        //Tạo teacher mới để thêm lần lượt
+        //File excel phải định dạng tiêu đề từng cột không dấu không cách như đặt tên biến thì mới chuyển thành thuộc tính teacher được
+        var newTeacher = {};
+        newTeacher.teacherCode = this.listRecordsExcel[i].SHCB;
+        newTeacher.teacherName = this.listRecordsExcel[i].Ho_va_ten;
+        newTeacher.teacherPhone = this.listRecordsExcel[i].So_dien_thoai;
+        newTeacher.teacherGroup = this.formatGroupFromExcelToDB(this.listRecordsExcel[i].To_chuyen_mon);
+        newTeacher.teacherSubject = this.listRecordsExcel[i].QLTB_mon;
+        newTeacher.teacherRoom = this.listRecordsExcel[i].QL_kho_phong;
+        newTeacher.teacherQltb = this.formatStatusFromExcelToDB(this.listRecordsExcel[i].Dao_tao_QLTB);
+        newTeacher.teacherStatus = this.formatStatusFromExcelToDB(this.listRecordsExcel[i].Dang_lam_viec);
+        console.log(newTeacher);
+        //Gọi API thêm từng newTeacher vào database
+      await  axios
+          .post(Resources.API.GetAll + "/", newTeacher)
+          .then((res) => {
+            console.log(res);
+            countAddSuccess++;
+            this.loadData();
+          })
+          .catch((res) => {
+            console.log(res.response);
+            var errorFromBackend = res.response.data.devMsg;
+            listRecordsAddFail.push(errorFromBackend.substring(9, 17));
+            console.log("Error from backend: " + errorFromBackend);
+          })
+      }
+      //hiện popup báo số bản ghi đã thêm thành công, không thành công (làm 2 trong 1 luôn)
+      // this.isErrorPopUpShow = true;
+      this.isErrorPopUpShow = true;
+      this.errorMsg = Resources.PartNotice.AddSuccess + countAddSuccess + Resources.PartNotice.Record 
+                      + Resources.PartNotice.AddFail + listRecordsAddFail.toString();
 
-            if(this.formmode == Enums.FormMode.Add) {
-                var employeeIdToAddBanks = ""; //employeeId cũng là khóa ngoại UserId của BankEmployee
+      this.listRecordsExcel = [];
+      // this.hidePopUp();
+    },
 
-                return axios
-                    .post(Resources.API.GetAll, this.employee) //post data employee
-                    .then(() => {
-                        if(this.banksOfEmp.length == 0) { //nếu không có bank nào liên kết với nhân viên, báo thành công
-                            console.log("Không có banks liên kết, thêm nhân viên thành công");
+    //Hàm format ngày sinh từ file excel sang chuẩn định dạng yyyy-MM-dd để có thể add vào database
+    formatDobFromExcelToDB(excelDob){
+      var stringDob = excelDob + "";
+      const str = stringDob.split("/");
+      return str[2] + "-" + str[1] + "-" + str[0];
 
-                        }
-                        else { //nếu có banks liên kết
-                            //đầu tiên phải lấy employeeId của nhân viên mới đó về làm khóa ngoại của các banks liên kết
-                            //sau đó post các banks lên
-                            axios
-                                .get(Resources.API.GetEmployeeIdByEmployeeCode + this.employee.employeeCode) //lấy về data của nhân viên vừa post lên (theo employeeCode)
-                                .then((res) => {
-                                    employeeIdToAddBanks = res.data.employeeId; //lấy ra employeeId
-                                    for(var i=0; i<this.banksOfEmp.length; i++){
-                                        this.banksOfEmp[i].userId = employeeIdToAddBanks;
-                                        this.banksOfEmp[i].bankId = employeeIdToAddBanks; //tạm thời vì nếu để null thì bị 400 bad request nên cứ để thế này vào database nó tự set lại
-                                        var parsedobj = JSON.parse(JSON.stringify(this.banksOfEmp[i])); //nó là __ob__ nên phải convert sang array mới post được
-                                        console.log(parsedobj);
-
-                                        axios
-                                            .post(Resources.API.GetAllBankEmp, parsedobj) //post các empBanks lên
-                                            .then((res) => {
-                                                console.log(res);
-                                                return Promise.resolve();
-                                            })
-                                            .catch((res) => {
-                                                console.log(res.response);
-                                                return Promise.reject();
-                                            })
-                                    }
-                                })
-                                .catch((res) => {
-                                    console.log(res);
-                                })
-
-                        }
-                    })
-                    .catch((res) => {
-                        var errorContent = res.response.data.devMsg;
-
-                        if(errorContent.includes(Resources.MsgFromServer.EmployeeCode)) this.isValid.employeeCode = false;
-                        if(errorContent.includes(Resources.MsgFromServer.Phone)) this.isValid.phone = false;
-                        if(errorContent.includes(Resources.MsgFromServer.TelePhone)) this.isValid.telephone = false;
-                        if(errorContent.includes(Resources.MsgFromServer.Email)) this.isValid.email = false;
-
-                        this.errorMsg = errorContent;
-                        this.isErrorDialogShow = true;
-                        return Promise.reject();
-                    })
-
-
-            }
-            else if(this.formmode == Enums.FormMode.Edit){
-                //Do chênh lệch về múi giờ giữa frontend và backend nên ở trạng thái sửa
-                //ngày giờ bên font end đang là ngày x 00:00:00 GTM+7 giờ Đông Dương, sang bên backend lại thành ngày x-1 5h:00 PM
-                //nên khi ở trạng thái sửa, đành phải +1 thêm vào ngày để khi sang backend lưu vào DB nó vẫn đúng ngày mình chọn
-                //Ở trạng thái thêm thì còn tùy thuộc vào lúc thêm, nếu thêm vào tầm buổi trưa đổ đi, lúc đó đang giờ tầm 11 12h thì dù
-                //có lệch múi giờ thì sang backend nó giảm đi vài giờ vẫn thuộc ngày x, còn nếu pick datetime lúc sáng sớm thì vẫn có khả 
-                //năng sang backend bị -1 ngày do lệch múi giờ
-                // this.employee.dateOfBirth = new Date(this.employee.dateOfBirth);
-                //     this.employee.dateOfBirth.setDate(this.employee.dateOfBirth.getDate() + 1);
-                //(Vấn đề đã được khắc phục sau khi chuyển sang packet pickdate mới là Vue date pick)
-                //Packet này hình như không lưu giờ nên không bị dính vấn đề liên quan múi giờ
-                
-                console.log(this.employee);
-
-                //Logic xử lý:
-                // - đầu tiên put thông tin nhân viên
-                // - tiếp theo là xóa toàn bộ banks hiện tại của employee đó đi
-                // - sau đó post lại từ list banksOfEmp
-                return axios
-                    .put(Resources.API.GetAll + "/" + this.employee.employeeId, this.employee) //put thông tin nhân viên
-                    .then(() => {
-                        axios
-                            .delete(Resources.API.GetAllBankEmp + this.employee.employeeId) //xóa
-                            .then(() => {
-                                for(var i=0; i<this.banksOfEmp.length; i++){
-                                    this.banksOfEmp[i].userId = this.employee.employeeId;
-                                    this.banksOfEmp[i].bankId = this.employee.employeeId; //tạm thời vì nếu để null thì bị 400 bad request nên cứ để thế này vào database nó tự set lại
-                                    var parsedobj = JSON.parse(JSON.stringify(this.banksOfEmp[i])); //nó là __ob__ nên phải convert sang array mới post được
-                                    console.log(parsedobj);
-
-                                    axios
-                                        .post(Resources.API.GetAllBankEmp, parsedobj) //post các empBanks lên
-                                        .then((res) => {
-                                            console.log(res);
-                                            return Promise.resolve();
-                                        })
-                                        .catch((res) => {
-                                            console.log(res);
-                                            return Promise.reject();
-                                        })
-                                }
-                            })
-                    })
-                    .catch((res) => {
-                        var errorContent = res.response.data.devMsg;
-
-                        if(errorContent.includes(Resources.MsgFromServer.EmployeeCode)) this.isValid.employeeCode = false;
-                        if(errorContent.includes(Resources.MsgFromServer.Phone)) this.isValid.phone = false;
-                        if(errorContent.includes(Resources.MsgFromServer.TelePhone)) this.isValid.telephone = false;
-                        if(errorContent.includes(Resources.MsgFromServer.Email)) this.isValid.email = false;
-
-                        this.errorMsg = errorContent;
-                        this.isErrorDialogShow = true;
-                        return Promise.reject();
-                    })
-
-            }
-        },
-
-        /**
-         * Cụm hàm cập nhật dữ liệu lên database
-         */
-        //Cất
-        btnSave(){
-            this.formValidation();
-            if(this.isAppropriate){
-                this.formmodeValidation().then(() => this.hideDialog());
-            }
-        },
-        //Cất và thêm
-        btnSaveAndAdd(){
-            this.formValidation();
-            if(this.isAppropriate){
-                this.formmodeValidation().then(() => this.resetEmployee());
-            }
-        },
-
+      // var dob = new Date(excelDob).toISOString();
+      // return dob;
+    },
+    //Hàm format tên tổ từ file excel sang groupId để thêm vào DB
+    formatGroupFromExcelToDB(groupName){
+      if(groupName == Enums.Group.VP) return Enums.Group.VPId;
+      else if(groupName == Enums.Group.LH) return Enums.Group.LHId
+      else if(groupName == Enums.Group.TT) return Enums.Group.TTId
+      else if(groupName == Enums.Group.SSD) return Enums.Group.SSDId
+      else if(groupName == Enums.Group.NV) return Enums.Group.NVId
+      else if(groupName == Enums.Group.AV) return Enums.Group.AVId
+    },
+    //Hàm format teacherQltb và teacherStatus từ file excel sang dạng int để thêm vào DB
+    formatStatusFromExcelToDB(excelValue){
+      if(excelValue == Enums.Value.Yes) return Enums.Value.YesInt;
+      else return Enums.Value.NoInt;
     },
 
 
+
+
+  }, //End Methods
+
+  filters: {
+    //format date of birth
+    dateFormat(dateOfBirth) {
+      if(!dateOfBirth) return "";
+      var newDate = new Date(dateOfBirth);
+      var stringDate = newDate.getDate();
+      if (stringDate < 10) stringDate = "0" + stringDate;
+      var stringMonth = newDate.getMonth() + 1;
+      if (stringMonth < 10) stringMonth = "0" + stringMonth;
+      var stringYear = newDate.getFullYear();
+      return stringDate + "/" + stringMonth + "/" + stringYear;
+    },
+
+    //format tổ chuyên môn
+    groupFormatToTable(groupId){
+      if(groupId == Enums.Group.VPId) return Enums.Group.VP;
+      else if(groupId == Enums.Group.LHId) return Enums.Group.LH;
+      else if(groupId == Enums.Group.TTId) return Enums.Group.TT;
+      else if(groupId == Enums.Group.SSDId) return Enums.Group.SSD;
+      else if(groupId == Enums.Group.NVId) return Enums.Group.NV;
+      else if(groupId == Enums.Group.AVId) return Enums.Group.AV;
+    },
+
+    //định dạng lại hiển thị list môn, phòng
+    formatDisplayList(listValue){
+      if(listValue != null){
+        var arr =  listValue.split(",").toString();
+        var res = arr.replace(/,/g, ", ");
+        return res;
+      }
+    }
+
+  }, //End Filters
+
+  computed: {
+      /**
+       * Tích tất cả các checkbox
+       * CreatedBy: VDDong(14/06/2021)
+       */
+      checkAll: {
+        get: function() {
+          return this.initialTeachers ? this.checked.length == this.teacherNumber : false;
+        },
+        set: function(value) {
+          var checked = []; //mảng checked tạm thời, lưu trữ những bản ghi được tích checkbox
+          if(value) {
+            this.initialTeachers.forEach(function (teacher) {
+              checked.push(teacher.teacherId); //đưa các bản ghi tích checkbox vào mảng checked tạm
+            });
+          }
+          this.checked = checked; //mảng checked chính  = mảng checked tạm
+        },
+      },
+  }, //End Computed
+
+  watch: {
+    /**
+     * Hàm theo dõi các bản ghi được đánh dấu checkbox
+     * 
+     * CreatedBy:
+     */
+    checked: function() {
+      console.log("Number records of checked: " + this.checked.length);
+      console.log(this.checked);
+      if(this.checked.length >= 2){
+        // console.log("Có thể xóa hàng loạt");
+        this.isDeleteMultiple = true;
+      }
+      else {
+        // console.log("Tắt xóa hàng loạt");
+        this.isDeleteMultiple = false;
+      }
+    }
+  } //End Watch
+  
 }
 </script>
 
-
 <style scoped>
 
-    b{
-    font-size: 13px;
-    }
+#router-content {
+  position: absolute;
+  top: 48px;
+  left: 178px;
+  box-sizing: border-box;
+  display: inline-block;
+  background: rgb(244, 245, 246);
+  width: calc(100% - 178px);
+  height: calc(100% - 48px);
+  /* background-color: aqua; */
+  padding-top: 24px;
+  padding-left: 24px;
+  padding-bottom: 24px;
+  padding-right: 24px;
+}
+#title-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  /* background-color: aqua; */
+}
+.title {
+  /* font-weight: bold; */
+  font-size: 24px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 25px;
+}
+.back-title{
+    position: absolute;
+    left: 25px;
+    top: 50px;
+    color: rgb(29, 131, 214);
+}
+.btn-wrapper {
+  position: absolute;
+  right: 24px;
+  height: 40px;
+  top: 15px;
+}
 
-    .dialog_hide {
-        display:none;
-    }
-    .model {
-        position: fixed;
-        top: 0px;
-        left: 0px;
-        right: 0px;
-        bottom: 0px;
-        background-color: #000000;
-        opacity: .4;
-        z-index: 3;
-    }
-    .dialog-content{
-        position: fixed;
-        width: 900px;
-        height: 425px;
-        top: calc(50% - 250px);
-        left: calc(50% - 450px);
-        background-color: white;
-        border-radius: 4px;
-        box-sizing: border-box;
-        z-index: 3;
-    }
 
-    /* Phần header của dilog */
-    .header{
-        display: flex;
-        align-items: center;
-        width: 100%;
-        height: 45px;
-        padding-top: 5px;
-        padding-bottom: 20px;
-        padding-right: 12px;
-        position: relative;
-        overflow: hidden;
-        border-radius: 5px 5px 0 0;
-        box-sizing: border-box;
+
+
+#tablewrapper {
+  background: #fff;
+  color: #111;
+  height: calc(100% - 24px);
+  width: 100%;
+  overflow: hidden;
+  /* margin-right: 24px; */
+  /* padding: 0px 24px 24px 24px; */
+  padding-bottom: 24px;
+  box-sizing: border-box;
+  border-collapse: collapse;
+  /* background-color: #2ca01c; */
+  /* background-color: gray; */
+}
+#table{
+  height: 100%;
+  overflow: auto;
+  
+}
+
+#search {
+  height: 60px;
+  width: 100%;
+}
+#sort-and-group{
+  height: 60px;
+  width: 400px;
+  /* background-color: aqua; */
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 40px;
+}
+  .sortBar{
+    width: 180px;
+    height: 50px;
+  }
+
+  .groupBar{
+    width: 180px;
+    height: 50px;
+    /* background-color: rgb(37, 165, 122); */
+    margin-left: 20px;
+  }
+
+#search-bar-wrapper {
+  height: 60px;
+  /* background-color: aqua; */
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 36px;
+}
+.search-bar-and-icon {
+  border-radius: 2px;
+  box-sizing: border-box;
+  width: 332px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #babec5;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+.search-bar-and-icon:focus-within {
+  border: 1px solid #03AE66;
+}
+#search-bar {
+  width: 299px;
+  height: 31px;
+  font-size: 13px;
+  /* border-radius: 2px;
+        border: 1px solid #babec5; */
+  outline: none;
+  border: none;
+  /* border: 1px solid #babec5; */
+  /* border-right: none; */
+  box-sizing: border-box;
+  padding: 6px 10px;
+  font-style: italic;
+  border-collapse: collapse;
+}
+#search-icon {
+  width: 31px;
+  height: 31px;
+  background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat;
+  background-position: -984px -353px;
+  border: none;
+  outline: none;
+  border-collapse: collapse;
+}
+
+#btn-refresh-wrapper {
+  height: 80px;
+  width: 80px;
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: #2ca01c; */
+}
+
+tbody tr:hover {
+  background-color: #eeeded;
+}
+
+
+#footer {
+  /* margin-top: 24px; */
+  position: absolute;
+  bottom: 24px;
+  /* background-color: red; */
+  width: calc(100% - 48px);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#footer-right {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 48px;
+}
+#total-data{
+  display: flex;
+  align-items: center;
+  position: absolute;
+}
+/* #footer-2{
+        background-color: aqua;
     }
-    #title{
-        font-size: 22px;
-        color: #111;
-        font-weight: 500;
-    }
-    .btn-help{
-        height: 48px;
-        width: 48px;
+    #footer-3{
+        background-color: red;
         position: absolute;
-        right: 45px;
-        top: -10px;
-        min-width: 24px;
-        min-height: 24px;
-        background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat;
-        cursor: pointer;
-        background-position: -70px -132px;
-        border: none;
-        outline: none;
-        border-radius: 0px 4px 0px 4px;
-    }
-    .btn-X{
-        height: 20px;
-        width: 20px;
-        position: absolute;
-        right: 0px;
-        top: 0px;
-        background: url("../../../assets/Icons/ic_X_2.png") no-repeat;
-        cursor: pointer;
-        border: none;
-        outline: none;
-        border-radius: 0px 4px 0px 4px;
-    }
-
-    /* Phần middle của dialog */
-    .middle{
-        padding: 24px;
-        padding-top: 10px;
-    }
-    .middle-1{
-        display: flex;
-    }
-    .clm1{
-        width: 25%;
-        margin-right: 12px;
-    }
-        .img-avt{
-            width: 160px;
-            height: 160px;
-            margin-top: 20px;
-            margin-left: 15px;
-            border: 1px solid #ccc;
-            background-image: url('../../../assets/img/default-avt.jpg');
-            background-position: center;
-            background-size: contain;
-        }
-        .btn-add-avt{
-            width: 162px;
-            height: 30px;
-            margin-left: 15px;
-            text-align: center;
-            line-height: 30px;
-            color: #fff;
-            background-color: #2ca01c;
-            cursor: pointer;
-        }
-        .clm1-name{
-            width: 160px;
-            height: 30px;
-            margin-top: 15px;
-            margin-left: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            line-height: 30px;
-            overflow: hidden;
-        }
-        .clm1-code{
-            width: 160px;
-            height: 30px;
-            margin-left: 15px;
-            font-size: 15px;
-            text-align: center;
-            line-height: 30px;
-        }
-
-    .clm2{
-        width: 75%;
-        margin-left: 12px;
-    }
-    .input_bar{
-        display: flex;
-    }
-    .title-blank-box{
-        width: 35%;
-        height: 32px;
-        margin-top: 6px;
-        margin-bottom: 16px;
-        line-height: 32px;
-    }
-    .code-blank-box{
-        width: 55%;
-        padding: 6px 10px;
-        font-size: 13px;
-        height: 32px;
-        border: 1px solid #babec5;
-        box-sizing: border-box;
-        margin-top: 8px;
-        margin-bottom: 16px;
-        border-radius: 3px;
-        outline: none;
-    }
-    .code-blank-box:focus{
-        border-color: #2ca01c;
-    }
-
-    .fullname-blank-box{
-        width: 65%;
-        padding: 6px 10px;
-        font-size: 13px;
-        height: 32px;
-        border: 1px solid #babec5;
-        box-sizing: border-box;
-        margin-top: 8px;
-        margin-bottom: 16px;
-        border-radius: 3px;
-        outline: none;
-    }
-    .fullname-blank-box:focus{
-        border-color: #2ca01c;
-    }
-    .medium-blank-box{
-        width: calc(100% - 108px);
-        padding: 6px 10px;
-        font-size: 13px;
-        height: 32px;
-        border: 1px solid #babec5;
-        box-sizing: border-box;
-        margin-top: 8px;
-        margin-bottom: 16px;
-        border-radius: 3px;
-        display: flex;
-        align-items: center;
-        outline: none;
-    }
-    .medium-blank-box:focus{
-        border-color: #2ca01c;
-    }
-    .btn-check{
-        width: 18px;
-        height: 18px;
-        cursor: pointer;
-        margin-right: 8px;
-    }
-    .title-checkbox{
-        margin-right: 24px;
-    }
-
-    /* Phần Footer của dialog */
-    .footer{
-        position: absolute;
-        bottom: 0px;
-        width: calc(100% - 48px);
-        height: 68px;
-        display: flex;
-        align-items: center;
-        /* background-color: aqua; */
-        margin-left: 24px;
-        margin-right: 24px;
-        box-sizing: border-box;
-    }    
-        .cancel{
-            position: absolute;
-            right: 250px;
-        }
-        .post{
-            color: white;
-            position: absolute;
-            right: 124px;
-        }
-
-    /* Báo đỏ thanh input khi có lỗi */
-    .blank-box-invalid {
-        border-color: #F65454 !important;
-        outline: none;
-    }
-    /* Trỏ chuột và thanh input lỗi hiện thông báo lỗi */
-    .error-message{
-        position: absolute;
-        top: 40px;
-        left: 110px;
-        background-color: #F65454;
-        color: #fff;
-        font-size: 11px;
-        padding-left: 8px;
-        padding-top: 2px;
-        padding-bottom: 2px;
-        padding-right: 8px;
-        /* width: 300px; */
-        min-width: 180px;
-        height: 30px;
-        line-height: 30px;
-        border-radius: 4px;
-    }
-
-    /* Thông báo khi trỏ chuột vào icon dấu hỏi (đã tạm ẩn đi) */
-    .tooltiptext {
-        visibility: hidden;
-        background-color: black;
-        color: #babec5;
-        font-size: 11px;
-        text-align: center;
-        border-radius: 2px;
-        padding: 4px;
-
-        /* Position the tooltip */
-        position: fixed;
-        top: 13%;
-        left: 62%;
-        z-index: 1;
-        }
-
-    .btn-help:hover .tooltiptext {
-        visibility: visible;
-    }
+        right: 48px;
+        float: right;
+        
+    } */
+.fa-3x {
+  position: absolute;
+  left: 54%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
 
 
 /**
@@ -1053,21 +1282,21 @@ export default {
   display: none;
 }
 .dropdown-text-and-icon{
-    width: 55%;
+    width: 100%;
     padding: 6px 6px;
     font-size: 13px;
     height: 35px;
     border: 1px solid #babec5;
     box-sizing: border-box;
     margin-top: 8px;
-    margin-bottom: 13px;
+    margin-bottom: -2px;
     border-radius: 3px;
     /* box-sizing: border-box; */
     display: flex;
     align-items: center;
 }
 .dropdown-text-and-icon:focus-within{
-    border-color: #2ca01c;
+    border-color: #03AE66;
 }
 .input-blank-box{
     height: 30px;
@@ -1093,16 +1322,16 @@ export default {
     /* background-color: aqua; */
 }
 #dropdown{
-    position: absolute;
+    position: relative;
     display: inline-block;
     width: 100%;
     /* background-color: #2ca01c; */
 }
 .dropdown-content{
     /* height: 120px; */
-    width: 168px;
-    left: 108px;
-    top: 45px;
+    width: 100%;
+    
+    top: -10px;
     position: absolute;
     z-index: 2;
     /* right: 0px; */
@@ -1126,17 +1355,33 @@ export default {
     margin-bottom: 2px;
 }
 .dropdown-content-a:hover{
-    color: #2ca01c;
+    color: #03AE66;
     background-color: rgb(219, 219, 219);
 }
 .drop-down-content-selected{
-    background-color: #2ca01c;
+    background-color: #03AE66;
     color: #fff;
 }
 .drop-down-content-selected:hover{
-    background-color: #2ca01c;
+    background-color: #03AE66;
     color: #fff;
 }
 
+/* Dấu tích ở table */
+.tickbox::before
+  {
+    display: block;
+    content: "";
+    width: 16px;
+    height: 16px;
+    background: url('../../../assets/img/Sprites.64af8f61.svg');
+    background-position: -1224px -360px;
+    margin-left: 30px;
+
+  }
+  /* .tickbox::before
+  {
+      display: block;
+  } */
 
 </style>

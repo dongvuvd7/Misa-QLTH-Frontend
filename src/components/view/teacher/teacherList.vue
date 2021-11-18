@@ -38,55 +38,25 @@
                     <div id="search">
 
                         <div id="sort-and-group">
+
                           <div class="sortBar">
-                            <!-- combobox -->
-                            <div class="dropdown-text-and-icon">
-                                <input type="text" class="input-blank-box" 
-                                    @focus="showDropDownContent('Sort')" 
-                                    @blur="hideDropDownContent('Sort')" 
-                                    @keyup="searchOption('Sort')"
-                                    v-model="thisChoose.Sort.text"
-                                    placeholder="Lựa chọn sắp xếp"
-                                />
-                                <button id="dropdown-icon" @click="showDropDownContent('Sort')" @blur="hideDropDownContent('Sort')"></button>
-                            </div>
-                            <div id="dropdown">     
-                                <div class="dropdown-content" :class="{'dialog_hide': !isShowOptions.Sort}" >
-                                    <div class="dropdown-content-a" 
-                                        :class="{'drop-down-content-selected' : optionSort.id == thisChoose.Sort.id}"
-                                        v-for="optionSort in listOptions.Sort" 
-                                        :key="optionSort.id" 
-                                        @click="chooseOption(optionSort, 'Sort')" 
-                                        @mouseenter="enterClick()" 
-                                        @mouseleave="leaveClick()"
-                                    >{{optionSort.text}}</div>
-                                </div>
-                            </div>
+                            <DropDown
+                              :typeDropdown="SortType"  
+                              :options="listOptions.Sort"
+                              :initialOptions="initialListOptions.Sort"
+                              @solveOnParent="solveDropdown" 
+                              ref="dropDownSort">
+                            </DropDown>
                           </div>
+
                           <div class="groupBar">
-                            <!-- combobox -->
-                            <div class="dropdown-text-and-icon">
-                                <input type="text" class="input-blank-box" 
-                                    @focus="showDropDownContent('Group')" 
-                                    @blur="hideDropDownContent('Group')" 
-                                    @keyup="searchOption('Group')"
-                                    v-model="thisChoose.Group.text"
-                                    placeholder="Nhóm tổ chuyên môn"
-                                />
-                                <button id="dropdown-icon" @click="showDropDownContent('Group')" @blur="hideDropDownContent('Group')"></button>
-                            </div>
-                            <div id="dropdown">     
-                                <div class="dropdown-content" :class="{'dialog_hide': !isShowOptions.Group}" >
-                                    <div class="dropdown-content-a" 
-                                        :class="{'drop-down-content-selected' : optionGroup.id == thisChoose.Group.id}"
-                                        v-for="optionGroup in listOptions.Group" 
-                                        :key="optionGroup.id" 
-                                        @click="chooseOption(optionGroup, 'Group')" 
-                                        @mouseenter="enterClick()" 
-                                        @mouseleave="leaveClick()"
-                                    >{{optionGroup.text}}</div>
-                                </div>
-                            </div>
+                            <DropDown
+                              :typeDropdown="GroupType"  
+                              :options="listOptions.Group"
+                              :initialOptions="initialListOptions.Group"
+                              @solveOnParent="solveDropdown" 
+                              ref="dropDownGroup">
+                            </DropDown>
                           </div>
 
                         </div>
@@ -253,6 +223,8 @@ import SuccessPopUp from '../../common/pop-up/successPopup.vue';
 import Enums from "../../common/base/enum.js";
 import Resources from "../../common/base/resource.js";
 
+import DropDown from "../../common/dropdown.vue";
+
 
 export default {
   components: {
@@ -267,6 +239,8 @@ export default {
 
       WarningPopUp,
       SuccessPopUp,
+
+      DropDown,
   },
 
   data() {
@@ -352,7 +326,12 @@ export default {
             //Biến ẩn hiện warning popup, success popup
             isShowWarningPopup: false,
             isShowSuccessPopup: false,
-            warningMsg: ""
+            warningMsg: "",
+
+            //Biến truyền sang component dropdown để phân biệt loại dropdown
+            SortType: "Sort",
+            GroupType: "Group",
+
       }
   }, //End Data
 
@@ -462,6 +441,8 @@ export default {
       this.loadData();
       //set up mặc định cho combobox là lựa 20 bản ghi trên trang
       this.$refs.comboBox.resetPerPage(); //hàm resetPerPage là hàm viết bên file comboBox.vue
+      this.$refs.dropDownSort.resetChoose();
+      this.$refs.dropDownGroup.resetChoose();
     },
 
     /**
@@ -479,6 +460,8 @@ export default {
           text: null,
         },
       }
+      this.$refs.dropDownSort.resetChoose();
+      this.$refs.dropDownGroup.resetChoose();
     },
 
     /**
@@ -699,55 +682,17 @@ export default {
       },
 
       /**
-       * Cụm hàm liên quan đến combobox
-       * Hàm dùng chung
+       * Nhận dữ liệu đã chọn từ bên dropdown
+       * Sau đó gọi hàm sortsBy để sắp xếp
        */
-      //Khi di chuyển chuột vào trong các option
-      enterClick(){
-          //Gán overClick = true để tránh lỗi click và focusout overlapping (khi click thì focusout sẽ chạy trước mà không chạy click)
-          this.overClick = true;
-      },
-      //Khi di chuyển chuột ra khỏi các option
-      leaveClick(){
-          this.overClick = false;
-      },
-      //Ẩn / hiện combobox
-      showDropDownContent(type){
-        this.listOptions[type] = this.initialListOptions[type];
-        this.isShowOptions[type] = !this.isShowOptions[type];
-      },
-      hideDropDownContent(type){
-        if(this.overClick == false) this.isShowOptions[type] = false;
-      },
-      //Gán dữ liệu đã chọn từ combobox để thực thi và hiện ra combobox
-      chooseOption(option, type){
-        //Vì chưa kết hợp vừa sort vừa tìm kiếm nên khi chọn sort thì reset default thanh input tìm kiếm
+      solveDropdown(valueFromChild, type){
+        //chưa kết hợp tìm kiếm vs sắp xếp và nhóm nên cần reset lại input tìm kiếm
         this.message = "";
-
-        //Gán giá trị được chọn cho id và text của loại sort
-        this.thisChoose[type].id = option.id;
-        this.optionFormat(this.thisChoose[type].id, type);
-        this.overClick = false;
-        this.hideDropDownContent(type);
+        // this.sortsBy();
+        this.thisChoose[type].id = valueFromChild;
+        console.log(this.thisChoose[type].id);
         this.sortsBy();
       },
-      //Format tên loại type option để binding vào combobox
-      optionFormat(Id, type){
-        this.listOptions[type].forEach(option => {
-          if(Id == option.id){
-            this.thisChoose[type].text = option.text;
-          }
-        });
-      },
-      //Tìm kiếm ở ô input so với các option ở combobox
-      searchOption(type){
-        this.listOptions[type] = this.initialListOptions[type].filter(option => {
-            return (
-                option.text.toLowerCase().includes(this.thisChoose[type].text.toLowerCase())
-            )
-        });
-      },
-
 
       /**
        * Hàm gọi đến API để xử lý việc sắp xếp và nhóm phòng ban
@@ -1272,98 +1217,6 @@ tbody tr:hover {
   transform: translate(-50%, -50%);
 }
 
-
-/**
-  Dropdown
-*/
-.dialog_hide{
-  display: none;
-}
-.dropdown-text-and-icon{
-    width: 100%;
-    padding: 6px 6px;
-    font-size: 13px;
-    height: 35px;
-    border: 1px solid #babec5;
-    box-sizing: border-box;
-    margin-top: 8px;
-    margin-bottom: -2px;
-    border-radius: 3px;
-    /* box-sizing: border-box; */
-    display: flex;
-    align-items: center;
-}
-.dropdown-text-and-icon:focus-within{
-    border-color: #03AE66;
-}
-.input-blank-box{
-    height: 30px;
-    width: calc(100% - 32px);
-    /* padding: 6px 0 6px 12px; */
-    box-sizing: border-box;
-    border: none;
-    outline: none;
-    border-collapse: collapse;
-    border-radius: 4px;
-}
-#dropdown-icon{
-    width: 30px;
-    height: 30px;
-    border: none;
-    outline: none;
-    border-collapse: collapse;
-    border-radius: 4px;
-    background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat;
-    background-position: -545px -352px;
-    transform: rotate(0deg);
-    transition: transform .15s linear;
-    /* background-color: aqua; */
-}
-#dropdown{
-    position: relative;
-    display: inline-block;
-    width: 100%;
-    /* background-color: #2ca01c; */
-}
-.dropdown-content{
-    /* height: 120px; */
-    width: 100%;
-    
-    top: -10px;
-    position: absolute;
-    z-index: 2;
-    /* right: 0px; */
-    border: 1px solid;
-    background-color: #fff;
-    border-radius: 3px;
-    border: 1px solid #babec5;
-    cursor: pointer;
-}
-.dropdown-content-a{
-    /* position: absolute; */
-    height: 30px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    padding-left: 12px;
-    box-sizing: border-box;
-    border: none;
-    outline: none;
-    font-size: 13px;
-    margin-bottom: 2px;
-}
-.dropdown-content-a:hover{
-    color: #03AE66;
-    background-color: rgb(219, 219, 219);
-}
-.drop-down-content-selected{
-    background-color: #03AE66;
-    color: #fff;
-}
-.drop-down-content-selected:hover{
-    background-color: #03AE66;
-    color: #fff;
-}
 
 /* Dấu tích ở table */
 .tickbox::before
