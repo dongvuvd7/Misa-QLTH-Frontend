@@ -52,6 +52,10 @@ input[type="file"] {
     border-radius: 3px;
     cursor: pointer;
 }
+.btn-no{
+    position: absolute;
+    right: 120px;
+}
 
 /**
     Button cất và thêm

@@ -27,10 +27,13 @@
 </template>
 
 <script>
+
+import Enums from '../common/base/enum.js';
+
 export default {
 
     created() {
-        this.selectedOption.name = "20 bản ghi trên trang";
+        this.selectedOption.name = Enums.ComboPaging.Name20;
     },
     props: {
 
@@ -40,24 +43,24 @@ export default {
             isShowOption: false, // biến ẩn/hiện option của comboBox
             options: [
                 {
-                    value: 10,
-                    name: "10 bản ghi trên trang"
+                    value: Enums.ComboPaging.Value10,
+                    name: Enums.ComboPaging.Name10
                 },
                 {
-                    value: 20,
-                    name: "20 bản ghi trên trang"
+                    value: Enums.ComboPaging.Value20,
+                    name: Enums.ComboPaging.Name20
                 },
                 {
-                    value: 30,
-                    name: "30 bản ghi trên trang"
+                    value: Enums.ComboPaging.Value30,
+                    name: Enums.ComboPaging.Name30
                 },
                 {
-                    value: 50,
-                    name: "50 bản ghi trên trang"
+                    value: Enums.ComboPaging.Value50,
+                    name: Enums.ComboPaging.Name50
                 },
                 {
-                    value: 100,
-                    name: "100 bản ghi trên trang"
+                    value: Enums.ComboPaging.Value100,
+                    name: Enums.ComboPaging.Name100
                 },
             ],
             selectedOption: { //option được chọn

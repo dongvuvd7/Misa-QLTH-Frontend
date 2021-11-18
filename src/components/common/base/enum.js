@@ -56,8 +56,41 @@ const Enum = {
         Yes: 'x',
         YesInt: 1,
         NoInt: 0,
-    }
+    },
 
+    Subject: {
+        Toan: "Toán",
+        Ly: "Lý",
+        Hoa: "Hóa",
+        Sinh: "Sinh",
+        NguVan: "Ngữ Văn",
+        LichSu: "Lịch Sử",
+        Tin: "Tin",
+        AnhVan: "Anh Văn",
+        Dia: "Địa",
+        TheChat: "Thể chất",
+        CongDan: "Công dân",
+    },
+
+    Room: {
+        ToanLy: "Phòng Toán Lý",
+        HoaSinh: "Phòng Hóa Sinh",
+        AnhVan: "Phòng Anh Văn",
+        Chung: "Phòng chung",
+    },
+
+    ComboPaging: {
+        Value10: 10,
+        Name10: "10 bản ghi trên trang",
+        Value20: 20,
+        Name20: "20 bản ghi trên trang",
+        Value30: 30,
+        Name30: "30 bản ghi trên trang",
+        Value50: 50,
+        Name50: "50 bản ghi trên trang",
+        Value100: 100,
+        Name100: "100 bản ghi trên trang",
+    }
     
 
 

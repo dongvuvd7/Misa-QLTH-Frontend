@@ -13,8 +13,11 @@ const Resource = {
 
     Notice: {
         DeleteSuccess: "Xóa thành công!",
+        DeleteFail: "Xóa thất bại!",
         IncorrecExcelFile: "Không đúng định dạng file. Vui lòng tải lên file excel!",
         ReadExcelFileFail: "Đọc file không thành công!",
+        AddSuccess: "Thêm thành công!",
+        EditSuccess: "Sửa thành công!",
 
     },
 
@@ -36,11 +39,28 @@ const Resource = {
     },
 
     MsgFromServer: {
-        TeacherCode: "Mã nhân viên",
-        Phone: "ĐT di động",
-        TelePhone: "ĐT cố định",
+        TeacherCode: "Mã cán bộ",
+        Phone: "Số điện thoại",
         Email: "Email",
     },
+
+    PartNotice: {
+        PageSize: "pageSize=",
+        PageIndex: "pageIndex=",
+        Filter: "filter=",
+        GroupString: "groupString=",
+        Delete: "Xóa ",
+        RecordChoose: " bản ghi đã chọn?",
+        YourDelete: "Bạn đã xóa ",
+        TeacherRecord: " bản ghi cán bộ giáo viên!",
+        ConfirmAdd: "Xác nhận thêm ",
+        RecordFromExcel: " bản ghi từ file excel ",
+        AddSuccess: "Bạn đã thêm thành công ",
+        Record: " bản ghi. ",
+        AddFail: "Thêm không thành công các bản ghi: ",
+        Teacher: "teacher",
+        Name: "Name"
+    }
 
 
 

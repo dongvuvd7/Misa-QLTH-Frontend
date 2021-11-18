@@ -7,7 +7,7 @@
                     <div style="">{{errorMsg}}</div>
                 </div>
                 <div class="footer">
-                    <button class="btn-small" @click="btnNo()">Hủy</button>
+                    <button class="btn-small btn-no default-color" @click="btnNo()">Hủy</button>
                     <button class="btn-confirm-ex primary-color" @click="btnYes()">Đồng ý</button>
                 </div>
         </div>

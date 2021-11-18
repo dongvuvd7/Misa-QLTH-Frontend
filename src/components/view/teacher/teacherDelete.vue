@@ -68,14 +68,15 @@ export default {
                 .delete(Resources.API.GetAll + "/" + this.teacher.teacherId) //xóa nhân viên
                 .then((res) => {
                     console.log(res);
-                    console.log('xóa báo popup')
-                    this.warningMsg = "Xóa thành công!"
+                    // console.log('xóa báo popup')
+                    this.warningMsg = Resources.Notice.DeleteSuccess;
                     this.$emit('turnPopUpSuccess', this.warningMsg);
                     this.hideDialog();
                 })
                 .catch((res) => {
                     console.log(res);
-                    this.$emit('turnPopUpSuccess', this.warningMsg);
+                    this.warningMsg = Resources.Notice.DeleteFail;
+                    this.$emit('turnPopUpWarning', this.warningMsg);
                     this.hideDialog();
                 })
 
@@ -153,10 +154,6 @@ export default {
         color: #fff;
         border-radius: 3px;
         cursor: pointer;
-    }
-    .btn-no{
-        position: absolute;
-        right: 120px;
     }
     .btn-X{
         height: 20px;

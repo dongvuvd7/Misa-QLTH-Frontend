@@ -310,38 +310,40 @@ export default {
 
     data() {
         return {
-
+            //Biến ẩn hiện khu vực chọn ngày nghỉ việc
             isShowDateArea: false,
 
+            //Mảng lưu trữ các môn học (QL theo môn)
             itemSubjects: [],
             listItemSubjects: [
-                'Toán',
-                'Lý',
-                'Hóa',
-                'Sinh',
-                'Ngữ Văn',
-                'Lịch sử',
-                'Tin',
-                'Anh văn',
-                'Địa',
-                'Thể chất',
-                'Công dân',
+                Enums.Subject.Toan,
+                Enums.Subject.Ly,
+                Enums.Subject.Hoa,
+                Enums.Subject.Sinh,
+                Enums.Subject.NguVan,
+                Enums.Subject.LichSu,
+                Enums.Subject.Tin,
+                Enums.Subject.AnhVan,
+                Enums.Subject.Dia,
+                Enums.Subject.TheChat,
+                Enums.Subject.CongDan,
             ],
-
+            //Mảng lưu trữ các phòng (QL kho, phòng)
             itemRooms: [],
             listItemRooms: [
-                'Phòng Toán Lý',
-                'Phòng Hóa Sinh',
-                'Phòng Anh Văn',
-                'Phòng chung',
+                Enums.Room.ToanLy,
+                Enums.Room.HoaSinh,
+                Enums.Room.AnhVan,
+                Enums.Room.Chung,
             ],
 
 
-
+            //Biến bật tắt combobox custom
             isShowOption: {
                 teacherGroup: false,
 
             },
+            //List các lựa chọn của combobox
             listOptions: {
                 teacherGroup: [
                     {id: Enums.Group.VPId, name: Enums.Group.VP},
@@ -353,6 +355,7 @@ export default {
                 ],
 
             },
+            //List các lựa chọn combobox (dùng trong việc so sánh input nhập vào phải đúng dữ liệu)
             initialListOptions: {
                 teacherGroup: [
                     {id: Enums.Group.VPId, name: Enums.Group.VP},
@@ -367,6 +370,7 @@ export default {
             //Biến kiểm tra xem chuột có di chuyển vào các option hay không, để phân biệt click với blur
             overClick: false,
 
+            //Biến kiểm tra validate
             isValid: {
                 teacherCode: true,
                 teacherName: true,
@@ -483,7 +487,9 @@ export default {
            else this.hideDialog();
         },
 
+
         /**
+         * Cụm hàm lên quan combobox custom
         * Hiện combobox
         * CreatedBy: VDDong (17/06/2021)
         */
@@ -737,6 +743,18 @@ export default {
         },
 
         /**
+         * Thông báo validate gửi về từ server
+         */
+        validateFromServer(notice){
+            if(notice.includes(Resources.MsgFromServer.TeacherCode)) this.isValid.teacherCode = false;
+            if(notice.includes(Resources.MsgFromServer.Phone)) this.isValid.phone = false;
+            if(notice.includes(Resources.MsgFromServer.Email)) this.isValid.email = false;
+
+            this.errorMsg = notice;
+            this.isErrorDialogShow = true;
+        },
+
+        /**
          * Phân biệt post vs put, rồi post / put lên database
          * CreatedBy: VDDong (17/06/2021)
          */
@@ -751,20 +769,14 @@ export default {
                     .post(Resources.API.GetAll, this.teacher)
                     .then((res) => {
                         console.log(res);
-                        var msg = "Thêm thành công"
+                        var msg = Resources.Notice.AddSuccess;
                         this.$emit('turnPopUpSuccess', msg);
                         return Promise.resolve();
                     })
                     .catch((res) => {
                         var errorContent = res.response.data.devMsg;
                         console.log(errorContent);
-
-                        if(errorContent.includes("Mã cán bộ")) this.isValid.teacherCode = false;
-                        if(errorContent.includes("Số điện thoại")) this.isValid.phone = false;
-                        if(errorContent.includes("Email")) this.isValid.email = false;
-
-                        this.errorMsg = errorContent;
-                        this.isErrorDialogShow = true;
+                        this.validateFromServer(errorContent);                     
                         return Promise.reject();
                     })
 
@@ -774,7 +786,7 @@ export default {
                     .put(Resources.API.GetAll + "/" + this.teacher.teacherId, this.teacher)
                     .then((res) => {
                         console.log(res);
-                        var msg = "Sửa thành công"
+                        var msg = Resources.Notice.EditSuccess;
                         this.$emit('turnPopUpSuccess', msg);
                         return Promise.resolve();
                     })
@@ -782,13 +794,7 @@ export default {
                         console.log(res.response);
                         var errorContent = res.response.data.devMsg;
                         console.log(errorContent);
-
-                        if(errorContent.includes("Mã cán bộ")) this.isValid.teacherCode = false;
-                        if(errorContent.includes("Số điện thoại")) this.isValid.phone = false;
-                        if(errorContent.includes("Email")) this.isValid.email = false;
-
-                        this.errorMsg = errorContent;
-                        this.isErrorDialogShow = true;
+                        this.validateFromServer(errorContent);                      
                         return Promise.reject();
                     })
             }

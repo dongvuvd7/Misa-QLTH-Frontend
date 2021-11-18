@@ -86,7 +86,7 @@ export default {
         border: 1px solid #03AE66;
         border-radius: 3px;
         box-sizing: border-box;
-        padding-right: 10px;
+        padding-right: 5px;
         z-index: 5;
         display: flex;
     }

@@ -362,7 +362,7 @@ export default {
       this.message = "";
       axios
         .get(
-            Resources.API.GetFilter + "pageSize=" + this.perPage + "&" + "pageIndex=" + this.currentPage + "&" + "filter=" + this.message
+            Resources.API.GetFilter + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.Filter + this.message
         )
         .then((res) => {
             console.log(res);
@@ -417,7 +417,7 @@ export default {
           this.message  = "";
           axios
         .get(
-            Resources.API.GetFilter + "pageSize=" + this.perPage + "&" + "pageIndex=" + this.currentPage + "&" + "filter=" + this.message
+            Resources.API.GetFilter + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.Filter + this.message
         )
         .then((res) => {
             console.log(res);
@@ -595,7 +595,7 @@ export default {
         this.currentPage = 1;
         axios
           .get(
-            Resources.API.GetFilter + "pageSize=" + this.perPage + "&" + "pageIndex=" + this.currentPage + "&" + "filter=" + this.message
+            Resources.API.GetFilter + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.Filter + this.message
           )
           .then((res) => {
             console.log(res);
@@ -664,7 +664,7 @@ export default {
           else {
             axios
               .get(
-                  Resources.API.GetFilter + "pageSize=" + this.perPage + "&" + "pageIndex=" + this.currentPage + "&" + "filter=" + this.message
+                  Resources.API.GetFilter + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.Filter + this.message
               )
               .then((res) => {
               console.log(res);
@@ -761,10 +761,10 @@ export default {
         if(this.thisChoose.Group.id == null) this.thisChoose.Group.id = ""; //nếu không chọn sắp xếp hay phòng ban thì đưa về "" cho phù hợp API
         var urlAPI = ""; //api để request trả về danh sách dữ liệu sắp xếp
         if(this.thisChoose.Sort.id == null || this.thisChoose.Sort.id == 1){ //mặc định hoặc sắp xếp thứ tự thêm mới (là sortByCode)
-          urlAPI = (Resources.API.SortByCode + "pageSize=" + this.perPage + "&pageIndex=" + this.currentPage + "&groupString=" + this.thisChoose.Group.id);
+          urlAPI = (Resources.API.SortByCode + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.GroupString + this.thisChoose.Group.id);
         }
         else if(this.thisChoose.Sort.id == 2){ //sắp xếp theo tên nhân viên
-          urlAPI = (Resources.API.SortByName + "pageSize=" + this.perPage + "&pageIndex=" + this.currentPage + "&groupString=" + this.thisChoose.Group.id);
+          urlAPI = (Resources.API.SortByName + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.GroupString + this.thisChoose.Group.id);
         }
         //call api
         axios
@@ -794,7 +794,7 @@ export default {
       //Hàm bật popup xác nhận xóa
       showConfirmDeleteMultiple(){
         this.isShowPopUpConfirmMultipleDelete = true;
-        this.errorMsg = "Xóa " + this.checked.length + " bản ghi đã chọn?";
+        this.errorMsg = Resources.PartNotice.Delete + this.checked.length + Resources.PartNotice.RecordChoose;
       },
 
       //Hàm thực thi xóa
@@ -822,7 +822,7 @@ export default {
         //set this.checked = [] để tắt button xóa hàng loạt đi
         this.checked = [];
         //hiện popup 3s báo số bản ghi đã xóa
-        var msg = "Bạn đã xóa " + newChecked.length + " bản ghi cán bộ giáo viên!";
+        var msg = Resources.PartNotice.YourDelete + newChecked.length + Resources.PartNotice.TeacherRecord;
         this.showPopupSuccess(msg);
         this.hidePopUp();
         //reset lại combobox (trong trường hợp sắp xếp, nhóm rồi xóa)
@@ -910,7 +910,7 @@ export default {
           this.listRecordsExcel = excellist;
           //hiện popup xác nhận thêm nhiều bản ghi từ file excel
           this.isShowPopUpAddFromExcel = true;
-          this.errorMsg = "Xác nhận thêm " + this.listRecordsExcel.length + " nhân viên từ file excel " + fileName; //muốn hiện cả số bản ghi từ file với tên file nhưng chưa làm được
+          this.errorMsg = Resources.PartNotice.ConfirmAdd + this.listRecordsExcel.length + Resources.PartNotice.RecordFromExcel + fileName; //muốn hiện cả số bản ghi từ file với tên file nhưng chưa làm được
           // console.log(this.listRecordsExcel);
           console.log("Read results", excellist); // At this point, you get an array containing objects that need to be processed
           // Get header2-1
@@ -966,8 +966,8 @@ export default {
       //hiện popup báo số bản ghi đã thêm thành công, không thành công (làm 2 trong 1 luôn)
       // this.isErrorPopUpShow = true;
       this.isErrorPopUpShow = true;
-      this.errorMsg = "Bạn đã thêm thành công " + countAddSuccess + " bản ghi. " 
-                      + "Thêm không thành công các bản ghi: " + listRecordsAddFail.toString();
+      this.errorMsg = Resources.PartNotice.AddSuccess + countAddSuccess + Resources.PartNotice.Record 
+                      + Resources.PartNotice.AddFail + listRecordsAddFail.toString();
 
       this.listRecordsExcel = [];
       // this.hidePopUp();
