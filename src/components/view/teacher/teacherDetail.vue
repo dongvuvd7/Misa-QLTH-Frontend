@@ -65,6 +65,7 @@
                             <div style="display: flex; align-items: center;">
                                 <div class="input_bar" style="width: 50%; margin-right: 2px;">
                                     <div class="title-blank-box" style="position: relative"><b>Số điện thoại</b>
+                                        <div class="error-message" v-show="isValid.phone == false">Số điện thoại chưa hợp lệ</div>
                                     </div>
                                     <input type="text" class="code-blank-box"
                                         :class="{'blank-box-invalid': isValid.phone == false}" 
@@ -74,6 +75,7 @@
                                 </div>
                                 <div class="input_bar" style="width: 50%; margin-left: 2px;">
                                     <div class="title-blank-box" style="position: relative"><b>Email</b>
+                                        <div class="error-message" v-show="isValid.email == false">Email chưa hợp lệ</div>
                                     </div>
                                     <input type="email" class="fullname-blank-box"
                                         :class="{'blank-box-invalid': isValid.email == false }" 
@@ -86,7 +88,7 @@
                             <div style="display: flex; align-items: center;">
                                 <div class="input_bar" style="width: 50%; margin-right: 2px;">
                                     <div style="position: relative; width: 35%; line-height: 48px;"><b>Tổ bộ môn</b><span style="color: red;">*</span>
-                                        <div class="error-message" v-show="isValid.groupNameMessage == false">Tổ bộ môn chưa hợp lệ</div>
+                                        <div class="error-message" v-show="isValid.teacherGroupMessage == false">Tổ bộ môn chưa hợp lệ</div>
                                     </div>
                                     <!-- combobox -->
                                     <div class="dropdown-text-and-icon" :class="{'blank-box-invalid': isValid.teacherGroup == false}">
@@ -402,7 +404,7 @@ export default {
                 teacherGroup: true,
                 teacherCodeMessage: true,
                 teacherNameMessage: true,
-                groupNameMessage: true,
+                teacherGroupMessage: true,
                 stopdayAndToday: true,
 
                 phone: true,
@@ -457,13 +459,8 @@ export default {
         /**
        * Cụm hàm check validate
        * Khi không thỏa mãn thì báo lỗi, khi thỏa mãn rồi thì bỏ báo lỗi đi
-       * Theo ban đầu nghĩ là phải dùng watch để theo dõi, nhưng viết thế này cũng chạy được
        * CreatedBy: VDDong (11/09/2021)
        */
-        /**
-         * Check Validate bắt buộc nhập
-         * Hàm dùng chung
-         */
       CheckRequired: function(teacherProp, e) {
           if(!this.teacher[teacherProp]){
               this.isValid[teacherProp] = false; //báo viền đỏ
@@ -751,6 +748,8 @@ export default {
                 && this.isValid.teacherCode == true
                 && this.isValid.teacherGroup == true
                 && this.isValid.stopdayAndToday == true
+                && this.isValid.phone == true
+                && this.isValid.email == true
             ) this.isAppropriate = true;
             else this.isAppropriate = false;         
         },
@@ -784,14 +783,14 @@ export default {
                 this.isValid.teacherNameMessage = false;
             }
             if( this.isValid.teacherGroup == false && propertyName == Resources.Property.GroupName) 
-                this.isValid.groupNameMessage = false;
+                this.isValid.teacherGroupMessage = false;
             
         },
         //Di chuyển chuột ra ngoài ẩn lỗi
         mouseLeaveError(){
             this.isValid.teacherCodeMessage = true;
             this.isValid.teacherNameMessage = true;
-            this.isValid.groupNameMessage = true;
+            this.isValid.teacherGroupMessage = true;
 
             // this.isValid.questionMessage = true;
         },
