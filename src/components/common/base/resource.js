@@ -9,6 +9,8 @@ const Resource = {
         SortByCode: "https://localhost:44342/api/v1/Teachers/SortByCode?",
         SortByName: "https://localhost:44342/api/v1/Teachers/SortByName?",
         DeleteMultiple: "https://localhost:44342/api/v1/Teachers/MultipleDelete/",
+        GetRooms: "https://localhost:44342/api/v1/Rooms",
+        GetSubjects: "https://localhost:44342/api/v1/Subjects",
     },
 
     Notice: {
@@ -63,6 +65,11 @@ const Resource = {
         Comma: "%27%2C%27",
         OpenBrackets: "%28%27",
         CloseBrackets: "%27%29",
+    },
+
+    Regexs: {
+        Email: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+        Phone: /^\d+$/,
     }
 
 

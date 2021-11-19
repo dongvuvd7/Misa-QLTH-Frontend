@@ -1,18 +1,16 @@
 <template>
     <div class="dialog" data-app>
+        <!-- Màn đen bọc dialog -->
         <div class="model" @click="hideDialogDataCondition()"></div>
         <div class="dialog-content">
-            <div class="left-dialog-content">
-
-            </div>
+            <div class="left-dialog-content"></div>
             <div class="right-dialog-content">
-                
-
+                <!-- Nội dung dialog -->
                 <div class="middle">
                     <div class="middle-1">
+                        <!-- Ảnh đại diện -->
                         <div class="column clm1">
                             <div class="img-avt">
-
                             </div>
                             <div class="btn-add-avt">
                                 Chọn ảnh
@@ -24,8 +22,9 @@
                                 {{teacher.teacherCode}}
                             </div>
                         </div>
+                        <!-- Nhập liệu dialog -->
                         <div class="column clm2">
-                            
+                            <!-- Phần title và nút đóng -->
                             <div class="header">
                                 <div id="title">Thêm hồ sơ Cán bộ, Giáo viên</div>
                                 <button class="btn-help">
@@ -33,7 +32,7 @@
                                 </button>
                                 <button class="btn-X" @click="hideDialogDataCondition()"></button>
                             </div>
-
+                            <!-- Hàng nhập liệu 1 -->
                             <div style="display: flex; align-items: center;">
                                 <div class="input_bar" style="width: 50%; margin-right: 2px;">
                                     <div class="title-blank-box" style="position: relative"><b>Số hiệu cán bộ</b> <span style="color: red;">*</span>
@@ -45,6 +44,7 @@
                                         v-model="teacher.teacherCode"
                                         @mouseenter="mouseEnterError('teacherCode')"
                                         @mouseleave="mouseLeaveError()"
+                                        @blur="CheckRequired('teacherCode', $event)"
                                     />
                                 </div>
                                 <div class="input_bar" style="width: 50%; margin-left: 2px;">
@@ -57,9 +57,11 @@
                                         @mouseenter="mouseEnterError('teacherName')"
                                         @mouseleave="mouseLeaveError()"
                                         ref="nameRef"
+                                        @blur="CheckRequired('teacherName', $event)"
                                     />                    
                                 </div>
                             </div>
+                            <!-- Hàng nhập liệu 2 -->
                             <div style="display: flex; align-items: center;">
                                 <div class="input_bar" style="width: 50%; margin-right: 2px;">
                                     <div class="title-blank-box" style="position: relative"><b>Số điện thoại</b>
@@ -67,6 +69,7 @@
                                     <input type="text" class="code-blank-box"
                                         :class="{'blank-box-invalid': isValid.phone == false}" 
                                         v-model="teacher.teacherPhone"
+                                        @blur="CheckPhone" 
                                     />
                                 </div>
                                 <div class="input_bar" style="width: 50%; margin-left: 2px;">
@@ -75,17 +78,18 @@
                                     <input type="email" class="fullname-blank-box"
                                         :class="{'blank-box-invalid': isValid.email == false }" 
                                         v-model="teacher.teacherEmail"
+                                        @blur="CheckEmail" 
                                     />                    
                                 </div>
                             </div>
-
+                            <!-- Hàng nhập liệu 3 -->
                             <div style="display: flex; align-items: center;">
                                 <div class="input_bar" style="width: 50%; margin-right: 2px;">
                                     <div style="position: relative; width: 35%; line-height: 48px;"><b>Tổ bộ môn</b><span style="color: red;">*</span>
                                         <div class="error-message" v-show="isValid.groupNameMessage == false">Tổ bộ môn chưa hợp lệ</div>
                                     </div>
                                     <!-- combobox -->
-                                    <div class="dropdown-text-and-icon" :class="{'blank-box-invalid': isValid.groupName == false}">
+                                    <div class="dropdown-text-and-icon" :class="{'blank-box-invalid': isValid.teacherGroup == false}">
                                         <input type="text" class="input-blank-box" 
                                             @focus="showDropDownContent('teacherGroup')" 
                                             @blur="hideDropDownContent('teacherGroup')" 
@@ -117,7 +121,6 @@
                                     <!-- <input type="text" class="fullname-blank-box"
                                         v-model="teacher.teacherSubject"
                                     /> -->
-
 
                                     <v-combobox
                                         style="width: 65%;"
@@ -170,10 +173,9 @@
                                         </div>
                                     </div> -->
 
-
                                 </div>    
                             </div>
-
+                            <!-- Hàng nhập liệu 4 -->
                             <div style="display: flex; align-items: center">
                                 <div style="position: relative; width: 108px; height: 40px; line-height: 45px;"><b>QL kho, phòng</b> </div>
                                 <!-- <input type="text" class="medium-blank-box" v-model="teacher.teacherRoom"/> -->
@@ -191,7 +193,7 @@
                                 ></v-combobox>
 
                             </div>
-
+                            <!-- Hàng nhập liệu 5 -->
                             <div style="display: flex; align-items: center">
                                 
                                 <input type="checkbox" class="btn-check" style="line-height: 56px;"
@@ -219,31 +221,32 @@
                                 </div>
                             </div>
 
-                        </div>
-                    </div>
+                        </div> <!-- End nhập liệu -->
+                    </div> 
 
-                </div>    
+                </div>   <!-- End nội dung --> 
             </div>
-
+            <!-- Phần footer dialog -->
             <div class="footer">
                 <button class="btn-small cancel default-color" @click="hideDialogDataCondition()">Đóng</button>
                 <button class="btn-small post primary-color" @click="btnSave()">Lưu</button>
                 <button class="btn-post-and-put primary-color" @click="btnSaveAndAdd()">Lưu và thêm</button>
             </div>
-        </div>  
-
+        </div> 
+        
+        <!-- Dialog báo lỗi -->
         <ErrorDialog 
             :isShow="isErrorDialogShow"
             :errorMsg="errorMsg"
             @hidePopUp = "hidePopUp"
         />
-
+        <!-- Popup báo lỗi -->
         <ErrorPopUp
             :isShow="isErrorPopUpShow"
             :errorMsg="errorMsg"
             @hidePopUp="hidePopUp"
         />
-
+        <!-- Popup báo thay đổi dữ liệu -->
         <DataChange 
             :isShow="isDataChange"
             :errorMsg="errorMsg"
@@ -258,12 +261,9 @@
 <script>
 
     import axios from 'axios'
-    // import datepicker from 'vuejs-datepicker'
 
     import DatePick from 'vue-date-pick';
     import 'vue-date-pick/dist/vueDatePick.css';
-
-
 
     import DataChange from '../../common/pop-up/dataChange.vue';
     import ErrorDialog from '../../common/pop-up/errorDialog.vue';
@@ -279,11 +279,36 @@ export default {
         DataChange,
         ErrorDialog,
         ErrorPopUp,
-        // datepicker,
         DatePick,
     },
 
     created() {
+        //Truyền dữ liệu động các phòng
+        axios.get(Resources.API.GetRooms)
+        .then((res) => {
+          this.listItemRooms = this.listItemRooms.concat(
+            (res.data || []).map((item) => {
+              return item.roomName;
+            })
+          )
+        })
+        .catch((res) => {
+          console.log(res);
+        })
+        //Truyền dữ liệu động các môn
+        axios.get(Resources.API.GetSubjects)
+        .then((res) => {
+          this.listItemSubjects = this.listItemSubjects.concat(
+            (res.data || []).map((item) => {
+              return item.subjectName;
+            })
+          )
+        })
+        .catch((res) => {
+          console.log(res);
+        })
+
+
         console.log(this.teacher);
         //Khi ở trạng thái form thêm mới thì mặc định set teacherStatus = 1
         if(this.formmode == Enums.FormMode.Add){
@@ -316,25 +341,25 @@ export default {
             //Mảng lưu trữ các môn học (QL theo môn)
             itemSubjects: [],
             listItemSubjects: [
-                Enums.Subject.Toan,
-                Enums.Subject.Ly,
-                Enums.Subject.Hoa,
-                Enums.Subject.Sinh,
-                Enums.Subject.NguVan,
-                Enums.Subject.LichSu,
-                Enums.Subject.Tin,
-                Enums.Subject.AnhVan,
-                Enums.Subject.Dia,
-                Enums.Subject.TheChat,
-                Enums.Subject.CongDan,
+                // Enums.Subject.Toan,
+                // Enums.Subject.Ly,
+                // Enums.Subject.Hoa,
+                // Enums.Subject.Sinh,
+                // Enums.Subject.NguVan,
+                // Enums.Subject.LichSu,
+                // Enums.Subject.Tin,
+                // Enums.Subject.AnhVan,
+                // Enums.Subject.Dia,
+                // Enums.Subject.TheChat,
+                // Enums.Subject.CongDan,
             ],
             //Mảng lưu trữ các phòng (QL kho, phòng)
             itemRooms: [],
             listItemRooms: [
-                Enums.Room.ToanLy,
-                Enums.Room.HoaSinh,
-                Enums.Room.AnhVan,
-                Enums.Room.Chung,
+                // Enums.Room.ToanLy,
+                // Enums.Room.HoaSinh,
+                // Enums.Room.AnhVan,
+                // Enums.Room.Chung,
             ],
 
 
@@ -374,14 +399,13 @@ export default {
             isValid: {
                 teacherCode: true,
                 teacherName: true,
-                groupName: true,
+                teacherGroup: true,
                 teacherCodeMessage: true,
                 teacherNameMessage: true,
                 groupNameMessage: true,
                 stopdayAndToday: true,
 
                 phone: true,
-                telephone: true,
                 email: true,
 
             },
@@ -429,11 +453,55 @@ export default {
     },
 
     methods: {
+
+        /**
+       * Cụm hàm check validate
+       * Khi không thỏa mãn thì báo lỗi, khi thỏa mãn rồi thì bỏ báo lỗi đi
+       * Theo ban đầu nghĩ là phải dùng watch để theo dõi, nhưng viết thế này cũng chạy được
+       * CreatedBy: VDDong (11/09/2021)
+       */
+        /**
+         * Check Validate bắt buộc nhập
+         * Hàm dùng chung
+         */
+      CheckRequired: function(teacherProp, e) {
+          if(!this.teacher[teacherProp]){
+              this.isValid[teacherProp] = false; //báo viền đỏ
+          }
+          else {
+              this.isValid[teacherProp] = true; //tắt viền đỏ
+          }
+      },
+      validEmail: function (email) {
+          var re = Resources.Regexs.Email;
+          return re.test(email);
+      },
+      CheckEmail: function(e){
+          if(!this.validEmail(this.teacher.teacherEmail) && this.teacher.teacherEmail != null && this.teacher.teacherEmail != ""){
+              this.isValid.email = false;
+          }
+          else {
+              this.isValid.email = true;
+          }
+      },
+      validPhone: function (phone) {
+          var re = Resources.Regexs.Phone;
+          return re.test(phone);
+      },
+      CheckPhone: function(e){
+          if(!this.validPhone(this.teacher.teacherPhone) && this.teacher.teacherPhone != null && this.teacher.teacherPhone != ""){
+              this.isValid.phone = false;
+          }
+          else {
+              this.isValid.phone = true;
+          }
+      },
+
         
         /**
         Thay đổi teacherQltb hoặc teacherStatus khi nhấn vào tích checkbox
         Hàm dùng chung
-        CreatedBy: 
+        CreatedBy: VDDong (19/11/2021)
          */
          changeTeacherCheckbox(type){
              //đặt giá trị cho teacherQltb và teacherStatus
@@ -451,7 +519,7 @@ export default {
         /**
          * So sánh 2 Object để kiểm tra xem dữ liệu đã thay đổi chưa
          * Return true: có thay đổi, false: chưa thay đổi
-         * CreatedBy: VDDong (17/06/2021)
+         * CreatedBy: VDDong (19/11/2021)
          */
         compareDataObject(obj1, obj2){
             for(let i in obj1){
@@ -462,13 +530,13 @@ export default {
 
         /**
          * Ẩn dialog TeacherDetail
-         * CreatedBy: VDDong (17/06/2021)
+         * CreatedBy: VDDong (19/11/2021)
          */
         hideDialog(){
             //Reset lại các biến validate form
             this.isValid.teacherName = true;
             this.isValid.teacherCode = true;
-            this.isValid.groupName = true;
+            this.isValid.teacherGroup = true;
             this.isValid.stopdayAndToday = true;
             //Gọi phương thức ẩn của thằng cha là teacherList
             this.$emit('hideDialog');
@@ -477,7 +545,7 @@ export default {
         /**
         * Ẩn dialog
         * Nếu dữ liệu đã bị thay  đổi thì hiện pop up DataChange, nếu không thì ẩn dialog TeacherDetail
-        * CreatedBy: VDDong (17/06/2021)
+        * CreatedBy: VDDong (19/11/2021)
         */
         hideDialogDataCondition(){
            if(this.compareDataObject(this.initialTeacher, this.teacher)){
@@ -491,7 +559,7 @@ export default {
         /**
          * Cụm hàm lên quan combobox custom
         * Hiện combobox
-        * CreatedBy: VDDong (17/06/2021)
+        * CreatedBy: VDDong (19/11/2021)
         */
         showDropDownContent(type){
             this.listOptions[type] = this.initialListOptions[type];
@@ -500,14 +568,15 @@ export default {
         },
        /**
         * Ẩn combobox
-        * CreatedBy: VDDong (17/06/2021)
+        * CreatedBy: VDDong (19/11/2021)
         */
         hideDropDownContent(type){
             if(this.overClick == false) this.isShowOption[type] = false;
+            if(this.teacher[type]) this.isValid[type] = true;
         },
         /**
         * Gán dữ liệu đã chọn từ combobox cho chủ thể teacher và format cho đúng định dạng
-        * CreatedBy: VDDong (17/06/2021)
+        * CreatedBy: VDDong (19/11/2021)
         */
         chooseOption(option, type){
             var propertyId = type;
@@ -531,7 +600,7 @@ export default {
         },
         /**
          * Tìm kiếm ô input đơn vị so với các option data có sẵn từ combobox
-         * CreatedBy: VDDong (17/06/2021)
+         * CreatedBy: VDDong (19/11/2021)
          */
         searchOption(type){
             var propertyName = type + 'Name';
@@ -545,7 +614,7 @@ export default {
 
         /**
          * Di chuyển chuột vào ra các option của combobox
-         * CreatedBy: VDDong (17/06/2021)
+         * CreatedBy: VDDong (19/11/2021)
          */
         //Khi di chuyển chuột vào trong các option
         enterClick(){
@@ -559,7 +628,7 @@ export default {
 
         /**
          * Auto focus vào ô teacherCode khi hiện dialog TeacherDetail
-         * CreatedBy: VDDong (17/06/2021)
+         * CreatedBy: VDDong (19/11/2021)
          */
         focusInput(){
             this.$refs.teacherCode.focus();
@@ -567,7 +636,7 @@ export default {
 
         /**
          * Validate trường hợp ô teacher code và fullname bỏ trống hoặc nhập toàn dấu cách (khoảng trắng) 
-         * CreatedBy: VDDong (17/06/2021)
+         * CreatedBy: VDDong (19/11/2021)
          */
         nullValidation(propertyValue, propertyName){
             propertyValue = propertyValue || '';
@@ -597,27 +666,27 @@ export default {
 
         /**
          * Validate tên tổ chuyên môn
-         * CreatedBy: VDDong (17/06/2021)
+         * CreatedBy: VDDong (19/11/2021)
          */
         groupNameValidation(value){
             //Validate tên đơn vị không được trống
             value = value || '';
             if (value.trim() == "") {
-                this.isValid.groupName = false;
+                this.isValid.teacherGroup = false;
                 this.isErrorPopUpShow = true;
                 this.errorMsg = Resources.ErrorMessage.NullGroup;
             }
             else {
-                this.isValid.groupName = false;
+                this.isValid.teacherGroup = false;
                 //Validate tên đơn vị giống với tên đơn vị trong option
                 //Kiểm tra xem thông tin nhập vào có đúng với các option tên đơn vị không
                 this.listOptions.teacherGroup.forEach(option => {
                     if(option.name == value) {
-                        this.isValid.groupName = true;
+                        this.isValid.teacherGroup = true;
                         this.teacher.teacherGroup = option.id;
                     }
                 });
-                if(this.isValid.groupName == false) 
+                if(this.isValid.teacherGroup == false) 
                 {
                     this.isErrorPopUpShow = false;
                     this.isErrorDialogShow = true;
@@ -628,7 +697,7 @@ export default {
 
         /**
          * Validate ngày không được lớn hơn ngày hiện tại
-         * CreatedBy: VDDong
+         * CreatedBy: VDDong (19/11/2021)
          */
         dateValidation(prop){
             var today = new Date();
@@ -652,7 +721,7 @@ export default {
 
         /**
          * Validate trước khi request lên database
-         * CreatedBy: VDDong (17/06/2021)
+         * CreatedBy: VDDong (19/11/2021)
          */
         formValidation(){
             //Gán dữ liệu cho teacherSubject và teacherRoom
@@ -680,7 +749,7 @@ export default {
             //Nếu thỏa mã hết các validate thì chấp thuận
             if(this.isValid.teacherName == true
                 && this.isValid.teacherCode == true
-                && this.isValid.groupName == true
+                && this.isValid.teacherGroup == true
                 && this.isValid.stopdayAndToday == true
             ) this.isAppropriate = true;
             else this.isAppropriate = false;         
@@ -688,7 +757,7 @@ export default {
 
         /**
          * Ẩn các error popup và error dialog, error datachange, reset lại error msg
-         * CreatedBy: VDDong (17/06/2021)
+         * CreatedBy: VDDong (19/11/2021)
          */
         hidePopUp(){
             //đóng thông báo trùng mã, tên đơn vị không trong hệ thống
@@ -704,7 +773,7 @@ export default {
         /**
          * Cụm hàm ẩn/hiện lỗi khi trỏ chuột vào ô input bị lỗi
          * Trỏ chuột vào - hiện lỗi, trỏ chuột ra - ẩn lỗi
-         * CreatedBy: VDDong (17/06/2021)
+         * CreatedBy: VDDong (19/11/2021)
          */
         //Di chuyển chuột vào trong hiện lỗi
         mouseEnterError(propertyName){
@@ -714,7 +783,7 @@ export default {
             else if( this.isValid.teacherName == false && propertyName == Resources.Property.FullName){
                 this.isValid.teacherNameMessage = false;
             }
-            if( this.isValid.groupName == false && propertyName == Resources.Property.GroupName) 
+            if( this.isValid.teacherGroup == false && propertyName == Resources.Property.GroupName) 
                 this.isValid.groupNameMessage = false;
             
         },
@@ -729,7 +798,7 @@ export default {
 
         /**
          * Reset lại các thông tin nhân viên khi bấm 'cất và thêm'
-         * CreatedBy: VDDong (17/06/2021)
+         * CreatedBy: VDDong (19/11/2021)
          */
         resetTeacher(){
             //reset lại teacherSubjects và teacherRooms
@@ -744,6 +813,7 @@ export default {
 
         /**
          * Thông báo validate gửi về từ server
+         * CreatedBy: VDDong (19/11/2021)
          */
         validateFromServer(notice){
             if(notice.includes(Resources.MsgFromServer.TeacherCode)){
@@ -768,7 +838,7 @@ export default {
 
         /**
          * Phân biệt post vs put, rồi post / put lên database
-         * CreatedBy: VDDong (17/06/2021)
+         * CreatedBy: VDDong (19/11/2021)
          */
         callApiRequest(){
             
@@ -814,6 +884,7 @@ export default {
 
         /**
          * Cụm hàm cập nhật dữ liệu lên database
+         * CreatedBy: VDDong (19/11/2021)
          */
         //Cất
         btnSave(){

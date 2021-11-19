@@ -1,8 +1,10 @@
 <template>
     <div id="router">
         <div id="router-content">
-            <div id="title-bar">
 
+          <!-- Thanh tìm kiếm và các button chức năng thêm, xuất -->
+            <div id="title-bar">
+                <!-- Thanh tìm kiếm  -->
                 <div class="search-bar-and-icon">
                     <input
                     id="search-bar"
@@ -10,10 +12,11 @@
                     placeholder="Tìm theo mã, tên cán bộ"
                     v-model="message"
                     @keyup="searchData()"
+                    autocomplete="off"
                     />
                     <button id="search-icon"></button>
                 </div>
-
+                <!-- Các button chức năng thêm, xuất -->
                 <div class="btn-wrapper">
                   <button class="btn-delete-all delete-color" id="btn-delete-all" :class="{'btn-hide': !isDeleteMultiple}"
                     @click="showConfirmDeleteMultiple()"
@@ -32,13 +35,15 @@
                     Nhập Excel
                   </label>
                 </div>
-            </div>
+            </div> <!-- End titlebar -->
+
+            <!-- Sắp xếp dữ liệu, table hiển thị, footer -->
             <div id="tablewrapper">
                 <div id="table">
+                   <!-- Sắp xếp, nhóm dữ liệu -->
                     <div id="search">
-
+                        <!-- Sắp xếp nhóm -->
                         <div id="sort-and-group">
-
                           <div class="sortBar">
                             <DropDown
                               :typeDropdown="SortType"  
@@ -48,7 +53,6 @@
                               ref="dropDownSort">
                             </DropDown>
                           </div>
-
                           <div class="groupBar">
                             <DropDown
                               :typeDropdown="GroupType"  
@@ -58,20 +62,18 @@
                               ref="dropDownGroup">
                             </DropDown>
                           </div>
-
                         </div>
-
-
+                        <!-- Button refresh -->
                         <div id="search-bar-wrapper">
                             <div id="btn-refresh-wrapper">
                                 <button id="btn-refresh" @click="refreshData()"></button>        
                             </div>
                         </div>
                     </div>
-                
-
+                    <!-- Table hiện thị dữ liệu -->
                     <div class="data">
                         <div class="scroll">
+                          <!-- Table chính hiển thị dữ liệu -->
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -109,6 +111,7 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <!-- Table hiện thị các chức năng sửa, xóa, nhân bản -->
                             <table class="table1" style="position: sticky; z-index: 3; right: 0; border: 0">
                                 <thead>
                                     <tr style="border-top: 0px solid #ccc">
@@ -129,8 +132,9 @@
                             </table>
                         </div>
                     </div>
-
+                    <!-- Footer paging -->
                     <div id="footer">
+                        <!-- Phân trang -->
                         <div id="total-data">
                           <div id="footer-3">
                             <Paging
@@ -142,15 +146,19 @@
                           </div>
                           (<b style="margin-right: 4px;">{{this.teacherNumber}}</b>giáo viên)
                         </div>
+                        <!-- Combobox lựa chọn số bản ghi / trang -->
                         <div id="footer-right">                          
                             <div id="footer-2">
                                 <ComboBox @setPerPage="handlePerPage" ref="comboBox" />
                             </div>                
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </div> <!-- End footer -->
+                </div> 
+            </div> <!-- End tablewrapper -->
+
+        </div> <!-- End content -->
+
+        <!-- Dialog chi tiết thêm, sửa -->
         <TeacherDetail 
             v-if="isShowDialogTeacher"
             @hideDialog="hideDialog"
@@ -160,6 +168,8 @@
             @turnPopUpSuccess="showPopupSuccess"
             @turnPopUpWarning="showPopupWarning"
         />
+
+        <!-- Dialog xác nhận xóa đơn -->
         <TeacherDelete
           :isShow="isShowDialogDelete"
           @hideDialog="hideDialog"
@@ -167,33 +177,42 @@
           @turnPopUpSuccess="showPopupSuccess"
           @turnPopUpWarning="showPopupWarning"
         />
+
+        <!-- Popup cảnh báo lỗi -->
         <ErrorPopUp 
           :isShow="isErrorPopUpShow"
           :errorMsg="errorMsg"
           @hidePopUp="hidePopUp"
-        />
+        />  
+
+        <!-- Popup xác nhận thêm từ file excel -->
         <AddFromExcelPopUp 
           :isShow="isShowPopUpAddFromExcel"
           :errorMsg="errorMsg"
           @hidePopUp="hidePopUp"
           @confirmAddFromExcel="AddFromExcel"
         />
+
+        <!-- Popup xác nhận xóa nhiều -->
         <ConfirmDeleteMultiplePopUp
           :isShow="isShowPopUpConfirmMultipleDelete"
           :errorMsg="errorMsg"
           @hidePopUp="hidePopUp"
           @confirmDeleteMultiple="deleteMultiple"
         />
+
+        <!-- Popup warning 3s -->
         <WarningPopUp 
           :isShow="isShowWarningPopup"
           :warningMsg="warningMsg"
         />
+        <!-- Popup success 3s -->
         <SuccessPopUp
           :isShow="isShowSuccessPopup"
           :warningMsg="warningMsg"
         />
 
-        <!--loading -->
+        <!--Loading -->
         <div class="fa-3x" v-if="isBusy">
             <!--font awesome -->
             <i class="fas fa-spinner fa-spin" style="color: green"></i>
@@ -215,6 +234,7 @@ import TeacherDelete from "../teacher/teacherDelete.vue";
 import ErrorPopUp from '../../common/pop-up/errorPopUp.vue';
 import AddFromExcelPopUp from './teacherAddFromExcel.vue';
 import ConfirmDeleteMultiplePopUp from './teacherConfirmMultipleDelete.vue';
+import DropDown from "../../common/dropdown.vue";
 import xlsx from 'xlsx';
 
 import WarningPopUp from '../../common/pop-up/warningPopup.vue';
@@ -222,8 +242,6 @@ import SuccessPopUp from '../../common/pop-up/successPopup.vue';
 
 import Enums from "../../common/base/enum.js";
 import Resources from "../../common/base/resource.js";
-
-import DropDown from "../../common/dropdown.vue";
 
 
 export default {
@@ -236,11 +254,10 @@ export default {
       ErrorPopUp,
       AddFromExcelPopUp,
       ConfirmDeleteMultiplePopUp,
+      DropDown,
 
       WarningPopUp,
       SuccessPopUp,
-
-      DropDown,
   },
 
   data() {
@@ -324,6 +341,11 @@ export default {
   }, //End Data
 
   created() {
+
+      /**
+       * Lấy dữ liệu từ database để build table và phân trang
+       * CreatedBy: VDDong (19/11/2021)
+       */
       this.currentPage = 1;
       this.perPage = 20;
       this.message = "";
@@ -358,7 +380,7 @@ export default {
         })
 
         //Truyền dữ liệu (động) vào listOptions.Group
-        axios.get('https://localhost:44342/api/v1/Teachers/Group')
+        axios.get(Resources.API.GetGroups)
         .then((res) => {
           this.listOptions.Group = this.listOptions.Group.concat(
             (res.data || []).map((item) => {
@@ -381,6 +403,7 @@ export default {
   methods: {
       /**
        * Lấy tất cả dữ liệu từ API
+       * CreatedBy: VDDong (19/11/2021)
        */
       getAllData(){
           axios
@@ -395,6 +418,7 @@ export default {
 
       /**
        * Load lại data
+       * CreatedBy: VDDong (19/11/2021)
        */
       loadData(){
           this.isBusy = true;
@@ -434,6 +458,7 @@ export default {
 
     /**
      * Refresh data
+     * CreatedBy: VDDong (19/11/2021)
      */
     refreshData(){
       //setup default combobox sort
@@ -446,13 +471,14 @@ export default {
       this.loadData();
       //set up mặc định cho combobox là lựa 20 bản ghi trên trang
       this.$refs.comboBox.resetPerPage(); //hàm resetPerPage là hàm viết bên file comboBox.vue
+      //reset lại dropdown sắp xếp, nhóm tổ
       this.$refs.dropDownSort.resetChoose();
       this.$refs.dropDownGroup.resetChoose();
     },
 
     /**
      * Hàm refresh combobox
-     * CreatedBy: VDDong
+     * CreatedBy: VDDong (19/11/2021)
      */
     refreshCombobox(){
       this.thisChoose = {
@@ -470,7 +496,8 @@ export default {
     },
 
     /**
-     * Show popup báo thành công (popup 3s)
+     * Show popup báo thành công, thất bại (popup 3s)
+     * CreatedBy: VDDong (19/11/2021)
      */
     showPopupSuccess(msg){
       console.log('show puss')
@@ -478,9 +505,6 @@ export default {
       this.isShowSuccessPopup = true;
       setTimeout(() => this.isShowSuccessPopup = false, 3000);
     },
-    /**
-     * Show popup báo thành công (popup 3s)
-     */
     showPopupWarning(msg){
       console.log('show warn')
       this.warningMsg = msg;
@@ -490,6 +514,7 @@ export default {
     
     /**
      * Cụm hàm đóng / mở dialog
+     * CreatedBy: VDDong (19/11/2021)
      */
     //hiện dialog thêm
     showTeacherDialog(){
@@ -563,7 +588,6 @@ export default {
             console.log(res);
           });
       },
-
       //ẩn dialog thêm và xóa
       hideDialog(){
         this.isShowDialogTeacher = false;
@@ -574,6 +598,7 @@ export default {
 
       /**
        * Tìm kiếm theo mã hoặc tên nhân viên
+       * CreatedBy: VDDong (19/11/2021)
        */
       searchData(){
         //Vì chưa kết hợp vừa tìm kiếm vừa sắp xếp (nhóm phòng ban) nên khi tìm kiếm thì setup default 2 combobox sắp xếp vs nhóm
@@ -604,7 +629,10 @@ export default {
           })
       },
 
-      //format tên tổ chuyên môn
+      /**
+       * Format tên tổ chuyên môn để chuyển sang dialog chi tiết
+       * CreatedBy: VDDong (19/11/2021)
+       * */
       groupsFormat(array) {
         //Lấy tất cả dữ liệu phòng ban từ database
         axios
@@ -626,14 +654,15 @@ export default {
 
       /**
        * Xuất dữ liệu ra file excel
-       * CreatedBy: VDDong(14/06/2021)
+       * CreatedBy: VDDong (19/11/2021)
        */
       exportData(){
         window.open(Resources.API.GetExport);
       },
 
       /**
-       * Thay đổi số trang, thay đổi currentPage
+       * Thay đổi số trang, thay đổi currentPage (Paging)
+       * CreatedBy: VDDong (19/11/2021)
        */
       onPageChange(page){
         if (this.teacherNumber % this.perPage == 0) {
@@ -671,9 +700,9 @@ export default {
       },
 
       /**
-       * Xử lí việc chọn số bản ghi trên 1 trang
+       * Xử lí việc chọn số bản ghi trên 1 trang (Combobox)
        * info là số lượng bản trên 1 trang truyền từ comboBox lên
-       * CreatedBy: VDDong(14/06/2021)
+       * CreatedBy: VDDong (19/11/2021)
        */
       handlePerPage(info) {
         //vì khi đổi số bản ghi trên trang thì dữ liệu reset về API filter
@@ -689,6 +718,7 @@ export default {
       /**
        * Nhận dữ liệu đã chọn từ bên dropdown
        * Sau đó gọi hàm sortsBy để sắp xếp
+       * CreatedBy: VDDong (19/11/2021)
        */
       solveDropdown(valueFromChild, type){
         //chưa kết hợp tìm kiếm vs sắp xếp và nhóm nên cần reset lại input tìm kiếm
@@ -701,7 +731,7 @@ export default {
 
       /**
        * Hàm gọi đến API để xử lý việc sắp xếp và nhóm phòng ban
-       * CreateBy: VDDong
+       * CreatedBy: VDDong (19/11/2021)
        * */
       sortsBy(){
         console.log("sort all: " + this.thisChoose.Sort.id);
@@ -739,7 +769,7 @@ export default {
       /**
        * Cụm hàm xóa hàng loạt nhiều bản ghi một lúc
        * Xóa các bản ghi có tích checkbox, xóa theo id các bản ghi được lưu trong mảng checked
-       * CreatedBy:
+       * CreatedBy: VDDong (19/11/2021)
        */
       //Hàm bật popup xác nhận xóa
       showConfirmDeleteMultiple(){
@@ -747,7 +777,10 @@ export default {
         this.errorMsg = Resources.PartNotice.Delete + this.checked.length + Resources.PartNotice.RecordChoose;
       },
 
-      //Hàm thực thi xóa nhiều
+      /**
+       * Hàm thực thi xóa nhiều
+       * CreatedBy: VDDong (19/11/2021)
+       * */
       deleteMultiple(){
         console.log("multiple delete");
         var newChecked = this.checked;
@@ -780,9 +813,8 @@ export default {
       },
 
       /**
-       * Tắt thông báo xóa hàng loạt
-       * 
-       * CreatedBy:
+       * Tắt thông báo đã thêm từ file excel, xác nhận thêm từ file excel, xác nhận xóa nhiều
+       * CreatedBy: VDDong (19/11/2021)
        */
       hidePopUp(){
         //Đóng thông báo
@@ -795,9 +827,11 @@ export default {
         this.loadData();
       },
 
+
     /**
+     * Cụm hàm liên quan đến thêm từ file excel
     * Đọc file từ file excel bên ngoài
-    * CreatedBy: VDDong (27/09/2021)
+    * CreatedBy: VDDong (19/11/2021)
     */
      //Lấy các tiêu đề của các cột trong file excel
     getHeader(sheet) {
@@ -878,7 +912,11 @@ export default {
       input.value = "";
 
     },
-    //Xử lý việc thêm các bản ghi vừa lấy từ file excel (đang lưu ở listRecordsExcel) lên database
+
+    /**
+     * Xử lý thêm các bản ghi vừa lấy từ file excel (đang lưu ở listRecordsExcel) lên database
+     * CreatedBy: VDDong (19/11/2021)
+     */
   async  AddFromExcel(){
     this.hidePopUp(); //đóng popup xác nhận thêm x bản ghi từ file excel
       console.log("Xác nhận thêm từ file excel");
@@ -988,7 +1026,7 @@ export default {
   computed: {
       /**
        * Tích tất cả các checkbox
-       * CreatedBy: VDDong(14/06/2021)
+       * CreatedBy: VDDong (19/11/2021)
        */
       checkAll: {
         get: function() {
@@ -1009,8 +1047,7 @@ export default {
   watch: {
     /**
      * Hàm theo dõi các bản ghi được đánh dấu checkbox
-     * 
-     * CreatedBy:
+     * CreatedBy: VDDong (19/11/2021)
      */
     checked: function() {
       console.log("Number records of checked: " + this.checked.length);
@@ -1031,6 +1068,7 @@ export default {
 
 <style scoped>
 
+/* Content */
 #router-content {
   position: absolute;
   top: 48px;
@@ -1040,180 +1078,151 @@ export default {
   background: rgb(244, 245, 246);
   width: calc(100% - 178px);
   height: calc(100% - 48px);
-  /* background-color: aqua; */
   padding-top: 24px;
   padding-left: 24px;
   padding-bottom: 24px;
   padding-right: 24px;
 }
-#title-bar {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 40px;
-  /* background-color: aqua; */
-}
-.title {
-  /* font-weight: bold; */
-  font-size: 24px;
-  font-weight: 700;
-  color: #111;
-  margin-bottom: 25px;
-}
-.back-title{
-    position: absolute;
-    left: 25px;
-    top: 50px;
-    color: rgb(29, 131, 214);
-}
-.btn-wrapper {
-  position: absolute;
-  right: 24px;
-  height: 40px;
-  top: 15px;
-}
+  #title-bar {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+  }
+    .title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 25px;
+    }
+    .back-title{
+        position: absolute;
+        left: 25px;
+        top: 50px;
+        color: rgb(29, 131, 214);
+    }
+      .btn-wrapper {
+        position: absolute;
+        right: 24px;
+        height: 40px;
+        top: 15px;
+      }
 
-
-
-
+/* Phần nội dung sắp xếp, nhóm và table */
 #tablewrapper {
   background: #fff;
   color: #111;
   height: calc(100% - 24px);
   width: 100%;
   overflow: hidden;
-  /* margin-right: 24px; */
-  /* padding: 0px 24px 24px 24px; */
   padding-bottom: 24px;
   box-sizing: border-box;
   border-collapse: collapse;
-  /* background-color: #2ca01c; */
-  /* background-color: gray; */
 }
-#table{
-  height: 100%;
-  overflow: auto;
-  
-}
-
-#search {
-  height: 60px;
-  width: 100%;
-}
-#sort-and-group{
-  height: 60px;
-  width: 400px;
-  /* background-color: aqua; */
-  display: flex;
-  align-items: center;
-  position: absolute;
-  left: 40px;
-}
-  .sortBar{
-    width: 180px;
-    height: 50px;
+  #table{
+    height: 100%;
+    overflow: auto;
+    
   }
-
-  .groupBar{
-    width: 180px;
-    height: 50px;
-    /* background-color: rgb(37, 165, 122); */
-    margin-left: 20px;
+  #search {
+    height: 60px;
+    width: 100%;
   }
+  #sort-and-group{
+    height: 60px;
+    width: 400px;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    left: 40px;
+  }
+      .sortBar{
+        width: 180px;
+        height: 50px;
+      }
+      .groupBar{
+        width: 180px;
+        height: 50px;
+        margin-left: 20px;
+      }
 
-#search-bar-wrapper {
-  height: 60px;
-  /* background-color: aqua; */
-  display: flex;
-  align-items: center;
-  position: absolute;
-  right: 36px;
-}
-.search-bar-and-icon {
-  border-radius: 2px;
-  box-sizing: border-box;
-  width: 332px;
-  display: flex;
-  align-items: center;
-  border: 1px solid #babec5;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-.search-bar-and-icon:focus-within {
-  border: 1px solid #03AE66;
-}
-#search-bar {
-  width: 299px;
-  height: 31px;
-  font-size: 13px;
-  /* border-radius: 2px;
-        border: 1px solid #babec5; */
-  outline: none;
-  border: none;
-  /* border: 1px solid #babec5; */
-  /* border-right: none; */
-  box-sizing: border-box;
-  padding: 6px 10px;
-  font-style: italic;
-  border-collapse: collapse;
-}
-#search-icon {
-  width: 31px;
-  height: 31px;
-  background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat;
-  background-position: -984px -353px;
-  border: none;
-  outline: none;
-  border-collapse: collapse;
-}
-
-#btn-refresh-wrapper {
-  height: 80px;
-  width: 80px;
-  padding-left: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* background-color: #2ca01c; */
-}
+  #search-bar-wrapper {
+    height: 60px;
+    /* background-color: aqua; */
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 36px;
+  }
+    .search-bar-and-icon {
+      border-radius: 2px;
+      box-sizing: border-box;
+      width: 332px;
+      display: flex;
+      align-items: center;
+      border: 1px solid #babec5;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    .search-bar-and-icon:focus-within {
+      border: 1px solid #03AE66;
+    }
+      #search-bar {
+        width: 299px;
+        height: 31px;
+        font-size: 13px;
+        outline: none;
+        border: none;
+        box-sizing: border-box;
+        padding: 6px 10px;
+        font-style: italic;
+        border-collapse: collapse;
+      }
+      #search-icon {
+        width: 31px;
+        height: 31px;
+        background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat;
+        background-position: -984px -353px;
+        border: none;
+        outline: none;
+        border-collapse: collapse;
+      }
+    #btn-refresh-wrapper {
+      height: 80px;
+      width: 80px;
+      padding-left: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
 tbody tr:hover {
   background-color: #eeeded;
 }
 
-
+/* Phần Footer */
 #footer {
-  /* margin-top: 24px; */
   position: absolute;
   bottom: 24px;
-  /* background-color: red; */
   width: calc(100% - 48px);
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-#footer-right {
-  display: flex;
-  align-items: center;
-  position: absolute;
-  right: 48px;
-}
-#total-data{
-  display: flex;
-  align-items: center;
-  position: absolute;
-}
-/* #footer-2{
-        background-color: aqua;
-    }
-    #footer-3{
-        background-color: red;
-        position: absolute;
-        right: 48px;
-        float: right;
-        
-    } */
+  #footer-right {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 15px;
+  }
+  #total-data{
+    display: flex;
+    align-items: center;
+    position: absolute;
+  }
+
+/* Phần loading */
 .fa-3x {
   position: absolute;
   left: 54%;
@@ -1224,19 +1233,16 @@ tbody tr:hover {
 
 /* Dấu tích ở table */
 .tickbox::before
-  {
-    display: block;
-    content: "";
-    width: 16px;
-    height: 16px;
-    background: url('../../../assets/img/Sprites.64af8f61.svg');
-    background-position: -1224px -360px;
-    margin-left: 30px;
+{
+  display: block;
+  content: "";
+  width: 16px;
+  height: 16px;
+  background: url('../../../assets/img/Sprites.64af8f61.svg');
+  background-position: -1224px -360px;
+  margin-left: 30px;
 
-  }
-  /* .tickbox::before
-  {
-      display: block;
-  } */
+}
+
 
 </style>
