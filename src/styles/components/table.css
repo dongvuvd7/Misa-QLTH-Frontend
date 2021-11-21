@@ -34,10 +34,10 @@
       padding: 0 16px;
     }
     .table thead tr {
-        height: 32px;
+        height: 40px;
     }
     .table thead tr th {
-          background-color: #ececec;
+          background-color: #E5F3FF;
           position: sticky;
           top: 0px;
           border-top: none;
@@ -57,6 +57,7 @@
     
     .table tbody tr {
         height: 40px; 
+        max-height: 40px;
     }
     .table tbody tr td:first-child {
           position: sticky;
@@ -89,10 +90,10 @@
   }
 
   .table1 thead tr {
-      height: 32px;
+      height: 40px;
     }
     .table1 thead tr th {
-        background-color: #f4f5f6;
+        background-color: #E5F3FF;
         position: sticky;
         top: 0px;
         border-top: none;

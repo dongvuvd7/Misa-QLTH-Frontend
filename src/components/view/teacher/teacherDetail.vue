@@ -12,7 +12,7 @@
                         <div class="column clm1">
                             <div class="img-avt">
                             </div>
-                            <div class="btn-add-avt">
+                            <div class="btn-add-avt primary-color">
                                 Chọn ảnh
                             </div>
                             <div class="clm1-name">
@@ -45,6 +45,7 @@
                                         @mouseenter="mouseEnterError('teacherCode')"
                                         @mouseleave="mouseLeaveError()"
                                         @blur="CheckRequired('teacherCode', $event)"
+                                        tabindex="1"
                                     />
                                 </div>
                                 <div class="input_bar" style="width: 50%; margin-left: 2px;">
@@ -58,6 +59,7 @@
                                         @mouseleave="mouseLeaveError()"
                                         ref="nameRef"
                                         @blur="CheckRequired('teacherName', $event)"
+                                        tabindex="2"
                                     />                    
                                 </div>
                             </div>
@@ -71,6 +73,7 @@
                                         :class="{'blank-box-invalid': isValid.phone == false}" 
                                         v-model="teacher.teacherPhone"
                                         @blur="CheckPhone" 
+                                        tabindex="3"
                                     />
                                 </div>
                                 <div class="input_bar" style="width: 50%; margin-left: 2px;">
@@ -81,6 +84,7 @@
                                         :class="{'blank-box-invalid': isValid.email == false }" 
                                         v-model="teacher.teacherEmail"
                                         @blur="CheckEmail" 
+                                        tabindex="4"
                                     />                    
                                 </div>
                             </div>
@@ -102,7 +106,7 @@
                                             @keyup="searchOption('teacherGroup')"
                                             autocomplete="off"
                                         />
-                                        <button id="dropdown-icon" @click="showDropDownContent('teacherGroup')" @blur="hideDropDownContent('teacherGroup')"></button>
+                                        <button id="dropdown-icon" @click="showDropDownContent('teacherGroup')" @blur="hideDropDownContent('teacherGroup')" tabindex="5"></button>
                                     </div>
                                     <div id="dropdown">     
                                         <div class="dropdown-content" :class="{'dialog_hide': !isShowOption.teacherGroup}" >
@@ -133,7 +137,7 @@
                                         dense
                                         clearable
                                         small-chips
-
+                                        tabindex="6"
                                     ></v-combobox>
 
                                     <!-- combobox -->
@@ -191,7 +195,7 @@
                                     dense
                                     clearable
                                     small-chips
-
+                                    tabindex="7"
                                 ></v-combobox>
 
                             </div>
@@ -230,9 +234,9 @@
             </div>
             <!-- Phần footer dialog -->
             <div class="footer">
-                <button class="btn-small cancel default-color" @click="hideDialogDataCondition()">Đóng</button>
-                <button class="btn-small post primary-color" @click="btnSave()">Lưu</button>
-                <button class="btn-post-and-put primary-color" @click="btnSaveAndAdd()">Lưu và thêm</button>
+                <button class="btn-small cancel default-color" @click="hideDialogDataCondition()" tabindex="8">Đóng</button>
+                <button class="btn-small post primary-color" @click="btnSave()" tabindex="9">Lưu</button>
+                <button class="btn-post-and-put primary-color" @click="btnSaveAndAdd()" tabindex="10">Lưu và thêm</button>
             </div>
         </div> 
         
@@ -311,7 +315,7 @@ export default {
         })
 
 
-        console.log(this.teacher);
+        // console.log(this.teacher);
         //Khi ở trạng thái form thêm mới thì mặc định set teacherStatus = 1
         if(this.formmode == Enums.FormMode.Add){
             this.teacher.teacherStatus = 1;
@@ -505,7 +509,7 @@ export default {
              var property = 'teacher' + type;
              if(!this.teacher[property] || this.teacher[property] == 0) this.teacher[property] = 1;
              else if(this.teacher[property] == 1) this.teacher[property] = 0;
-             console.log(this.teacher[property], property);
+            //  console.log(this.teacher[property], property);
 
             //ẩn hiên date area (ngày nghỉ việc)
             if(this.teacher.teacherStatus == 0) this.isShowDateArea = true;
@@ -608,7 +612,6 @@ export default {
                 )
             })
         },
-
         /**
          * Di chuyển chuột vào ra các option của combobox
          * CreatedBy: VDDong (19/11/2021)
@@ -703,10 +706,10 @@ export default {
             var yyyy = today.getFullYear();
             today = yyyy + "-"+ mm + "-" + dd;
 
-            console.log(this.teacher.teacherStopday, 'teacherStopday');
-            console.log(today, 'today');
+            // console.log(this.teacher.teacherStopday, 'teacherStopday');
+            // console.log(today, 'today');
             if(this.teacher[prop] > today){
-                console.log("date bigger")
+                // console.log("date bigger")
                 this.isValid.stopdayAndToday = false;
                 this.isErrorPopUpShow = true;
                 this.errorMsg = Resources.ErrorMessage.StopdayAndToday;
@@ -724,8 +727,8 @@ export default {
             //Gán dữ liệu cho teacherSubject và teacherRoom
             var subjects = this.itemSubjects.toString();
             var rooms = this.itemRooms.toString();
-            console.log(subjects, 'itemSubjects');
-            console.log(rooms, 'itemRooms');
+            // console.log(subjects, 'itemSubjects');
+            // console.log(rooms, 'itemRooms');
             this.teacher.teacherSubject = subjects;
             this.teacher.teacherRoom = rooms;
             if(this.teacher.teacherSubject == "") this.teacher.teacherSubject = null;
@@ -843,7 +846,7 @@ export default {
             
             // if(this.employee.identityDate == undefined) this.employee.identityDate = null;
             // if(this.employee.dateOfBirth == undefined) this.employee.dateOfBirth = null;
-            console.log(this.teacher);
+            // console.log(this.teacher);
 
             if(this.formmode == Enums.FormMode.Add) {
                 return axios
@@ -856,7 +859,7 @@ export default {
                     })
                     .catch((res) => {
                         var errorContent = res.response.data.devMsg;
-                        console.log(errorContent);
+                        // console.log(errorContent);
                         this.validateFromServer(errorContent);                     
                         return Promise.reject();
                     })
@@ -872,9 +875,9 @@ export default {
                         return Promise.resolve();
                     })
                     .catch((res) => {
-                        console.log(res.response);
+                        // console.log(res.response);
                         var errorContent = res.response.data.devMsg;
-                        console.log(errorContent);
+                        // console.log(errorContent);
                         this.validateFromServer(errorContent);                      
                         return Promise.reject();
                     })
@@ -887,7 +890,7 @@ export default {
          */
         //Cất
         btnSave(){
-            console.log(this.teacher);
+            // console.log(this.teacher);
             this.formValidation();
             if(this.isAppropriate){
                 this.callApiRequest().then(() => this.hideDialog());
@@ -1055,7 +1058,7 @@ export default {
             text-align: center;
             line-height: 30px;
             color: #fff;
-            background-color: #03AE66;
+            /* background-color: #03AE66; */
             cursor: pointer;
         }
         .clm1-name{

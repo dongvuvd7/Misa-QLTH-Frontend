@@ -27,12 +27,12 @@
                       Thêm
                   </button>
                   <button class="btn-export-excel default-color" id="" @click="exportData()">
-                      Xuất excel
+                      Xuất khẩu
                   </button>
                   <label class="btn-add-excel primary-color" id="btn-addFromExcel">
                     <i class="fas fa-table"></i>
                     <input type="file" id="uploadExcel" @change="importFileExcel"/>
-                    Nhập Excel
+                    Nhập khẩu
                   </label>
                 </div>
             </div> <!-- End titlebar -->
@@ -92,7 +92,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="teacher in teachers" :key="teacher.teacherId" @dblclick="showTeacherDetail(teacher.teacherId)">
+                                    <tr v-for="teacher in teachers" :key="teacher.teacherId" @dblclick="showTeacherDetail(teacher.teacherId)"
+                                        @click="idTeacherSelected = teacher.teacherId"
+                                        :class="{
+                                          'selected-teacher-record':
+                                            teacher.teacherId == idTeacherSelected,
+                                        }"
+                                    >
                                         <td>
                                             <input
                                                 type="checkbox"
@@ -115,7 +121,7 @@
                             <table class="table1" style="position: sticky; z-index: 3; right: 0; border: 0">
                                 <thead>
                                     <tr style="border-top: 0px solid #ccc">
-                                        <th style="min-width: 100px; position: sticky; top: 0px; background-color: #e6e6e6; text-align: center;">CHỨC NĂNG</th>
+                                        <th style="min-width: 100px; position: sticky; top: 0px; text-align: center;">CHỨC NĂNG</th>
                                     </tr>
                                 </thead>
                                 <tbody style="background-color: #fff">
@@ -337,6 +343,8 @@ export default {
             SortType: "Sort",
             GroupType: "Group",
 
+            idTeacherSelected: "",
+
       }
   }, //End Data
 
@@ -354,7 +362,7 @@ export default {
             Resources.API.GetFilter + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.Filter + this.message
         )
         .then((res) => {
-            console.log(res);
+            // console.log(res);
             this.teachers = res.data.data;
             this.groupsFormat(this.teachers);
             this.teacherNumber = res.data.totalRecord;
@@ -428,7 +436,7 @@ export default {
             Resources.API.GetFilter + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.Filter + this.message
         )
         .then((res) => {
-            console.log(res);
+            // console.log(res);
             this.teachers = res.data.data;
             this.groupsFormat(this.teachers);
             this.teacherNumber = res.data.totalRecord;
@@ -465,7 +473,7 @@ export default {
       this.refreshCombobox();
       //setup default checkbox
       this.checked = [];
-
+      this.idTeacherSelected = "";
       this.currentPage = 1;
       this.perPage = 20;
       this.loadData();
@@ -500,13 +508,13 @@ export default {
      * CreatedBy: VDDong (19/11/2021)
      */
     showPopupSuccess(msg){
-      console.log('show puss')
+      // console.log('show puss')
       this.warningMsg = msg;
       this.isShowSuccessPopup = true;
       setTimeout(() => this.isShowSuccessPopup = false, 3000);
     },
     showPopupWarning(msg){
-      console.log('show warn')
+      // console.log('show warn')
       this.warningMsg = msg;
       this.isShowWarningPopup = true;
       setTimeout(() => this.isShowWarningPopup = false, 3000);
@@ -573,11 +581,11 @@ export default {
         this.isShowDialogDelete = true; //Bật dialog xác nhận xóa
         //Fix bug tích checkbox 1 bản ghi rồi xóa bản ghi đó, sau đó lại tiếp tục tích 2 checkbox để xóa hàng loạt thì dialog báo xóa 3 bản ghi
         const index = this.checked.indexOf(teacherId); //tìm vị trí của 1 bản ghi xóa lúc đầu
-        console.log(index);
+        // console.log(index);
         if (index > -1) {
           this.checked.splice(index, 1); //xóa bản ghi đó trong mảng checked đi là mảng checked sẽ không lưu nó nữa, tránh bug trên
         }
-        console.log(this.checked);
+        // console.log(this.checked);
         //Lấy data của nhân viên muốn xóa
         axios
           .get(Resources.API.GetAll +"/" + teacherId)
@@ -684,7 +692,7 @@ export default {
                   Resources.API.GetFilter + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.Filter + this.message
               )
               .then((res) => {
-              console.log(res);
+              // console.log(res);
               this.teachers = res.data.data;
 
               //format group
@@ -725,7 +733,7 @@ export default {
         this.message = "";
         // this.sortsBy();
         this.thisChoose[type].id = valueFromChild;
-        console.log(this.thisChoose[type].id);
+        // console.log(this.thisChoose[type].id);
         this.sortsBy();
       },
 
@@ -734,8 +742,8 @@ export default {
        * CreatedBy: VDDong (19/11/2021)
        * */
       sortsBy(){
-        console.log("sort all: " + this.thisChoose.Sort.id);
-        console.log("sort group: " + this.thisChoose.Group.id);
+        // console.log("sort all: " + this.thisChoose.Sort.id);
+        // console.log("sort group: " + this.thisChoose.Group.id);
 
         this.formPagingSort = true; //chuyển sang trạng thái paging theo sắp xếp và nhóm
         if(this.thisChoose.Group.id == null) this.thisChoose.Group.id = ""; //nếu không chọn sắp xếp hay phòng ban thì đưa về "" cho phù hợp API
@@ -750,7 +758,7 @@ export default {
         axios
           .get(urlAPI)
           .then((res) => {
-            console.log(res);
+            // console.log(res);
             this.teacherNumber = res.data.totalRecord;
             this.teachers = res.data.data;
             if(this.teacherNumber % this.perPage == 0){
@@ -782,7 +790,7 @@ export default {
        * CreatedBy: VDDong (19/11/2021)
        * */
       deleteMultiple(){
-        console.log("multiple delete");
+        // console.log("multiple delete");
         var newChecked = this.checked;
         var arrIds = newChecked.toString().split(",");
         var stringIds = "";
@@ -792,7 +800,7 @@ export default {
         stringIds += arrIds[arrIds.length - 1];
 
         var recordIds = Resources.PartNotice.OpenBrackets + stringIds + Resources.PartNotice.CloseBrackets;
-        console.log(recordIds);
+        // console.log(recordIds);
         axios
           .delete(Resources.API.DeleteMultiple + recordIds)
           .then(() => {
@@ -865,7 +873,7 @@ export default {
     //Lấy ra các giá trị của từng row trong file excel (trừ row tiêu đề đầu mỗi cột)
     importFileExcel(e) {
       const files = e.target.files;
-      console.log(files);
+      // console.log(files);
       var fileName = files[0].name; //lấy tên file
       if (!files.length) {
         return ;
@@ -919,7 +927,7 @@ export default {
      */
   async  AddFromExcel(){
     this.hidePopUp(); //đóng popup xác nhận thêm x bản ghi từ file excel
-      console.log("Xác nhận thêm từ file excel");
+      // console.log("Xác nhận thêm từ file excel");
       var countAddSuccess = 0; //biến đếm xem đã thêm thành công bao nhiêu bản ghi
       var listRecordsAddFail = []; //mảng lưu trữ những mã nhân viên add không thành công
       for(let i=0; i<this.listRecordsExcel.length; i++){
@@ -934,7 +942,7 @@ export default {
         newTeacher.teacherRoom = this.listRecordsExcel[i].QL_kho_phong;
         newTeacher.teacherQltb = this.formatStatusFromExcelToDB(this.listRecordsExcel[i].Dao_tao_QLTB);
         newTeacher.teacherStatus = this.formatStatusFromExcelToDB(this.listRecordsExcel[i].Dang_lam_viec);
-        console.log(newTeacher);
+        // console.log(newTeacher);
         //Gọi API thêm từng newTeacher vào database
       await  axios
           .post(Resources.API.GetAll + "/", newTeacher)
@@ -944,7 +952,7 @@ export default {
             this.loadData();
           })
           .catch((res) => {
-            console.log(res.response);
+            // console.log(res.response);
             var errorFromBackend = res.response.data.devMsg;
             listRecordsAddFail.push(errorFromBackend.substring(9, 17));
             console.log("Error from backend: " + errorFromBackend);
@@ -1050,8 +1058,8 @@ export default {
      * CreatedBy: VDDong (19/11/2021)
      */
     checked: function() {
-      console.log("Number records of checked: " + this.checked.length);
-      console.log(this.checked);
+      // console.log("Number records of checked: " + this.checked.length);
+      // console.log(this.checked);
       if(this.checked.length >= 2){
         // console.log("Có thể xóa hàng loạt");
         this.isDeleteMultiple = true;
@@ -1197,7 +1205,7 @@ export default {
     }
 
 tbody tr:hover {
-  background-color: #eeeded;
+  background-color: #E5F3FF;
 }
 
 /* Phần Footer */
@@ -1243,6 +1251,11 @@ tbody tr:hover {
   margin-left: 30px;
 
 }
+
+/* Click dòng nào thì đổi màu dòng đó */
+/* .selected-teacher-record{
+    background-color: #CCE8FF;
+} */
 
 
 </style>
