@@ -121,7 +121,7 @@
                             <table class="table1" style="position: sticky; z-index: 3; right: 0; border: 0">
                                 <thead>
                                     <tr style="border-top: 0px solid #ccc">
-                                        <th style="min-width: 100px; position: sticky; top: 0px; text-align: center;">CHỨC NĂNG</th>
+                                        <th style="min-width: 100px; position: sticky; top: 0px; text-align: center;"></th>
                                     </tr>
                                 </thead>
                                 <tbody style="background-color: #fff">
@@ -196,7 +196,7 @@
           :isShow="isShowPopUpAddFromExcel"
           :errorMsg="errorMsg"
           @hidePopUp="hidePopUp"
-          @confirmAddFromExcel="AddFromExcel"
+          @confirmAddFromExcel="addFromExcel"
         />
 
         <!-- Popup xác nhận xóa nhiều -->
@@ -232,15 +232,15 @@
 
 //import
 import axios from  "axios";
-import Option from "../../common/option.vue";
-import ComboBox from "../../common/comboBox.vue";
-import Paging from "../../common/paging.vue";
-import TeacherDetail from "../teacher/teacherDetail.vue";
-import TeacherDelete from "../teacher/teacherDelete.vue";
+import Option from "../../common/BaseOption.vue";
+import ComboBox from "../../common/BaseComboBox.vue";
+import Paging from "../../common/BasePaging.vue";
+import TeacherDetail from "./TeacherDetail.vue";
+import TeacherDelete from "./TeacherDelete.vue";
 import ErrorPopUp from '../../common/pop-up/errorPopUp.vue';
-import AddFromExcelPopUp from './teacherAddFromExcel.vue';
-import ConfirmDeleteMultiplePopUp from './teacherConfirmMultipleDelete.vue';
-import DropDown from "../../common/dropdown.vue";
+import AddFromExcelPopUp from './TeacherAddFromExcel.vue';
+import ConfirmDeleteMultiplePopUp from './TeacherConfirmMultipleDelete.vue';
+import DropDown from "../../common/BaseDropdown.vue";
 import xlsx from 'xlsx';
 
 import WarningPopUp from '../../common/pop-up/warningPopup.vue';
@@ -511,13 +511,13 @@ export default {
       // console.log('show puss')
       this.warningMsg = msg;
       this.isShowSuccessPopup = true;
-      setTimeout(() => this.isShowSuccessPopup = false, 3000);
+      setTimeout(() => this.isShowSuccessPopup = false, 4000);
     },
     showPopupWarning(msg){
       // console.log('show warn')
       this.warningMsg = msg;
       this.isShowWarningPopup = true;
-      setTimeout(() => this.isShowWarningPopup = false, 3000);
+      setTimeout(() => this.isShowWarningPopup = false, 4000);
     },
     
     /**
@@ -687,18 +687,21 @@ export default {
           }
           //nếu đang ở trạng thái bình thường (sử dụng API filter)
           else {
+            this.isBusy = true;
             axios
               .get(
                   Resources.API.GetFilter + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.Filter + this.message
               )
               .then((res) => {
-              // console.log(res);
-              this.teachers = res.data.data;
+                // console.log(res);
+                this.teachers = res.data.data;
 
-              //format group
-              this.groupsFormat(this.teachers);
-              //Số lượng bản ghi hợp lệ 
-              this.teacherNumber = res.data.totalRecord;
+                //format group
+                this.groupsFormat(this.teachers);
+                //Số lượng bản ghi hợp lệ 
+                this.teacherNumber = res.data.totalRecord;
+
+                this.isBusy = false;
               })
               .catch((res) => {
                   console.log(res);
@@ -755,6 +758,7 @@ export default {
           urlAPI = (Resources.API.SortByName + Resources.PartNotice.PageSize + this.perPage + "&" + Resources.PartNotice.PageIndex + this.currentPage + "&" + Resources.PartNotice.GroupString + this.thisChoose.Group.id);
         }
         //call api
+        this.isBusy = true;
         axios
           .get(urlAPI)
           .then((res) => {
@@ -767,6 +771,7 @@ export default {
             else {
               this.totalPage = Math.floor(this.teacherNumber / this.perPage) + 1;
             }
+            this.isBusy = false;
           })
           .catch((res) => {
             console.log(res);
@@ -925,7 +930,7 @@ export default {
      * Xử lý thêm các bản ghi vừa lấy từ file excel (đang lưu ở listRecordsExcel) lên database
      * CreatedBy: VDDong (19/11/2021)
      */
-  async  AddFromExcel(){
+  async  addFromExcel(){
     this.hidePopUp(); //đóng popup xác nhận thêm x bản ghi từ file excel
       // console.log("Xác nhận thêm từ file excel");
       var countAddSuccess = 0; //biến đếm xem đã thêm thành công bao nhiêu bản ghi
@@ -1211,7 +1216,7 @@ tbody tr:hover {
 /* Phần Footer */
 #footer {
   position: absolute;
-  bottom: 24px;
+  bottom: 30px;
   width: calc(100% - 48px);
   box-sizing: border-box;
   display: flex;

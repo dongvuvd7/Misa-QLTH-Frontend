@@ -19,8 +19,8 @@ import './styles/components/color.css'
 Vue.use(Vuelidate)
 Vue.use(VueRouter)
 
-import TeacherList from './components/view/teacher/teacherList.vue'
-import GeneralTest from './components/view/general/generalTest.vue'
+import TeacherList from './components/view/teacher/TeacherList.vue'
+import GeneralTest from './components/view/general/TheGeneralTest.vue'
 
 const routes =[
   {path:  '/teacher', component: TeacherList},

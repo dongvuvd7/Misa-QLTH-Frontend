@@ -1,31 +1,26 @@
 <template>
-    <div style="display: flex; justify-content: center; align-items:center; margin-top: 9px;">
+    <div style="display: flex; justify-content: center; align-items:center;">
         <div class="dropdown-text-and-icon">
-            <input id="dropdown-text" type="text"
-                readonly      
-                @focus="showDropDownContent(options)" 
-                @blur="hideDropDownContent()" 
-                @keyup="searchOption()"
-                v-model="selectedOption.text" 
-                :placeholder="msgPlacehoder"
-                autocomplete="off"
+            <input id="dropdown-text" type="text" 
+            v-model="selectedOption.name" 
+            readonly
+            @focus="showDropDownContent(options)" 
+            @blur="hideDropDownContent()" 
             />
             <button id="dropdown-icon" 
-                :class="{'dropdown-icon-click' : isClicked}"        
-                @click="showDropDownContent(options)" 
-                @blur="hideDropDownContent()">
-            </button>
+            :class="{'dropdown-icon-click' : isClicked}"        
+            @click="showDropDownContent(options)" 
+            @blur="hideDropDownContent()"></button>
         </div>
         <div id="dropdown">     
             <div class="dropdown-content" :class="{'hide': !isShowOption}" >
-                <div class="dropdown-content-a" :class="{'selected': selectedOption.text == option.text}"
-                    v-for="option in options" 
-                    :key="option.id" 
-                    @click="chooseOption(option)" 
-                    @mouseenter="enterClick()" 
-                    @mouseleave="leaveClick()"
-                    >{{option.text}}
-                </div>
+                <div class="dropdown-content-a" :class="{'selected': selectedOption.name == option.name}"
+                            v-for="option in options" 
+                            :key="option.value" 
+                            @click="chooseOption(option)" 
+                            @mouseenter="enterClick()" 
+                            @mouseleave="leaveClick()"
+                            >{{option.name}}</div>
             </div>
         </div>
     </div>
@@ -33,54 +28,58 @@
 
 <script>
 
-import Enums from '../common/base/enum.js';
+import Enums from './base/enum.js';
 
 export default {
 
     created() {
-        if(this.typeDropdown == "Sort") this.msgPlacehoder = "Lựa chọn sắp xếp";
-        if(this.typeDropdown == "Group") this.msgPlacehoder = "Nhóm tổ chuyên môn";
+        this.selectedOption.name = Enums.ComboPaging.Name20;
     },
-
     props: {
-        options: {
-            type: Array,
-            default: null,
-        },
-        typeDropdown: {
-            type: String,
-            default: null,
-        },
-        initialOptions: {
-            type: Array,
-            default: null,
-        }
 
     },
-
     data() {
         return {
-            isShowOption: false, //biến ẩn/hiện các option của comboBox
+            isShowOption: false, // biến ẩn/hiện option của comboBox
+            options: [
+                {
+                    value: Enums.ComboPaging.Value10,
+                    name: Enums.ComboPaging.Name10
+                },
+                {
+                    value: Enums.ComboPaging.Value20,
+                    name: Enums.ComboPaging.Name20
+                },
+                {
+                    value: Enums.ComboPaging.Value30,
+                    name: Enums.ComboPaging.Name30
+                },
+                {
+                    value: Enums.ComboPaging.Value50,
+                    name: Enums.ComboPaging.Name50
+                },
+                {
+                    value: Enums.ComboPaging.Value100,
+                    name: Enums.ComboPaging.Name100
+                },
+            ],
             selectedOption: { //option được chọn
-                id: null,
-                text: null,
+                value: null,
+                name: null
             },
             //biến kiểm tra xem chuột có di chuyển vào các option hay không ? -> phân biệt blur với click
             overClick: false,
-            //biến kiểm tra xem button đã click hay chưa
+            //biến kiểm tra xxem button đã click hay chưa
             isClicked:  false,
-            //Biến truyền vào placeholder
-            msgPlacehoder: "",
         }
     },
-
     methods: {
         //Hiện ra dữ liệu cho combobox
         showDropDownContent(){
             this.isClicked = !this.isClicked;
-            this.isShowOption = !this.isShowOption;
+            this.isShowOption = !this.isShowOption;               
         },
-        //Ẩn dữ liệu combobox
+        //Ẩn đi dữ liệu cho combobox
         hideDropDownContent(){
             if(this.overClick == false) this.isShowOption = false;
         },
@@ -93,26 +92,18 @@ export default {
         leaveClick(){
             this.overClick = false;
         },
-        //Chọn option gán vào input
+        //chọn option gắn vào input
         chooseOption(option){
-            this.selectedOption.text = option.text;
-            this.selectedOption.id = option.id;
-            this.$emit('solveOnParent', this.selectedOption.id, this.typeDropdown); //truyền vào biến info của handlePerPage bên employeeList.vue
+            this.selectedOption.name = option.name;
+            this.selectedOption.value = option.value;
+            this.$emit('setPerPage', this.selectedOption.value); //truyền vào biến info của handlePerPage bên employeeList.vue
             this.overClick = false;
             this.hideDropDownContent();
         },
-        //Tìm kiếm ở ô input so với các options dropdown sổ xuống
-        searchOption(){
-            this.options = this.initialOptions.filter(option => {
-                return (
-                    option.text.toLowerCase().includes(this.selectedOption.text.toLowerCase())
-                )
-            });
-        },
         //Set lại số lượng bản ghi 1 trang trong combobox 
         //Khi chạy hàm refreshData() thì mặc định selectedOption của comboBox phải quay lại 20 bản ghi 1 trang
-        resetChoose(){
-            this.selectedOption.text = ""; //chỉ là hiên thị của comboBox, còn thực tế hiển thị lên table là việc của hàm refreshData
+        resetPerPage(){
+            this.selectedOption.name = this.options[1].name; //chỉ là hiên thị của comboBox, còn thực tế hiển thị lên table là việc của hàm refreshData
         }
         
     },
@@ -129,11 +120,11 @@ export default {
         display: inline-block;
     }
     .dropdown-content{
-        /* height: 120px; */
-        width: 180px;
+        height: 120px;
+        width: 210px;
         position: absolute;
-        top: 18px;
-        left: -180px;
+        bottom: 20px;
+        right: 0px;
         border: 1px solid;
         background-color: #f1f1f1;
         cursor: pointer;
@@ -141,7 +132,7 @@ export default {
         z-index: 3;
     }
     .dropdown-content-a{
-        height: 30px;
+        height: 24px;
         width: 100%;
         display: flex;
         align-items: center;
@@ -152,15 +143,15 @@ export default {
         font-size: 13px;
     }
     .dropdown-content-a:hover{
-        color: #03AE66;
+        color: #2ca01c;
         background-color: rgb(219, 219, 219);
     }
     .selected{
-        background-color: #03AE66;
+        background-color: #2ca01c;
         color: #fff;
     }
     .selected:hover{
-        background-color: #03AE66;
+        background-color: #2ca01c;
         color: #fff;
     }
     .dropdown-text-and-icon{
@@ -173,7 +164,7 @@ export default {
 
     }
     .dropdown-text-and-icon:hover{
-        border-color: #03AE66;
+        border-color: #2ca01c;
         /* background-color: aqua; */
 
     }

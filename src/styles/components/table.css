@@ -4,14 +4,15 @@
   padding-bottom: 16px;
   overflow: hidden;
   /* height: 900px; */
-  height: calc(100% - 76px);
+  height: calc(100% - 85px);
+  overflow: scroll;
   
 }
 
   .scroll {
     margin: 0 16px;
-    height: 100%;
-    overflow: auto;
+    /* height: 100%;
+    overflow: auto; */
     white-space: nowrap;
     display: flex;
     /* background-color: aqua; */

@@ -26,11 +26,11 @@
                         <div class="column clm2">
                             <!-- Phần title và nút đóng -->
                             <div class="header">
-                                <div id="title">Thêm hồ sơ Cán bộ, Giáo viên</div>
+                                <div id="title">Thêm hồ sơ Cán bộ, giáo viên</div>
                                 <button class="btn-help">
                                     <span class="tooltiptext">Để biết thêm thông tin, tham khảo google.com hì</span>
                                 </button>
-                                <button class="btn-X" @click="hideDialogDataCondition()"></button>
+                                <button class="btn-X" @click="hideDialogDataCondition()" tabindex="11"></button>
                             </div>
                             <!-- Hàng nhập liệu 1 -->
                             <div style="display: flex; align-items: center;">
@@ -1033,6 +1033,7 @@ export default {
     .middle{
         padding: 24px;
         padding-top: 10px;
+        padding-left: 9px;
     }
     .middle-1{
         display: flex;
@@ -1040,6 +1041,7 @@ export default {
     .clm1{
         width: 25%;
         margin-right: 12px;
+        border-right: 1px solid #ccc;
     }
         .img-avt{
             width: 160px;
@@ -1168,7 +1170,7 @@ export default {
     }    
         .cancel{
             position: absolute;
-            right: 210px;
+            right: 196px;
         }
         .post{
             color: white;

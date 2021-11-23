@@ -4,7 +4,7 @@
         <div id="model" @click="hidePopUp()"></div>
         <div class="dialog-content">
                 <div class="title-dialog">
-                    <b style="font-size: 20px; color: #B1B1B1">Thông báo</b>
+                    <b style="font-size: 20px; color: #000">Thông báo</b>
                     <button class="btn-X" @click="hidePopUp()"></button>
                 </div>
                 <div class="header">
