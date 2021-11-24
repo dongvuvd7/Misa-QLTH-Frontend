@@ -219,11 +219,21 @@
                                     
                                 >
                                     <div style="margin-right: 8px; line-height: 56px;">Ngày nghỉ việc</div>
-                                    <date-pick
+                                    <!-- <date-pick
                                         style="width: 150px; line-height: 56px;"
                                         v-model="teacher.teacherStopday"
                                         :displayFormat="'DD/MM/YYYY'"
-                                    ></date-pick>  
+                                    ></date-pick> -->
+
+                                    <!-- format là định dạng hiển thị sau khi pick, value-type là dạng dữ liệu bind từ chỗ khác (table) vào -->
+                                     <date-picker
+                                        v-model="teacher.teacherStopday"
+                                        format="DD/MM/YYYY"
+                                        type="date"
+                                        value-type="YYYY-MM-DD"
+                                        placeholder="dd/mm/yyyy"
+                                    ></date-picker>
+
                                 </div>
                             </div>
 
@@ -266,17 +276,19 @@
 
 <script>
 
-    import axios from 'axios'
+import axios from 'axios'
 
-    import DatePick from 'vue-date-pick';
-    import 'vue-date-pick/dist/vueDatePick.css';
+// import DatePick from 'vue-date-pick';
+// import 'vue-date-pick/dist/vueDatePick.css';
+import DatePicker from 'vue2-datepicker';
+import 'vue2-datepicker/index.css';
 
-    import DataChange from '../../common/pop-up/dataChange.vue';
-    import ErrorDialog from '../../common/pop-up/errorDialog.vue';
-    import ErrorPopUp from '../../common/pop-up/errorPopUp.vue';
+import DataChange from '../../common/pop-up/dataChange.vue';
+import ErrorDialog from '../../common/pop-up/errorDialog.vue';
+import ErrorPopUp from '../../common/pop-up/errorPopUp.vue';
 
-    import Enums from "../../common/base/enum.js";
-    import Resources from "../../common/base/resource.js";
+import Enums from "../../common/base/enum.js";
+import Resources from "../../common/base/resource.js";
 
 
 
@@ -285,7 +297,8 @@ export default {
         DataChange,
         ErrorDialog,
         ErrorPopUp,
-        DatePick,
+        // DatePick,
+        DatePicker
     },
 
     created() {

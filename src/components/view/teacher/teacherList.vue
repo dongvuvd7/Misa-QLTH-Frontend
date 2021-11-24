@@ -1089,7 +1089,7 @@ export default {
   box-sizing: border-box;
   display: inline-block;
   background: rgb(244, 245, 246);
-  width: calc(100% - 178px);
+  width: calc(100% - 171px);
   height: calc(100% - 48px);
   padding-top: 24px;
   padding-left: 24px;
@@ -1227,7 +1227,7 @@ tbody tr:hover {
     display: flex;
     align-items: center;
     position: absolute;
-    right: 15px;
+    right: 5px;
   }
   #total-data{
     display: flex;
