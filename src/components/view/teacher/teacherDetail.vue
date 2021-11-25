@@ -128,7 +128,16 @@
                                         v-model="teacher.teacherSubject"
                                     /> -->
 
-                                    <v-combobox
+                                    <treeselect
+                                        style="width: 65%"
+                                        :options="listItemSubjects"
+                                        :multiple="true"
+                                        :limit="1"
+                                        v-model="itemSubjects"
+                                        placeholder="Chọn các môn"
+                                    />
+
+                                    <!-- <v-combobox
                                         style="width: 65%;"
                                         v-model="itemSubjects"
                                         :items="listItemSubjects"
@@ -138,7 +147,7 @@
                                         clearable
                                         small-chips
                                         tabindex="6"
-                                    ></v-combobox>
+                                    ></v-combobox> -->
 
                                     <!-- combobox -->
                                     <!-- <div class="dropdown-text-and-icon" :class="{'blank-box-invalid': isValid.groupName == false}"
@@ -183,10 +192,19 @@
                             </div>
                             <!-- Hàng nhập liệu 4 -->
                             <div style="display: flex; align-items: center">
-                                <div style="position: relative; width: 108px; height: 40px; line-height: 45px;"><b>QL kho, phòng</b> </div>
+                                <div style="position: relative; width: 110px; height: 40px; line-height: 45px;"><b>QL kho, phòng</b> </div>
                                 <!-- <input type="text" class="medium-blank-box" v-model="teacher.teacherRoom"/> -->
 
-                                <v-combobox
+                                <treeselect
+                                    style="width: 83%;"
+                                    :options="listItemRooms"
+                                    :multiple="true"
+                                    :limit="3"
+                                    v-model="itemRooms"
+                                    placeholder="Chọn các kho, phòng"
+                                />
+
+                                <!-- <v-combobox
                                     style="width: 65%;"
                                     v-model="itemRooms"
                                     :items="listItemRooms"
@@ -196,7 +214,7 @@
                                     clearable
                                     small-chips
                                     tabindex="7"
-                                ></v-combobox>
+                                ></v-combobox> -->
 
                             </div>
                             <!-- Hàng nhập liệu 5 -->
@@ -282,6 +300,10 @@ import axios from 'axios'
 // import 'vue-date-pick/dist/vueDatePick.css';
 import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
+// import the component
+import Treeselect from '@riophae/vue-treeselect'
+// import the styles
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 import DataChange from '../../common/pop-up/dataChange.vue';
 import ErrorDialog from '../../common/pop-up/errorDialog.vue';
@@ -298,7 +320,8 @@ export default {
         ErrorDialog,
         ErrorPopUp,
         // DatePick,
-        DatePicker
+        DatePicker,
+        Treeselect,
     },
 
     created() {
@@ -307,7 +330,10 @@ export default {
         .then((res) => {
           this.listItemRooms = this.listItemRooms.concat(
             (res.data || []).map((item) => {
-              return item.roomName;
+              return {
+                  id: item.roomName,
+                  label: item.roomName,
+              };
             })
           )
         })
@@ -319,7 +345,10 @@ export default {
         .then((res) => {
           this.listItemSubjects = this.listItemSubjects.concat(
             (res.data || []).map((item) => {
-              return item.subjectName;
+              return {
+                  id: item.subjectName,
+                  label: item.subjectName
+              };
             })
           )
         })
