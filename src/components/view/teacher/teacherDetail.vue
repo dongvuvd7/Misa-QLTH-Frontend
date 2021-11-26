@@ -30,7 +30,7 @@
                                 <button class="btn-help">
                                     <span class="tooltiptext">Để biết thêm thông tin, tham khảo google.com hì</span>
                                 </button>
-                                <button class="btn-X" @click="hideDialogDataCondition()" tabindex="11"></button>
+                                <button class="btn-X" @click="hideDialogDataCondition()" tabindex="11" @blur="focusInput()"></button>
                             </div>
                             <!-- Hàng nhập liệu 1 -->
                             <div style="display: flex; align-items: center;">
@@ -44,7 +44,7 @@
                                         v-model="teacher.teacherCode"
                                         @mouseenter="mouseEnterError('teacherCode')"
                                         @mouseleave="mouseLeaveError()"
-                                        @blur="CheckRequired('teacherCode', $event)"
+                                        @blur="checkRequired('teacherCode', $event)"
                                         tabindex="1"
                                     />
                                 </div>
@@ -58,7 +58,7 @@
                                         @mouseenter="mouseEnterError('teacherName')"
                                         @mouseleave="mouseLeaveError()"
                                         ref="nameRef"
-                                        @blur="CheckRequired('teacherName', $event)"
+                                        @blur="checkRequired('teacherName', $event)"
                                         tabindex="2"
                                     />                    
                                 </div>
@@ -72,7 +72,7 @@
                                     <input type="text" class="code-blank-box"
                                         :class="{'blank-box-invalid': isValid.phone == false}" 
                                         v-model="teacher.teacherPhone"
-                                        @blur="CheckPhone" 
+                                        @blur="checkPhone" 
                                         tabindex="3"
                                     />
                                 </div>
@@ -83,7 +83,7 @@
                                     <input type="email" class="fullname-blank-box"
                                         :class="{'blank-box-invalid': isValid.email == false }" 
                                         v-model="teacher.teacherEmail"
-                                        @blur="CheckEmail" 
+                                        @blur="checkEmail" 
                                         tabindex="4"
                                     />                    
                                 </div>
@@ -507,7 +507,7 @@ export default {
        * Khi không thỏa mãn thì báo lỗi, khi thỏa mãn rồi thì bỏ báo lỗi đi
        * CreatedBy: VDDong (11/09/2021)
        */
-      CheckRequired: function(teacherProp, e) {
+      checkRequired: function(teacherProp, e) {
           if(!this.teacher[teacherProp]){
               this.isValid[teacherProp] = false; //báo viền đỏ
           }
@@ -519,7 +519,7 @@ export default {
           var re = Resources.Regexs.Email;
           return re.test(email);
       },
-      CheckEmail: function(e){
+      checkEmail: function(e){
           if(!this.validEmail(this.teacher.teacherEmail) && this.teacher.teacherEmail != null && this.teacher.teacherEmail != ""){
               this.isValid.email = false;
           }
@@ -531,7 +531,7 @@ export default {
           var re = Resources.Regexs.Phone;
           return re.test(phone);
       },
-      CheckPhone: function(e){
+      checkPhone: function(e){
           if(!this.validPhone(this.teacher.teacherPhone) && this.teacher.teacherPhone != null && this.teacher.teacherPhone != ""){
               this.isValid.phone = false;
           }

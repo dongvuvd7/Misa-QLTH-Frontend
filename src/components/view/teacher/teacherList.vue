@@ -808,7 +808,8 @@ export default {
         // console.log(recordIds);
         axios
           .delete(Resources.API.DeleteMultiple + recordIds)
-          .then(() => {
+          .then((res) => {
+            console.log(res.status);
             this.hideDialog();
           })
           .catch((res) => {
