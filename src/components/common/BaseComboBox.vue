@@ -74,6 +74,10 @@ export default {
         }
     },
     methods: {
+        /**
+         * Cụm hàm xử lý combobox
+         * CreatedBy: VDDong (26/11/2021)
+         */
         //Hiện ra dữ liệu cho combobox
         showDropDownContent(){
             this.isClicked = !this.isClicked;

@@ -34,12 +34,13 @@
 <script>
 
 import Enums from './base/enum.js';
+import Resources from './base/resource.js';
 
 export default {
 
     created() {
-        if(this.typeDropdown == "Sort") this.msgPlacehoder = "Lựa chọn sắp xếp";
-        if(this.typeDropdown == "Group") this.msgPlacehoder = "Nhóm tổ chuyên môn";
+        if(this.typeDropdown == Resources.DropdownTitle.SortName) this.msgPlacehoder = Resources.DropdownTitle.SortPlacehoder;
+        if(this.typeDropdown == Resources.DropdownTitle.GroupName) this.msgPlacehoder = Resources.DropdownTitle.GroupPlacehoder;
     },
 
     props: {
@@ -75,6 +76,10 @@ export default {
     },
 
     methods: {
+        /**
+         * Cụm hàm xử lý Dropdown combobox
+         * CreatedBy: VDDong (26/11/2021)
+         */
         //Hiện ra dữ liệu cho combobox
         showDropDownContent(){
             this.isClicked = !this.isClicked;

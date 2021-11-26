@@ -70,6 +70,13 @@ const Resource = {
     Regexs: {
         Email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         Phone: /^\d+$/,
+    },
+
+    DropdownTitle: {
+        SortName: "Sort",
+        SortPlacehoder: "Lựa chọn sắp xếp",
+        GroupName: "Group",
+        GroupPlacehoder: "Nhóm tổ chuyên môn",
     }
 
 

@@ -107,6 +107,10 @@ export default {
         }
     },
     computed: {
+        /**
+         * Theo dõi sự thay đổi khi click vào trang khác (dùng trong trường hợp dàn các số trang ra rồi click)
+         * CreatedBy: VDDong (26/11/2021)
+         */
         pages: function(){
             let ps = [];
             let start = this.page > 3 ? this.page - 1 : 2;
@@ -128,7 +132,10 @@ export default {
     },
 
     methods: {
-
+        /**
+         * Thay đổi số trang, truyền lại teacherList để gọi request API
+         * CreatedBy: VDDong (26/11/2021)
+         */
         changePage(){
             var intPage = parseInt(this.thisPage);
             this.$emit('onChangePage', this.page);

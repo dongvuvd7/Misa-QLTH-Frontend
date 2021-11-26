@@ -47,34 +47,34 @@ export default {
 
         /**
         Hiện dialog xác nhận xóa
-        CreatedBy: VDDong (15/06/2021)
+        CreatedBy: VDDong (26/11/2021)
          */
         showDeleteDialog(){
-            console.log("xóa");
+            // console.log("xóa");
             this.$emit('showDeleteDialog');
             this.isShowOption = false;
         },
         /**
         Hiện dialog sửa có bind thông tin nhân viên lên
-        CreatedBy: VDDong (15/06/2021)
+        CreatedBy: VDDong (26/11/2021)
          */
         showTeacherDetail(){
-            console.log("sửa");
+            // console.log("sửa");
             this.$emit('showTeacherDetail');
             this.isShowOption = false;
 
         },
         /**
         Hiện dialog nhân bản
-        CreatedBy: VDDong (15/06/2021)
+        CreatedBy: VDDong (26/11/2021)
          */
         showTeacherDuplicate(){
-            console.log("nhân bản");
+            // console.log("nhân bản");
             this.$emit('showTeacherDuplicate');
             this.isShowOption = false;
         },
 
-
+            
         hidePopUp(){
             this.isErrorPopUpShow = false;
             this.errorMsg = "";
