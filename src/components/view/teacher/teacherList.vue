@@ -805,21 +805,24 @@ export default {
         stringIds += arrIds[arrIds.length - 1];
 
         var recordIds = Resources.PartNotice.OpenBrackets + stringIds + Resources.PartNotice.CloseBrackets;
+        var recordsId = newChecked.toString();
+        console.log(newChecked.toString(), 'newChecked');
         // console.log(recordIds);
         axios
-          .delete(Resources.API.DeleteMultiple + recordIds)
+          .delete(Resources.API.DeleteMultiple + recordsId)
           .then((res) => {
             console.log(res.status);
+            //hiện popup 3s báo số bản ghi đã xóa
+            var msg = Resources.PartNotice.YourDelete + newChecked.length + Resources.PartNotice.TeacherRecord;
+            this.showPopupSuccess(msg);
             this.hideDialog();
           })
           .catch((res) => {
-            console.log(res);
+            console.log(res.response);
           })
 
         this.checked = [];
-        //hiện popup 3s báo số bản ghi đã xóa
-        var msg = Resources.PartNotice.YourDelete + newChecked.length + Resources.PartNotice.TeacherRecord;
-        this.showPopupSuccess(msg);
+        
         this.hidePopUp();
         //reset lại combobox (trong trường hợp sắp xếp, nhóm rồi xóa)
         this.refreshCombobox();
