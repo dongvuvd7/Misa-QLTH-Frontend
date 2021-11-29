@@ -30,13 +30,13 @@
                                 <button class="btn-help">
                                     <span class="tooltiptext">Để biết thêm thông tin, tham khảo google.com hì</span>
                                 </button>
-                                <button class="btn-X" @click="hideDialogDataCondition()"></button>
+                                <button class="btn-X" @click="hideDialogDataCondition()" tabindex="11" @blur="focusInput()"></button>
                             </div>
                             <!-- Hàng nhập liệu 1 -->
                             <div style="display: flex; align-items: center;">
                                 <div class="input_bar" style="width: 50%; margin-right: 2px;">
                                     <div class="title-blank-box" style="position: relative"><b>Số hiệu cán bộ</b> <span style="color: red;">*</span>
-                                        <div class="error-message" v-show="isValid.teacherCodeMessage == false" style="top: 3px;">SHCB chưa hợp lệ</div>
+                                        <div class="error-message" v-show="isValid.teacherCodeMessage == false">Số hiệu cán bộ chưa hợp lệ</div>
                                     </div>
                                     <input type="text" class="code-blank-box"
                                         :class="{'blank-box-invalid': isValid.teacherCode == false}"
@@ -45,11 +45,12 @@
                                         @mouseenter="mouseEnterError('teacherCode')"
                                         @mouseleave="mouseLeaveError()"
                                         @blur="checkRequired('teacherCode', $event)"
+                                        tabindex="1"
                                     />
                                 </div>
                                 <div class="input_bar" style="width: 50%; margin-left: 2px;">
                                     <div class="title-blank-box" style="position: relative"><b>Họ và tên</b> <span style="color: red;">*</span>
-                                        <div class="error-message" v-show="isValid.teacherNameMessage == false" style="top: 2px; left: 290%; width: 180px;">Họ và tên không được để trống</div>
+                                        <div class="error-message" v-show="isValid.teacherNameMessage == false">Họ và tên không được để trống</div>
                                     </div>
                                     <input type="text" class="fullname-blank-box" style="text-transform: capitalize; "
                                         :class="{'blank-box-invalid': isValid.teacherName == false }" 
@@ -58,6 +59,7 @@
                                         @mouseleave="mouseLeaveError()"
                                         ref="nameRef"
                                         @blur="checkRequired('teacherName', $event)"
+                                        tabindex="2"
                                     />                    
                                 </div>
                             </div>
@@ -71,6 +73,7 @@
                                         :class="{'blank-box-invalid': isValid.phone == false}" 
                                         v-model="teacher.teacherPhone"
                                         @blur="checkPhone" 
+                                        tabindex="3"
                                     />
                                 </div>
                                 <div class="input_bar" style="width: 50%; margin-left: 2px;">
@@ -81,6 +84,7 @@
                                         :class="{'blank-box-invalid': isValid.email == false }" 
                                         v-model="teacher.teacherEmail"
                                         @blur="checkEmail" 
+                                        tabindex="4"
                                     />                    
                                 </div>
                             </div>
@@ -88,7 +92,7 @@
                             <div style="display: flex; align-items: center;">
                                 <div class="input_bar" style="width: 50%; margin-right: 2px;">
                                     <div style="position: relative; width: 35%; line-height: 48px;"><b>Tổ bộ môn</b><span style="color: red;">*</span>
-                                        <div class="error-message" v-show="isValid.teacherGroupMessage == false" style="width: 135px;">Tổ bộ môn chưa hợp lệ</div>
+                                        <div class="error-message" v-show="isValid.teacherGroupMessage == false">Tổ bộ môn chưa hợp lệ</div>
                                     </div>
                                     <!-- combobox -->
                                     <div class="dropdown-text-and-icon" :class="{'blank-box-invalid': isValid.teacherGroup == false}">
@@ -101,9 +105,8 @@
                                             @mouseleave="mouseLeaveError()"
                                             @keyup="searchOption('teacherGroup')"
                                             autocomplete="off"
-                                            tabindex="-1"
                                         />
-                                        <button id="dropdown-icon" @click="showDropDownContent('teacherGroup')" @blur="hideDropDownContent('teacherGroup')"></button>
+                                        <button id="dropdown-icon" @click="showDropDownContent('teacherGroup')" @blur="hideDropDownContent('teacherGroup')" tabindex="5"></button>
                                     </div>
                                     <div id="dropdown">     
                                         <div class="dropdown-content" :class="{'dialog_hide': !isShowOption.teacherGroup}" >
@@ -126,7 +129,7 @@
                                     /> -->
 
                                     <treeselect
-                                        style="width: 65%; margin-top: 5px;"
+                                        style="width: 65%"
                                         :options="listItemSubjects"
                                         :multiple="true"
                                         :limit="1"
@@ -259,9 +262,9 @@
             </div>
             <!-- Phần footer dialog -->
             <div class="footer">
-                <button class="btn-small cancel default-color" @click="hideDialogDataCondition()">Đóng</button>
-                <button class="btn-small post primary-color" @click="btnSave()">Lưu</button>
-                <button class="btn-post-and-put primary-color" @click="btnSaveAndAdd()" tabindex="0" @keydown="focusInput()">Lưu và thêm</button>
+                <button class="btn-small cancel default-color" @click="hideDialogDataCondition()" tabindex="8">Đóng</button>
+                <button class="btn-small post primary-color" @click="btnSave()" tabindex="9">Lưu</button>
+                <button class="btn-post-and-put primary-color" @click="btnSaveAndAdd()" tabindex="10">Lưu và thêm</button>
             </div>
         </div> 
         
@@ -1225,8 +1228,8 @@ export default {
     /* Trỏ chuột và thanh input lỗi hiện thông báo lỗi */
     .error-message{
         position: absolute;
-        top: 10px;
-        left: 260%;
+        top: 40px;
+        left: 110px;
         background-color: #F65454;
         color: #fff;
         font-size: 11px;
@@ -1235,7 +1238,7 @@ export default {
         padding-bottom: 2px;
         padding-right: 8px;
         /* width: 300px; */
-        min-width: 110px;
+        min-width: 180px;
         height: 30px;
         line-height: 30px;
         border-radius: 4px;
@@ -1320,8 +1323,8 @@ export default {
 }
 .dropdown-content{
     /* height: 120px; */
-    width: 172px;
-    left: 110px;
+    width: 168px;
+    left: 108px;
     top: 45px;
     position: absolute;
     z-index: 2;
