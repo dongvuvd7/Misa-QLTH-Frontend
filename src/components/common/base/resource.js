@@ -31,6 +31,7 @@ const Resource = {
         DataChange: "Dữ liệu đã bị thay đổi, bạn có muốn lưu lại không?",
         DateIdentityAndDobError: "Ngày cấp số CMND không được phép trước ngày sinh!",
         StopdayAndToday: "Ngày nghỉ việc không được lớn hơn ngày hiện tại!",
+        ChooseRecordsBeforeMultipleDelete: "Bạn cần chọn nhiều hơn 1 bản ghi để có thể xóa nhiều!"
     },
 
     Property: {

@@ -68,7 +68,7 @@ export default {
         bottom: 0px;
         background-color: #000000;
         opacity: .5;
-        z-index: 3;
+        z-index: 4;
     }
     .dialog-content{
         position: fixed;
@@ -81,7 +81,7 @@ export default {
         box-sizing: border-box;
         padding-left: 28px;
         padding-right: 28px;
-        z-index: 3;
+        z-index: 4;
     }
     .header{
         width: 100%;

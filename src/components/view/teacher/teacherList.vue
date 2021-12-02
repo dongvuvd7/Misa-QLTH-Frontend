@@ -18,11 +18,11 @@
                 </div>
                 <!-- Các button chức năng thêm, xuất -->
                 <div class="btn-wrapper">
-                  <button class="btn-delete-all delete-color" id="btn-delete-all" :class="{'btn-hide': !isDeleteMultiple}"
+                  <!-- <button class="btn-delete-all delete-color" id="btn-delete-all" :class="{'btn-hide': !isDeleteMultiple}"
                     @click="showConfirmDeleteMultiple()"
                   >
                     Xóa hàng loạt
-                  </button>
+                  </button> -->
                   <button class="btn-add primary-color" id="btn-add" @click="showTeacherDialog()">
                       Thêm
                   </button>
@@ -33,6 +33,12 @@
                     <i class="fas fa-table"></i>
                     <input type="file" id="uploadExcel" @change="importFileExcel"/>
                     Nhập khẩu
+                  </label>
+                  <label class="btn-menu-extend">
+                    <MenuExtend
+                      @deleteMultiple="showConfirmDeleteMultiple"
+                      @importFile="importFileExcel"
+                    />
                   </label>
                 </div>
             </div> <!-- End titlebar -->
@@ -80,14 +86,14 @@
                                         <th>
                                             <input type="checkbox" v-model="checkAll" />
                                         </th>
-                                        <th style="min-width: 100px">Số hiệu cán bộ</th>
+                                        <th style="min-width: 100px; text-align: center;">Số hiệu cán bộ</th>
                                         <th style="min-width: 160px; text-align: center;">Họ và tên</th>
-                                        <th style="min-width: 50px">Số điện thoại</th>
-                                        <th style="min-width: 110px;">Tổ chuyên môn</th>
-                                        <th style="min-width: 100px">QL theo môn</th>
-                                        <th style="min-width: 150px">QL kho, phòng</th>
-                                        <th style="min-width: 80px">Đào tạo QLTB</th>
-                                        <th style="min-width: 100px">Đang làm việc</th>
+                                        <th style="min-width: 50px; text-align: center;">Số điện thoại</th>
+                                        <th style="min-width: 110px; text-align: center;">Tổ chuyên môn</th>
+                                        <th style="min-width: 100px; text-align: center;">QL theo môn</th>
+                                        <th style="min-width: 150px; text-align: center;">QL kho, phòng</th>
+                                        <th style="min-width: 80px; text-align: center;">Đào tạo QLTB</th>
+                                        <th style="min-width: 100px; text-align: center;">Đang làm việc</th>
                                         <!-- <th style="min-width: 83.33%">CHỨC NĂNG</th> -->
                                     </tr>
                                 </thead>
@@ -241,6 +247,7 @@ import ErrorPopUp from '../../common/pop-up/errorPopUp.vue';
 import AddFromExcelPopUp from './TeacherAddFromExcel.vue';
 import ConfirmDeleteMultiplePopUp from './TeacherConfirmMultipleDelete.vue';
 import DropDown from "../../common/BaseDropdown.vue";
+import MenuExtend from "../../common/BaseMenuExtend.vue";
 import xlsx from 'xlsx';
 
 import WarningPopUp from '../../common/pop-up/warningPopup.vue';
@@ -261,6 +268,7 @@ export default {
       AddFromExcelPopUp,
       ConfirmDeleteMultiplePopUp,
       DropDown,
+      MenuExtend,
 
       WarningPopUp,
       SuccessPopUp,
@@ -786,8 +794,13 @@ export default {
        */
       //Hàm bật popup xác nhận xóa
       showConfirmDeleteMultiple(){
-        this.isShowPopUpConfirmMultipleDelete = true;
-        this.errorMsg = Resources.PartNotice.Delete + this.checked.length + Resources.PartNotice.RecordChoose;
+        if(this.checked.length == 0){
+          this.showPopupWarning(Resources.ErrorMessage.ChooseRecordsBeforeMultipleDelete);
+        }
+        else {
+          this.isShowPopUpConfirmMultipleDelete = true;
+          this.errorMsg = Resources.PartNotice.Delete + this.checked.length + Resources.PartNotice.RecordChoose;
+        }
       },
 
       /**

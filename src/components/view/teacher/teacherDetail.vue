@@ -65,7 +65,7 @@
                             <div style="display: flex; align-items: center;">
                                 <div class="input_bar" style="width: 50%; margin-right: 2px;">
                                     <div class="title-blank-box" style="position: relative"><b>Số điện thoại</b>
-                                        <div class="error-message" v-show="isValid.phone == false">Số điện thoại chưa hợp lệ</div>
+                                        <div class="error-message" v-show="isValid.phone == false" style="top: 3px;">SĐT chưa hợp lệ</div>
                                     </div>
                                     <input type="text" class="code-blank-box"
                                         :class="{'blank-box-invalid': isValid.phone == false}" 
@@ -75,7 +75,7 @@
                                 </div>
                                 <div class="input_bar" style="width: 50%; margin-left: 2px;">
                                     <div class="title-blank-box" style="position: relative"><b>Email</b>
-                                        <div class="error-message" v-show="isValid.email == false">Email chưa hợp lệ</div>
+                                        <div class="error-message" v-show="isValid.email == false" style="top: 3px; left: 288%;">Email chưa hợp lệ</div>
                                     </div>
                                     <input type="email" class="fullname-blank-box"
                                         :class="{'blank-box-invalid': isValid.email == false }" 
@@ -588,11 +588,27 @@ export default {
         * CreatedBy: VDDong (19/11/2021)
         */
         hideDialogDataCondition(){
-           if(this.compareDataObject(this.initialTeacher, this.teacher)){
-               this.isDataChange = true;
-               this.errorMsg = Resources.ErrorMessage.DataChange;
-           }
-           else this.hideDialog();
+            // console.log(this.initialTeacher, "initialTeacher");
+            // console.log(this.teacher, "teacher");
+
+            if(this.formmode == Enums.FormMode.Add){ //formmode add thì initialTeacher và teacher ở dạng observer nên cần convert trước khi so
+                var initTeacherAdd = JSON.parse(JSON.stringify(this.initialTeacher))
+                // console.log(initTeacherAdd, 'initeacheradd');
+                var teacherAdd = JSON.parse(JSON.stringify(this.teacher))
+                // console.log(teacherAdd, 'teacheradd');
+                if(this.compareDataObject(teacherAdd, initTeacherAdd)){
+                    this.isDataChange = true;
+                    this.errorMsg = Resources.ErrorMessage.DataChange;
+                }
+                else this.hideDialog();
+            }
+            else {
+                if(this.compareDataObject(this.teacher, this.initialTeacher)){
+                    this.isDataChange = true;
+                    this.errorMsg = Resources.ErrorMessage.DataChange;
+                }
+                else this.hideDialog();
+            }
         },
 
 
